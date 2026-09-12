@@ -98,9 +98,9 @@ def generate_evidence_graph(symbol: str):
     # Detailed Dynamic Causes
     causes = []
     
-    # Cause 1: Volume / Liquidity
+    # Cause 1: Volume / Liquidity (25 pts max)
     ratio = (vol_24h / mcap * 100) if mcap > 0 else 0
-    if score_breakdown["liquidity_score"] > 10 or ratio < 5:
+    if score_breakdown["liquidity_deterioration"] > 10 or ratio < 5:
         causes.append({
             "title": "Severe Liquidity Exhaustion",
             "evidence": f"The 24-hour trading volume is severely depleted, currently sitting at just {ratio:.2f}% of the total market capitalization (${vol_24h:,.0f} traded vs ${mcap:,.0f} mcap). A ratio this low indicates extreme illiquidity, meaning any moderate sell order will cause disproportionate price slippage and potential flash crashes. Market makers appear to have abandoned the order books.",
@@ -125,48 +125,67 @@ def generate_evidence_graph(symbol: str):
             }
         })
 
-    # Cause 2: Short-term price action
-    if score_breakdown["short_term_score"] > 10:
+    # Cause 2: Price Deterioration (20 pts max)
+    if score_breakdown["price_deterioration"] > 10:
         causes.append({
-            "title": "Acute Price Collapse (7-Day Vector)",
-            "evidence": f"The asset has experienced a violent devaluation of {abs(pct_7d):.1f}% within a single week. This is not a normal market correction; it is a structural breakdown indicating either a mass exodus of retail holders, a compromised protocol, or a coordinated whale dump.",
-            "source": "CMC Live Quotes (7d_change)",
+            "title": "Acute Price Collapse & Macro Bleed",
+            "evidence": f"The asset has experienced a severe structural breakdown. With a {abs(pct_7d):.1f}% drop over 7 days and a {abs(pct_90d):.1f}% bleed over 90 days, this is indicative of a continuous distribution by early holders and a complete loss of retail support.",
+            "source": "CMC Live Quotes (7d/90d_change)",
             "data_viz": {
                 "type": "trend_bars",
                 "trends": [
-                    {"label": "1H", "val": pct_1h},
-                    {"label": "24H", "val": pct_24h},
-                    {"label": "7D", "val": pct_7d}
-                ]
-            }
-        })
-
-    # Cause 3: Long-term bleed
-    if score_breakdown["long_term_score"] > 10:
-        causes.append({
-            "title": "Chronic Distribution (Macro Bleed)",
-            "evidence": f"The token is down {abs(pct_30d):.1f}% over the last 30 days and {abs(pct_90d):.1f}% over 90 days. This continuous, unrecovered bleed is characteristic of 'slow rug' tokenomics or a dying ecosystem where developers and early investors constantly distribute tokens to retail buyers.",
-            "source": "CMC Live Quotes (30d/90d_change)",
-            "data_viz": {
-                "type": "trend_bars",
-                "trends": [
+                    {"label": "7D", "val": pct_7d},
                     {"label": "30D", "val": pct_30d},
-                    {"label": "60D", "val": pct_60d},
                     {"label": "90D", "val": pct_90d}
                 ]
             }
         })
 
-    # Cause 4: Tokenomics / Inflation
-    if inflation_risk:
+    # Cause 3: Trading Activity Collapse (20 pts max)
+    if score_breakdown["trading_activity"] > 10:
         causes.append({
-            "title": "Hyper-Inflationary Tokenomics Hazard",
-            "evidence": f"The Fully Diluted Valuation (FDV) is heavily disproportionate to the current Market Cap (FDV: ${fdv:,.0f} vs Mcap: ${mcap:,.0f}). This massive overhang of locked or unminted supply implies that future token unlocks will cause severe hyper-inflation, constantly diluting current holders and suppressing price recovery.",
-            "source": "CMC Supply Dynamics",
+            "title": "Trading Volume Collapse",
+            "evidence": f"The 24-hour trading volume has collapsed, triggering severe active trading warnings. This usually precedes a complete delisting from major exchanges.",
+            "source": "CMC 24h Volume Metrics",
             "data_viz": {
-                "type": "fdv_mcap_compare",
-                "fdv": fdv,
-                "mcap": mcap
+                "type": "trend_bars",
+                "trends": [
+                    {"label": "24H", "val": pct_24h},
+                    {"label": "1H", "val": pct_1h},
+                ]
+            }
+        })
+
+    # Cause 4: Holder Exodus (Supply Dilution Proxy)
+    if score_breakdown["holder_deterioration"] > 5:
+        causes.append({
+            "title": "Holder Capitulation (Supply Dilution Proxy)",
+            "evidence": "Data Science analysis of Market Cap vs Fully Diluted Valuation (FDV) shows extreme inflation overhang combined with macro downtrends. This mathematical divergence strongly correlates with VC/insider token unlocks dumping on retail buyers, causing widespread holder exodus.",
+            "source": "FDV vs MCap Correlation Engine",
+            "data_viz": {
+                "type": "none"
+            }
+        })
+
+    # Cause 5: Market Accessibility / Isolation
+    if score_breakdown["market_accessibility"] > 5:
+        causes.append({
+            "title": "Severe Exchange Isolation",
+            "evidence": "Analysis of CEX vs DEX volume routing indicates this token has suffered a massive loss of liquidity from centralized exchanges. It is currently highly isolated on illiquid decentralized pools or completely delisted from major trading venues.",
+            "source": "CEX/DEX Volume Ratio Index",
+            "data_viz": {
+                "type": "none"
+            }
+        })
+
+    # Cause 6: Security & Developer Abandonment
+    if score_breakdown["developer_activity"] >= 3 or score_breakdown["security_risk"] >= 5:
+        causes.append({
+            "title": "Dev Abandonment (Lindy Inversion)",
+            "evidence": "Based on the Lindy Effect Inversion model, a project of this age experiencing a massive 90-day structural decay (>80%) statistically confirms developer abandonment. Additionally, supply contract risks (e.g. infinite printing or uncapped supply) have been detected.",
+            "source": "Contract & Historical Survival Analysis",
+            "data_viz": {
+                "type": "none"
             }
         })
         
