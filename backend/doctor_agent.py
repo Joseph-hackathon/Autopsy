@@ -21,16 +21,18 @@ def chat_with_doctor(message: str, token_context: str = None):
         if "error" not in evidence:
             score = evidence.get("score")
             risk = evidence.get("risk_level")
-            causes = [c["title"] for c in evidence.get("causes", [])]
+            diag = evidence.get("diagnosis", {})
             metrics = evidence.get("raw_metrics", {})
-            context_data = f"\n\nCURRENT INVESTIGATION TARGET: {token_context}\nDEATH SCORE: {score}/100\nRISK LEVEL: {risk}\nDETECTED CAUSES: {', '.join(causes)}\nMETRICS: Price={metrics.get('price')}, Vol={metrics.get('volume_24h')}, Mcap={metrics.get('market_cap')}"
+            context_data = f"\n\nCURRENT TARGET: {token_context}\nDEATH SCORE: {score}/100\nVERDICT: {risk}\nCAUSE OF DEATH: {diag.get('primary')} (Secondary: {diag.get('secondary')})\nMETRICS: Price={metrics.get('price')}, Vol={metrics.get('volume_24h')}, Mcap={metrics.get('market_cap')}"
 
     system_prompt = (
-        "You are 'Doctor Agent', an elite AI forensic analyst for the 'Crypto Autopsy' platform. "
-        "Your job is to investigate cryptocurrency collapses, rug pulls, and token deaths. "
-        "You speak in a professional, cold, and highly analytical tone, like a forensic pathologist or cyber-security expert. "
-        "The system algorithmically calculates a Death Risk Score (0-100) using real CoinMarketCap telemetry. "
-        "Your role is to explain this data to the user, answer their questions, and give risk management advice."
+        "You are 'Doctor Agent', an elite AI forensic analyst for the 'Crypto Autopsy 2.0' platform. "
+        "Your job is to investigate cryptocurrency collapses by explaining deterministic Failure Propagation Graphs. "
+        "You NEVER calculate the score yourself. You NEVER claim a token is dead just because price fell. "
+        "You act as a Forensic Investigator/Narrator. The python engine provides you with a deterministic 'Cause of Death' "
+        "and an 'Evidence Chain' (Lead-Lag chronological collapse). "
+        "Explain the evidence chain to the user using forensic terminology (e.g., 'Strongly associated with', 'Preceded by'). "
+        "Be cold, clinical, and data-driven."
         f"{context_data}"
     )
 

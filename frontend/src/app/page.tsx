@@ -260,97 +260,117 @@ export default function Home() {
 
             {/* TAB CONTENT: OVERVIEW */}
             {activeTab === "overview" && (
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-in fade-in slide-in-from-right-8 duration-500">
+              <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-right-8 duration-500">
                 
-                {/* LARGE SCORE GAUGE */}
-                <div className={`lg:col-span-5 glass-panel rounded-2xl p-8 flex flex-col items-center justify-center relative overflow-hidden ${getBgColor(result.score)}`}>
-                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5 pointer-events-none"></div>
-                  
-                  <div className="text-center w-full mb-8 relative z-10">
-                    <h3 className="text-sm font-bold text-zinc-400 tracking-[0.2em] uppercase mb-1 flex items-center justify-center gap-2">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                      Forensic Health Score
-                    </h3>
-                    <p className="text-xs text-zinc-500">Powered by Agentic Data Analysis</p>
-                  </div>
-                  
-                  <div className="relative flex items-center justify-center w-64 h-64 mb-6 z-10">
-                    {/* Background Track */}
-                    <svg className="w-full h-full transform -rotate-90 drop-shadow-2xl overflow-visible" viewBox="0 0 36 36">
-                      <path className="text-zinc-800/80" strokeWidth="2" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" strokeLinecap="round" />
-                      {/* Active Track with glow */}
-                      <path 
-                        className={`${getScoreColor(result.score).split(' ')[0]} transition-all duration-1500 ease-out`} 
-                        strokeDasharray={`${result.score}, 100`} 
-                        strokeWidth="2.5" 
-                        stroke="currentColor" 
-                        fill="none" 
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
-                        strokeLinecap="round" 
-                        style={{ filter: `drop-shadow(0 0 8px currentColor)` }}
-                      />
-                    </svg>
-                    
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <div className={`text-6xl font-black tracking-tighter ${getScoreColor(result.score).split(' ')[0]} ${result.score > 60 ? 'neon-text-red' : ''}`}>
-                        {result.score}
-                      </div>
-                      <div className="text-zinc-500 text-sm font-sans font-medium mt-1">/ 100</div>
+                {/* IDENTITY BANNER (If Migration Detected) */}
+                {result.identity?.migration_detected && (
+                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex items-center gap-4">
+                    <div className="bg-amber-500/20 p-2 rounded-lg text-amber-500">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                     </div>
+                    <div>
+                      <h4 className="text-amber-500 font-bold text-sm tracking-wide uppercase">Asset Migration / Identity Collision Detected</h4>
+                      <p className="text-amber-500/70 text-xs mt-1">This asset has been flagged as a migrated token (e.g. V2 or New contract). Historical data fidelity and identity confidence is currently at {result.identity.identity_confidence}%. The forensic engine has adjusted correlation weighting.</p>
+                    </div>
+                  </div>
+                )}
 
-                    {/* Decorative ticks */}
-                    <div className="absolute inset-0 border-[0.5px] border-zinc-700 rounded-full border-dashed animate-[spin_60s_linear_infinite] opacity-30 pointer-events-none"></div>
-                  </div>
-                  
-                  <div className="text-center w-full z-10">
-                    <div className={`inline-flex items-center gap-2 px-6 py-2 rounded-full font-bold text-sm uppercase tracking-widest border ${getScoreColor(result.score).split(' ').slice(0,2).join(' ')} ${getBgColor(result.score)}`}>
-                      {result.score > 60 && <div className="w-2 h-2 rounded-full bg-[var(--color-spark-magenta)] animate-ping"></div>}
-                      {result.risk_level.replace(/[^a-zA-Z ]/g, '').trim()}
-                    </div>
-                  </div>
+                {/* VERDICT BANNER */}
+                <div className="glass-panel rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between border-l-4 border-l-[var(--color-spark-magenta)] relative overflow-hidden">
+                   <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-spark-magenta)]/10 to-transparent pointer-events-none"></div>
+                   <div className="relative z-10">
+                     <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase mb-1">Algorithmic Verdict</p>
+                     <h2 className="text-2xl font-black text-white">{result.diagnosis?.verdict || result.risk_level}</h2>
+                     <p className="text-sm text-zinc-300 mt-1">
+                       <span className="text-[var(--color-spark-magenta)] font-bold">PRIMARY CAUSE: </span>
+                       {result.diagnosis?.primary || "UNKNOWN"} 
+                       {result.diagnosis?.secondary && <span className="text-zinc-500 ml-2">| SECONDARY: {result.diagnosis.secondary}</span>}
+                     </p>
+                   </div>
+                   <div className="relative z-10 mt-4 md:mt-0 text-right">
+                      <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase mb-1">Death Score</p>
+                      <div className="text-4xl font-black text-[var(--color-spark-magenta)]">{result.score}<span className="text-xl text-zinc-600">/100</span></div>
+                   </div>
                 </div>
 
-                {/* TIMELINE & DESCRIPTION */}
-                <div className="lg:col-span-7 flex flex-col gap-6">
-                  {/* Token Description */}
-                  <div className="glass-panel rounded-2xl p-6">
-                    <h3 className="text-sm font-bold text-zinc-400 tracking-widest uppercase mb-4 flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                      Project Profile
-                    </h3>
-                    <p className="text-sm text-zinc-300 leading-relaxed max-h-32 overflow-y-auto pr-2 custom-scrollbar">
-                      {result.description || "No official description available from CMC for this asset."}
-                    </p>
-                  </div>
-
-                  {/* Vertical Timeline */}
-                  <div className="glass-panel rounded-2xl p-6 flex-1">
-                    <h3 className="text-sm font-bold text-zinc-400 tracking-widest uppercase mb-6 flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                      Deterioration Timeline
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                  {/* VITAL SIGNS MATRIX */}
+                  <div className="lg:col-span-8 glass-panel rounded-2xl p-6">
+                    <h3 className="text-sm font-bold text-zinc-400 tracking-[0.2em] uppercase mb-4 flex items-center gap-2">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                      7-Organ Vital Signs
                     </h3>
                     
-                    <div className="relative pl-4 space-y-8 before:absolute before:inset-0 before:ml-[21px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-zinc-700 before:to-transparent">
-                      {result.timeline.map((item: any, idx: number) => {
-                        const isCritical = item.status === "Critical" || item.status === "Stress" || item.status === "Deterioration";
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {result.vital_scores && Object.entries(result.vital_scores).map(([key, score]: [string, any]) => {
+                        let statusColor = "text-emerald-400";
+                        let bgPulse = "";
+                        if (score > 80) { statusColor = "text-[var(--color-spark-magenta)]"; bgPulse = "animate-pulse bg-[var(--color-spark-magenta)]/10 border-[var(--color-spark-magenta)]/30"; }
+                        else if (score > 60) { statusColor = "text-orange-400"; bgPulse = "bg-orange-400/10 border-orange-400/30"; }
+                        else if (score > 40) { statusColor = "text-amber-400"; bgPulse = "bg-amber-400/10 border-amber-400/30"; }
+                        else { bgPulse = "bg-zinc-900/50 border-zinc-800/50"; }
+
                         return (
-                          <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                            {/* Marker */}
-                            <div className={`flex items-center justify-center w-6 h-6 rounded-full border-4 border-zinc-950 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-md ${isCritical ? 'bg-[var(--color-spark-magenta)] shadow-[0_0_10px_rgba(244,63,94,0.8)]' : 'bg-zinc-500'}`}></div>
-                            {/* Content */}
-                            <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-zinc-900/50 border border-zinc-800 p-4 rounded-xl shadow-lg hover:border-zinc-600 transition-colors">
-                              <div className="flex items-center justify-between mb-1">
-                                <time className="font-sans font-medium text-xs font-medium text-[var(--color-spark-teal)]">{item.day}</time>
-                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${isCritical ? 'bg-fuchsia-950 text-[var(--color-spark-magenta)] border border-fuchsia-900' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>{item.status}</span>
-                              </div>
-                              <p className="text-sm text-zinc-300">{item.event}</p>
+                          <div key={key} className={`border rounded-xl p-4 flex flex-col justify-between ${bgPulse}`}>
+                            <span className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">{key}</span>
+                            <div className="flex items-end justify-between mt-2">
+                               <span className={`text-2xl font-black ${statusColor}`}>{score}</span>
+                               <span className="text-[10px] text-zinc-600 font-bold mb-1">/100</span>
                             </div>
                           </div>
                         )
                       })}
                     </div>
                   </div>
+
+                  {/* STRUCTURAL SIGNALS */}
+                  <div className="lg:col-span-4 flex flex-col gap-4">
+                    <div className="glass-panel rounded-2xl p-6 flex-1">
+                      <h3 className="text-sm font-bold text-zinc-400 tracking-[0.2em] uppercase mb-4 flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Structural Signals
+                      </h3>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center border-b border-zinc-800 pb-3">
+                          <span className="text-xs text-zinc-400 font-bold tracking-wide uppercase">Death Velocity</span>
+                          <span className="text-sm text-cyan-400 font-black">{result.structural_signals?.death_velocity || "N/A"}</span>
+                        </div>
+                        <div className="flex justify-between items-center border-b border-zinc-800 pb-3">
+                          <span className="text-xs text-zinc-400 font-bold tracking-wide uppercase">Liquidity Half-Life</span>
+                          <span className="text-sm text-amber-400 font-black">{result.structural_signals?.liquidity_half_life || "N/A"}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
+                {/* EVIDENCE CHAIN TIMELINE */}
+                <div className="glass-panel rounded-2xl p-6">
+                  <h3 className="text-sm font-bold text-zinc-400 tracking-widest uppercase mb-6 flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Evidence Chain (Failure Propagation)
+                  </h3>
+                  
+                  <div className="relative pl-4 space-y-8 before:absolute before:inset-0 before:ml-[21px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-zinc-700 before:to-transparent">
+                    {result.timeline.map((item: any, idx: number) => {
+                      const isCritical = item.status.includes("Collapse") || item.status.includes("Exodus") || item.status.includes("Drawdown");
+                      return (
+                      <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#09090b] ${isCritical ? 'bg-[var(--color-spark-magenta)]' : 'bg-zinc-700'} shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(0,0,0,0.5)] relative z-10`}>
+                          <span className="text-[10px] font-bold text-white tracking-tighter text-center leading-none">{item.day}</span>
+                        </div>
+                        
+                        <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-zinc-800 bg-zinc-900/50 backdrop-blur-sm shadow-xl transition-transform hover:-translate-y-1 hover:border-zinc-700">
+                          <div className="flex items-center justify-between mb-1">
+                            <h4 className={`font-bold text-sm uppercase tracking-wide ${isCritical ? 'text-[var(--color-spark-magenta)]' : 'text-cyan-400'}`}>{item.status}</h4>
+                          </div>
+                          <p className="text-sm text-zinc-400 font-sans font-medium">{item.event}</p>
+                        </div>
+                      </div>
+                    )})}
+                  </div>
+                </div>
+
               </div>
             )}
 
