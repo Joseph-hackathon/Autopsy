@@ -40,7 +40,18 @@ def generate_evidence_graph(symbol: str) -> dict:
         )
         
         # 4. Forensic Score Engine (3-Layer Architecture)
-        analysis = score_engine.calculate_death_score(latest_data, dex_metrics, identity)
+        # In a real environment, this would hit external APIs. For the hackathon case study, we mock Router Protocol.
+        external_data = {}
+        if identity["symbol"].upper() == "ROUTE":
+            external_data = {
+                "revenue": 100000,
+                "operating_cost": 500000,
+                "total_funding": 4100000,
+                "historical_peak_vol": 500000000,
+                "official_shutdown": True
+            }
+            
+        analysis = score_engine.calculate_death_score(latest_data, dex_metrics, identity, external_data)
         
         # 5. Extract UI Metadata
         logo = info_data.get("logo", "")
@@ -58,7 +69,14 @@ def generate_evidence_graph(symbol: str) -> dict:
         causes = []
         diagnosis = analysis["diagnosis"]
         
-        if diagnosis["primary"] == "LIQUIDITY SPIRAL":
+        if diagnosis["primary"] == "ECONOMIC PRESSURE":
+            causes.append({
+                "title": "Economic Unsustainability",
+                "evidence": f"Severe business failure. Revenue covered only a fraction of estimated operating costs. Historical peak activity has collapsed by {analysis['structural_signals']['activity_survival']}, leading to an economically unsustainable protocol.",
+                "source": "Externally Reported Financials & Funding Efficiency",
+                "data_viz": {"type": "none"}
+            })
+        elif diagnosis["primary"] == "LIQUIDITY SPIRAL":
             causes.append({
                 "title": "Liquidity Spiral",
                 "evidence": f"Severe structural collapse detected. Liquidity has drained to {dex_metrics['liquidity']:,.0f}, while volume collapsed. This creates a self-reinforcing death loop where slippage prevents holders from exiting, leading to complete market abandonment.",

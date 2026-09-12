@@ -286,6 +286,11 @@ export default function Home() {
                        {result.diagnosis?.primary || "UNKNOWN"} 
                        {result.diagnosis?.secondary && <span className="text-zinc-500 ml-2">| SECONDARY: {result.diagnosis.secondary}</span>}
                      </p>
+                     {result.diagnosis?.failure_type && (
+                       <div className="mt-3 inline-flex items-center px-3 py-1 rounded bg-zinc-900 border border-zinc-700 text-xs font-bold text-zinc-300 tracking-wider">
+                         <span className="mr-2 text-fuchsia-500">FAILURE TYPE:</span> {result.diagnosis.failure_type}
+                       </div>
+                     )}
                    </div>
                    <div className="relative z-10 mt-4 md:mt-0 text-right">
                       <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase mb-1">Death Score</p>
@@ -298,7 +303,7 @@ export default function Home() {
                   <div className="lg:col-span-8 glass-panel rounded-2xl p-6">
                     <h3 className="text-sm font-bold text-zinc-400 tracking-[0.2em] uppercase mb-4 flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                      7-Organ Vital Signs
+                      8-Organ Vital Signs (Economics)
                     </h3>
                     
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -339,6 +344,24 @@ export default function Home() {
                           <span className="text-xs text-zinc-400 font-bold tracking-wide uppercase">Liquidity Half-Life</span>
                           <span className="text-sm text-amber-400 font-black">{result.structural_signals?.liquidity_half_life || "N/A"}</span>
                         </div>
+                        {result.structural_signals?.activity_survival && result.structural_signals.activity_survival !== "UNKNOWN" && (
+                          <div className="flex justify-between items-center border-b border-zinc-800 pb-3">
+                            <span className="text-xs text-zinc-400 font-bold tracking-wide uppercase">Activity Survival</span>
+                            <span className="text-sm text-fuchsia-400 font-black">{result.structural_signals.activity_survival}</span>
+                          </div>
+                        )}
+                        {result.structural_signals?.sustainability && result.structural_signals.sustainability !== "UNKNOWN" && (
+                          <div className="flex justify-between items-center border-b border-zinc-800 pb-3">
+                            <span className="text-xs text-zinc-400 font-bold tracking-wide uppercase">Sustainability Ratio</span>
+                            <span className="text-sm text-fuchsia-400 font-black">{result.structural_signals.sustainability}</span>
+                          </div>
+                        )}
+                        {result.structural_signals?.funding_efficiency && result.structural_signals.funding_efficiency !== "UNKNOWN" && (
+                          <div className="flex justify-between items-center border-b border-zinc-800 pb-3">
+                            <span className="text-xs text-zinc-400 font-bold tracking-wide uppercase">Funding Effic.</span>
+                            <span className="text-xs text-zinc-300 font-bold">{result.structural_signals.funding_efficiency}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

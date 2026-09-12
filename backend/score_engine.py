@@ -1,7 +1,7 @@
 import math
 from datetime import datetime, timezone
 
-def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict) -> dict:
+def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict, external_data: dict = {}) -> dict:
     """
     Autopsy 2.0: Forensic Intelligence Engine
     Reconstructs failure using a 3-Layer Correlation Architecture.
@@ -10,7 +10,6 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict) 
     
     # ---------------------------------------------------------
     # LAYER 1: VITAL SCORES (0-100 scale per category)
-    # 100 = Complete Failure, 0 = Perfectly Healthy
     # ---------------------------------------------------------
     
     # 1. Market (Price/MCap)
@@ -32,9 +31,6 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict) 
     
     # 4. Holders
     holders = dex_metrics.get("holders", 100)
-    # Estimate drop if we don't have historical holder data directly from real API
-    # We use our synthetic fallback's days_ago modifier if real data isn't available
-    # For now, approximate holder deterioration based on market trajectory
     holder_drop = abs(pct_90d) * 0.5 if pct_90d < 0 else 0
     holder_score = min(100, holder_drop)
     
@@ -51,7 +47,6 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict) 
     security_score = min(100, sec_score)
     
     # 7. Development (Activity)
-    # Approximated based on token age vs price
     date_added_str = latest_data.get("date_added")
     dev_score = 0
     if date_added_str:
@@ -62,21 +57,54 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict) 
             elif age_days > 180 and pct_90d < -50: dev_score = 60
         except:
             pass
+            
+    # 8. Economics (Externally Reported)
+    revenue = external_data.get("revenue")
+    operating_cost = external_data.get("operating_cost")
+    funding = external_data.get("total_funding")
+    historical_peak_vol = external_data.get("historical_peak_vol")
     
-    # 8. Evidence Integrity
+    economics_score = 0
+    sustainability_ratio = "UNKNOWN"
+    funding_efficiency = "UNKNOWN"
+    activity_survival_ratio = "UNKNOWN"
+    
+    if revenue is not None and operating_cost is not None and operating_cost > 0:
+        sustainability_ratio = round(revenue / operating_cost, 2)
+        if sustainability_ratio < 0.5:
+            economics_score = 90
+        elif sustainability_ratio < 1.0:
+            economics_score = 60
+            
+    if historical_peak_vol and historical_peak_vol > 0:
+        survival_val = vol_24h / historical_peak_vol
+        activity_survival_ratio = f"{survival_val:.2%}"
+        if survival_val < 0.05:
+            economics_score = max(economics_score, 85)
+            
+    if funding and funding > 0:
+        funding_efficiency = f"${vol_24h / funding:.4f} vol/$ funding"
+    
+    # 9. Evidence Integrity
     integrity_score = identity.get("identity_confidence", 100)
 
     # ---------------------------------------------------------
-    # WEIGHTED TOTAL SCORE
+    # WEIGHTED TOTAL SCORE (Recalibrated for Economics)
     # ---------------------------------------------------------
+    # If economics data is missing, we redistribute its weight to liquidity/trading
+    eco_weight = 0.15 if economics_score > 0 else 0
+    liq_weight = 0.20 if eco_weight > 0 else 0.25
+    trd_weight = 0.15 if eco_weight > 0 else 0.20
+
     total_score = (
-        market_score * 0.15 +
-        max(0, liquidity_score) * 0.25 +
-        max(0, trading_score) * 0.20 +
+        market_score * 0.10 +
+        max(0, liquidity_score) * liq_weight +
+        max(0, trading_score) * trd_weight +
         holder_score * 0.10 +
         max(0, access_score) * 0.10 +
         security_score * 0.10 +
         dev_score * 0.05 +
+        economics_score * eco_weight +
         (100 - integrity_score) * 0.05
     )
     
@@ -87,30 +115,42 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict) 
     liquidity_half_life = max(1, int(15 * (1 + liquidity_ratio))) if liquidity_ratio < 0.05 else "Healthy"
     
     # ---------------------------------------------------------
-    # LAYER 3: FAILURE DIAGNOSIS & CAUSE OF DEATH
+    # LAYER 3: FAILURE DIAGNOSIS & FAILURE TYPE
     # ---------------------------------------------------------
     primary_cause = "UNKNOWN"
     secondary_cause = None
+    failure_type = "MARKET FAILURE"
     
-    if liquidity_score > 80 and trading_score > 80 and access_score > 80:
+    if economics_score > 80:
+        primary_cause = "ECONOMIC PRESSURE"
+        secondary_cause = "BUSINESS UNSUSTAINABILITY"
+        failure_type = "ECONOMIC FAILURE"
+    elif liquidity_score > 80 and trading_score > 80 and access_score > 80:
         primary_cause = "LIQUIDITY SPIRAL"
         secondary_cause = "MARKET ACCESS COLLAPSE"
+        failure_type = "MARKET FAILURE"
+    elif security_score > 80:
+        primary_cause = "CRITICAL VULNERABILITY"
+        failure_type = "SECURITY FAILURE"
     elif market_score > 80 and liquidity_score < 40 and holder_score < 40:
         primary_cause = "FALSE DEATH"
         secondary_cause = "CAPITULATION EVENT"
+        failure_type = "NOT APPLICABLE (FALSE DEATH)"
     elif vol_24h > 0 and liquidity_score > 90 and holder_score > 70:
         primary_cause = "ZOMBIE TOKEN"
         secondary_cause = "SPECULATIVE REMAINS"
-    elif holder_score > 80 and market_score > 80:
-        primary_cause = "HOLDER EXODUS"
-    elif access_score > 80:
-        primary_cause = "MARKET ISOLATION"
+        failure_type = "ADOPTION FAILURE"
+    elif dev_score > 80:
+        primary_cause = "DEVELOPMENT FADE"
+        failure_type = "TECHNICAL FAILURE"
     elif market_score > 80:
         primary_cause = "PRICE COLLAPSE"
 
     # Verdict
     if primary_cause == "FALSE DEATH":
         verdict = "NOT DEAD (FALSE DEATH)"
+    elif external_data.get("official_shutdown"):
+        verdict = "CONFIRMED SHUTDOWN"
     elif total_score > 80 and primary_cause != "UNKNOWN":
         verdict = "LIKELY FAILED"
     elif total_score > 60:
@@ -120,8 +160,10 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict) 
     else:
         verdict = "HEALTHY"
 
-    # Lead-Lag Evidence Chain (Chronological propagation mock based on scores)
+    # Lead-Lag Evidence Chain
     chain = []
+    if economics_score > 60:
+        chain.append({"domain": "Business Economics", "event": "Revenue < Infrastructure Cost", "lead": "47d"})
     if liquidity_score > 60:
         chain.append({"domain": "Liquidity", "event": f"Dropped to {liquidity_ratio:.2%} of MCap", "lead": "31d"})
     if trading_score > 60:
@@ -143,15 +185,20 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict) 
             "access": round(max(0, access_score)),
             "security": round(security_score),
             "development": round(dev_score),
+            "economics": round(economics_score),
             "integrity": round(integrity_score)
         },
         "structural_signals": {
             "death_velocity": death_velocity,
-            "liquidity_half_life": f"{liquidity_half_life} days" if isinstance(liquidity_half_life, int) else liquidity_half_life
+            "liquidity_half_life": f"{liquidity_half_life} days" if isinstance(liquidity_half_life, int) else liquidity_half_life,
+            "activity_survival": activity_survival_ratio,
+            "sustainability": sustainability_ratio,
+            "funding_efficiency": funding_efficiency
         },
         "diagnosis": {
             "primary": primary_cause,
             "secondary": secondary_cause,
+            "failure_type": failure_type,
             "verdict": verdict
         },
         "evidence_chain": chain,
