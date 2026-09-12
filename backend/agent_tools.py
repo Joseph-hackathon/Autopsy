@@ -15,15 +15,18 @@ def generate_evidence_graph(symbol: str) -> dict:
             return {"error": f"Failed to identify token {symbol}: {identity['error']}"}
 
         # 2. Fetch Latest Quotes & Info
-        latest_res = CMCClient.get_latest_quotes(identity["slug"])
+        latest_res = CMCClient.get_latest_quotes(identity["id"])
         if "error" in latest_res:
             return {"error": f"Failed to fetch market data: {latest_res['error']}"}
         
         info_res = CMCClient.get_info(identity["slug"])
         
         # Parse basic info
-        latest_data = list(latest_res["data"].values())[0] if isinstance(latest_res["data"], dict) else latest_res["data"][0]
-        info_data = list(info_res["data"].values())[0] if isinstance(info_res["data"], dict) else info_res["data"][0]
+        latest_list = list(latest_res["data"].values())[0] if isinstance(latest_res["data"], dict) else latest_res["data"][0]
+        latest_data = latest_list[0] if isinstance(latest_list, list) else latest_list
+        
+        info_list = list(info_res["data"].values())[0] if isinstance(info_res["data"], dict) else info_res["data"][0]
+        info_data = info_list[0] if isinstance(info_list, list) else info_list
         
         quote = latest_data.get("quote", {}).get("USD", {})
         mcap = quote.get("market_cap", 1) or 1

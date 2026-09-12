@@ -47,6 +47,20 @@ class CMCClient:
         }
 
     @staticmethod
+    def get_info(query: str):
+        url = f"{BASE_URL}/v1/cryptocurrency/info"
+        try:
+            res = requests.get(url, headers=HEADERS, params={"symbol": query.upper()})
+            res.raise_for_status()
+            return res.json()
+        except:
+            slug = query.lower().replace(" ", "-")
+            res = requests.get(url, headers=HEADERS, params={"slug": slug})
+            if res.status_code == 200:
+                return res.json()
+            return {"error": res.text, "status_code": res.status_code}
+
+    @staticmethod
     def resolve_token_identity(query: str):
         """Resolves token identity, detecting migrations (e.g. Router Protocol New)."""
         url = f"{BASE_URL}/v1/cryptocurrency/info"
@@ -85,18 +99,12 @@ class CMCClient:
         }
 
     @staticmethod
-    def get_latest_quotes(query: str):
+    def get_latest_quotes(cmc_id: int):
         url = f"{BASE_URL}/v2/cryptocurrency/quotes/latest"
-        try:
-            res = requests.get(url, headers=HEADERS, params={"symbol": query.upper()})
-            res.raise_for_status()
+        res = requests.get(url, headers=HEADERS, params={"id": cmc_id})
+        if res.status_code == 200:
             return res.json()
-        except:
-            slug = query.lower().replace(" ", "-")
-            res = requests.get(url, headers=HEADERS, params={"slug": slug})
-            if res.status_code == 200:
-                return res.json()
-            return {"error": res.text, "status_code": res.status_code}
+        return {"error": res.text, "status_code": res.status_code}
 
     @staticmethod
     def get_historical_snapshots(cmc_id: int):
