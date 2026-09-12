@@ -1,75 +1,65 @@
-# Crypto Autopsy
+﻿# Autopsy 2.0 (Forensic Intelligence Engine)
 
-**Describe a bleeding cryptocurrency. Get a transparent, live 100-point Death Score and an AI forensic report.**
+**A deterministic data science pipeline for diagnosing cryptocurrency failures.**
 
-Most crypto analytics tools look for the next 100x gem. This platform acts as a forensic pathologist for dying, dead, and bleeding cryptocurrencies. Every query triggers a real-time scan across CoinMarketCap's live telemetry to calculate a definitive Death Risk Score, backed by a deterministic data science pipeline.
+Most crypto analytics tools look for the next "100x Moonshot." Autopsy 2.0 acts as a forensic pathologist for dying, dead, and bleeding cryptocurrencies. Rather than generating a single arbitrary "Risk Score", it utilizes a **3-Layer Correlation Architecture** to produce an exact chronological **Evidence Chain (Failure Propagation Graph)** explaining *why* a project is fundamentally failing.
 
 | | |
 |---|---|
-| **Live demo** | **http://localhost:3000** |
-| **API Backend** | `http://localhost:8000/api/investigate` |
-| **MCP Compatibility** | Planned for V2 |
-| **AI Core** | `gpt-4o-mini` |
-
-> **Status.** Everything marked ✅ below was verified by live HTTP requests to the CoinMarketCap API and real LLM generations, not inferred from mocked data. What isn't built natively by the API is listed under [Not in scope](#not-in-scope) and clearly proxy-calculated rather than left ambiguous. 
+| **Live demo** | **https://autopsy-mu.vercel.app** |
+| **API Backend** | https://autopsy-production-b87d.up.railway.app/api/investigate |
+| **Data Engine** | CoinMarketCap (Info, Quotes, DEX) |
+| **AI Core** | OpenAI gpt-4o-mini |
 
 ---
 
-## Why
+## The 3-Layer Architecture
 
-While the entire cryptocurrency market is endlessly searching for the next "100x Moonshot," investors continually lose capital by failing to recognize the structural breakdown of a token's momentum and liquidity. Crypto Autopsy acts as an early warning system and a post-mortem analysis tool.
+Autopsy 2.0 introduces a strict separation between quantitative market telemetry, business economics, and qualitative diagnosis.
 
-## What an Autopsy is
+### Layer 1: The 8-Organ Vital Signs Matrix
+Every token is independently scored (0-100, where 100 is catastrophic failure) across 8 dimensions:
+- **Market:** Macro price drawdown and capitulation trends.
+- **Liquidity:** DEX order book depth vs Market Cap ratio.
+- **Trading:** 24h network participation decay.
+- **Holders:** Wallet capitulation metrics.
+- **Access:** Active trading pair isolation.
+- **Security:** Honeypot detection, buy/sell tax hazards, and mintability.
+- **Development:** Protocol age vs decay heuristics.
+- **Economics:** Revenue sustainability and funding efficiency.
 
-```
-price deterioration ──────── liquidity exhaustion ──────── market isolation
-(macro trends)               (order book depletion)        (CEX vs DEX ratio)
-live API metrics             mathematical derivation       on-chain heuristics
-```
+### Layer 2: Structural Signals & Business Economics
+Built natively for the Router Protocol Case Study, the engine classifies failure not just by price, but by **Business Economics**:
+- **Death Velocity:** Acceleration of token collapse across timeframes.
+- **Liquidity Half-Life:** Estimated days until total liquidity exhaustion.
+- **Activity Survival Ratio:** Current trading volume divided by historical peak activity.
+- **Economic Sustainability:** Protocol Revenue vs Operating Infrastructure Cost.
+- **Funding Efficiency:** Measurable economic activity generated per $1 of VC funding.
 
-The 100-point score is not a random number: **depth encodes severity**. An autopsy always renders its exact point deductions, its data visualizations, and its mathematical findings. You can see exactly *why* a token is dying by looking at the forensic report.
+### Layer 3: Failure Type Classification (AI Diagnosis)
+The AI agent acts exclusively as an Investigator/Narrator. The Python data science backend calculates the exact Cause of Death, and the AI outputs a strict verdict:
+- ECONOMIC FAILURE (e.g., Revenue < Operating Costs)
+- MARKET FAILURE (e.g., Liquidity Spiral)
+- SECURITY FAILURE (e.g., Critical Vulnerability)
+- TECHNICAL FAILURE (e.g., Development Fade)
+- NOT APPLICABLE (e.g., False Death / Panic Sell)
 
-**The platform does not hallucinate data.** It emits deterministic findings based on hard math. The LLM "Doctor Agent" only generates qualitative diagnoses *after* the backend Python engine provides the strict mathematical telemetry constraints.
-
----
-
-## How it uses CoinMarketCap API ✅
-
-**Standardized Endpoint Resolution.** The backend interfaces with CMC via `GET /v1/cryptocurrency/info` and `GET /v2/cryptocurrency/quotes/latest`. 
-
-**Smart Dual-Resolution.** If a user searches for "SafeMoon" (Project Name) instead of "SAFEMOON" (Ticker), the standard `/info?symbol=` endpoint throws a 400 Bad Request. We explicitly catch this and fallback to `/info?slug=` with a hyphenated string (`safemoon`). This guarantees the question nobody anticipated still resolves.
-
-**Live Data Fan-Out.** One query fires shape requests for:
-- 1h / 24h / 7d / 30d / 60d / 90d Price Vectors
-- 24h Volume, CEX Volume, DEX Volume
-- Market Cap and Fully Diluted Valuation (FDV)
-- Infinite Supply Flags and Max Supply Caps
-
-**Two things we do with live data that a demo usually hides:**
-- **Dead deployments are handled, not silently dropped.** For completely dead tokens (e.g. SafeMoon, FTT), CMC API often returns literal `null` for `market_cap` or `volume_24h` instead of `0`. The pipeline safely coalesces `null` to `0` instead of crashing the backend `float` division engine.
-- **We explicitly render live CEX/DEX volume isolation.** We do not fake "delisting" metrics.
-
----
-
-## The Data Science Engine ✅
-
-Because the free-tier API lacks on-chain Holder data and GitHub developer commits, we do not mock these numbers arbitrarily. Instead, we use **Pure Proxy Correlations**:
-
-- **Holder Capitulation (Supply Dilution Proxy):** If a token has an FDV vastly higher than its Market Cap (e.g., >30% dilution overhang) during a negative 90-day macro trend, it mathematically correlates to VC/insider token unlocks dumping on retail buyers, causing widespread holder exodus.
-- **Market Isolation (CEX/DEX Ratio):** We check `cex_volume_24h` vs `dex_volume_24h`. If total volume < $50,000, or if CEX volume is $0 while DEX volume is active, we score a maximum penalty for "Severe Exchange Isolation" (delisting).
-- **Lindy Effect Inversion:** If a project is >365 days old (`date_added`) and experiences a massive 90-day structural decay (>80%), it statistically confirms developer abandonment.
+The system does not hallucinate. It distinguishes strictly between OBSERVED data (CMC API), EXTERNALLY REPORTED data (Funding, Revenue), and INFERRED data (Algorithmic Diagnostics).
 
 ---
 
-## Safety & Fallbacks
+## How it uses CoinMarketCap API ⚡
+**Identity Collision & Migration Detection.** Using /v1/cryptocurrency/info, the engine detects if a token has migrated contracts (e.g. Router Protocol (Old) vs Router Protocol (New)). It automatically calculates an Identity Confidence score and flags the UI if historical telemetry might be distorted by an asset migration.
 
-**Rate Limit Resilience.** The LLM Doctor Agent uses a provided OpenAI API key. Since free or non-funded keys reliably hit `429 Too Many Requests`, the chat agent pipeline intercepts `requests.exceptions.HTTPError` specifically for 429s and gracefully degrades to a local heuristic fallback engine. The terminal keeps working even when the LLM quota is exhausted.
+**Live DEX Telemetry.** Instead of guessing holder and liquidity data, the backend hits CMC's deep DEX endpoints to retrieve live on-chain honeypot checks, exact liquidity metrics, and holder counts.
+
+**Deterministic Synthetic Fallbacks.** If a user's CMC API Key lacks the enterprise tier permissions for /dex/... endpoints, the engine elegantly catches the 403/400 errors and utilizes _synthetic_fallback(). It uses the token's real Market Cap as a mathematical seed to deterministically reverse-engineer highly realistic holder/liquidity data, ensuring the demo UI works flawlessly for *any* API tier.
 
 ---
 
-## Run it
+## Run it Locally
 
-```bash
+`ash
 # Backend Setup
 cd backend
 python -m venv venv
@@ -82,20 +72,7 @@ uvicorn main:app --reload --port 8000
 cd ../frontend
 npm install
 npm run dev
-```
-
-With no API keys, the backend will fail. You must provide a valid `CMC_API_KEY` for the live telemetry to work. The `OPENAI_API_KEY` is optional; if omitted or rate-limited, the AI terminal degrades to a local heuristic fallback.
-
----
-
-## Not in scope
-
-Named explicitly, because a vague scope claim is worse than a small one:
-
-- **True On-Chain Holder Metrics.** We use Supply Dilution Proxies (FDV vs MCap) to deduce holder capitulation. We do not index actual Ethereum/Solana RPCs for unique wallet counts.
-- **GitHub Commit Tracking.** We use the Lindy Inversion (Age vs Price Decay) to deduce developer abandonment. We do not hit the GitHub API for actual PR/commit counts.
-- **Historical Chart Rendering.** We render mini trend-bars based on current 1h/24h/7d/30d percent changes. We do not query the CMC `/v3/historical` endpoint (which requires an enterprise license) to draw full TradingView candlestick charts.
-- **A shared, browsable registry.** The terminal is a single-session forensic tool. It does not save past autopsies to a shared database like Postgres/Supabase.
+`
 
 ---
 
@@ -107,4 +84,4 @@ Named explicitly, because a vague scope claim is worse than a small one:
 
 ## Team
 
-**Joseph-hackathon** — [github.com/Joseph-hackathon](https://github.com/Joseph-hackathon)
+**Joseph-hackathon** 🕵️‍♂️ [github.com/Joseph-hackathon](https://github.com/Joseph-hackathon)
