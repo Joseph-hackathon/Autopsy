@@ -274,7 +274,7 @@ export default function Home() {
                   
                   <div className="relative flex items-center justify-center w-64 h-64 mb-6 z-10">
                     {/* Background Track */}
-                    <svg className="w-full h-full transform -rotate-90 drop-shadow-2xl" viewBox="0 0 36 36">
+                    <svg className="w-full h-full transform -rotate-90 drop-shadow-2xl overflow-visible" viewBox="0 0 36 36">
                       <path className="text-zinc-800/80" strokeWidth="2" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" strokeLinecap="round" />
                       {/* Active Track with glow */}
                       <path 
