@@ -21,7 +21,8 @@ export default function Home() {
     setActiveTab("overview");
 
     try {
-      const res = await fetch("http://localhost:8000/api/investigate", {
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${API_BASE_URL}/api/investigate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ symbol: query }),
@@ -49,7 +50,8 @@ export default function Home() {
     form.chat.value = "";
 
     try {
-      const res = await fetch("http://localhost:8000/api/chat", {
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${API_BASE_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input, token_context: result?.token }),
