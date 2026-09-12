@@ -6,19 +6,19 @@ def resolve_token(query: str):
     """Get CMC ID and metadata from token symbol."""
     try:
         data = CMCClient.get_info(query)
-        if "data" in data and query in data["data"]:
-            item = data["data"][query]
+        if "data" in data and len(data["data"]) > 0:
+            item = list(data["data"].values())[0]
             return item[0] if isinstance(item, list) else item
         return {"error": "Token not found"}
     except Exception as e:
         return {"error": str(e)}
 
-def fetch_market_data(symbol: str):
+def fetch_market_data(query: str):
     """Get live market metrics."""
     try:
-        data = CMCClient.get_latest_quotes(symbol)
-        if "data" in data and symbol in data["data"]:
-            item = data["data"][symbol]
+        data = CMCClient.get_latest_quotes(query)
+        if "data" in data and len(data["data"]) > 0:
+            item = list(data["data"].values())[0]
             return item[0] if isinstance(item, list) else item
         return {"error": "Market data not found"}
     except Exception as e:
@@ -52,15 +52,16 @@ def generate_evidence_graph(symbol: str):
     score_breakdown = calculate_death_score(market_data)
     
     quote = market_data.get("quote", {}).get("USD", {})
-    pct_1h = quote.get("percent_change_1h", 0)
-    pct_24h = quote.get("percent_change_24h", 0)
-    pct_7d = quote.get("percent_change_7d", 0)
-    pct_30d = quote.get("percent_change_30d", 0)
-    pct_60d = quote.get("percent_change_60d", 0)
-    pct_90d = quote.get("percent_change_90d", 0)
-    vol_24h = quote.get("volume_24h", 0)
-    mcap = quote.get("market_cap", 0)
-    fdv = quote.get("fully_diluted_market_cap", 0)
+    pct_1h = quote.get("percent_change_1h") or 0
+    pct_24h = quote.get("percent_change_24h") or 0
+    pct_7d = quote.get("percent_change_7d") or 0
+    pct_30d = quote.get("percent_change_30d") or 0
+    pct_60d = quote.get("percent_change_60d") or 0
+    pct_90d = quote.get("percent_change_90d") or 0
+    vol_24h = quote.get("volume_24h") or 0
+    mcap = quote.get("market_cap") or 0
+    fdv = quote.get("fully_diluted_market_cap") or 0
+    price = quote.get("price") or 0
     
     # Calculate inflation risk
     inflation_risk = False
@@ -184,7 +185,7 @@ def generate_evidence_graph(symbol: str):
 
     # 5. Build Evidence Chain
     evidence = {
-        "token": symbol,
+        "token": info.get("symbol", symbol),
         "name": info.get("name"),
         "category": category,
         "logo": logo,

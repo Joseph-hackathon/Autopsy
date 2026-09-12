@@ -14,20 +14,32 @@ HEADERS = {
 
 class CMCClient:
     @staticmethod
-    def get_info(symbol: str):
+    def get_info(query: str):
         url = f"{BASE_URL}/v1/cryptocurrency/info"
-        params = {"symbol": symbol}
-        response = requests.get(url, headers=HEADERS, params=params)
-        response.raise_for_status()
-        return response.json()
+        # Try as symbol first
+        try:
+            response = requests.get(url, headers=HEADERS, params={"symbol": query.upper()})
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError:
+            # Fallback to slug (e.g. "SafeMoon" -> "safemoon", "FTX Token" -> "ftx-token")
+            slug = query.lower().replace(" ", "-")
+            response = requests.get(url, headers=HEADERS, params={"slug": slug})
+            response.raise_for_status()
+            return response.json()
 
     @staticmethod
-    def get_latest_quotes(symbol: str):
+    def get_latest_quotes(query: str):
         url = f"{BASE_URL}/v2/cryptocurrency/quotes/latest"
-        params = {"symbol": symbol}
-        response = requests.get(url, headers=HEADERS, params=params)
-        response.raise_for_status()
-        return response.json()
+        try:
+            response = requests.get(url, headers=HEADERS, params={"symbol": query.upper()})
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError:
+            slug = query.lower().replace(" ", "-")
+            response = requests.get(url, headers=HEADERS, params={"slug": slug})
+            response.raise_for_status()
+            return response.json()
 
     @staticmethod
     def get_historical_quotes(cmc_id: int, count: int = 90):

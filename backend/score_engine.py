@@ -11,7 +11,7 @@ def calculate_death_score(latest_data: dict, historical_data: dict = None, categ
         
         # 1. Short-term Price Collapse (25%)
         # Based on 7-day change
-        pct_7d = quote.get("percent_change_7d", 0)
+        pct_7d = quote.get("percent_change_7d") or 0
         # If drop is more than 50%, max score. If positive, 0 score.
         short_term_score = 0
         if pct_7d < 0:
@@ -21,7 +21,7 @@ def calculate_death_score(latest_data: dict, historical_data: dict = None, categ
 
         # 2. Long-term Deterioration (25%)
         # Based on 30-day or 60-day change
-        pct_30d = quote.get("percent_change_30d", 0)
+        pct_30d = quote.get("percent_change_30d") or 0
         long_term_score = 0
         if pct_30d < 0:
             long_term_score = min(25, abs(pct_30d) / 70.0 * 25) # 70% drop is max penalty
@@ -31,8 +31,8 @@ def calculate_death_score(latest_data: dict, historical_data: dict = None, categ
         # 3. Liquidity/Volume Health (25%)
         # Measured by volume_24h to market_cap ratio. 
         # A healthy token trades at least 5-10% of its mcap daily.
-        volume_24h = quote.get("volume_24h", 0)
-        mcap = quote.get("market_cap", 1) # prevent div by zero
+        volume_24h = quote.get("volume_24h") or 0
+        mcap = quote.get("market_cap") or 1 # prevent div by zero
         if mcap == 0: mcap = 1
         vol_mcap_ratio = volume_24h / mcap
         
@@ -47,7 +47,7 @@ def calculate_death_score(latest_data: dict, historical_data: dict = None, categ
 
         # 4. Immediate Dumping / Volatility (25%)
         # Based on 24h change
-        pct_24h = quote.get("percent_change_24h", 0)
+        pct_24h = quote.get("percent_change_24h") or 0
         dump_score = 0
         if pct_24h < -5:
             # Drop more than 5% in 24h starts getting penalized, max at 20%
