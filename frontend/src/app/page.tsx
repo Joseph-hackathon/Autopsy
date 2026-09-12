@@ -3,6 +3,13 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
+const HIGH_RISK_PROJECTS = [
+  { symbol: "ROUTE", name: "Router Protocol", score: 63, reason: "ECONOMIC FAILURE" },
+  { symbol: "SAFEMOON", name: "SafeMoon", score: 99, reason: "LIQUIDITY SPIRAL" },
+  { symbol: "FTT", name: "FTX Token", score: 100, reason: "HOLDER EXODUS" },
+  { symbol: "LUNA", name: "Terra", score: 100, reason: "MARKET COLLAPSE" }
+];
+
 export default function Home() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
@@ -11,9 +18,9 @@ export default function Home() {
   const [chatHistory, setChatHistory] = useState<{role: string, text: string}[]>([]);
   const [activeTab, setActiveTab] = useState("overview");
 
-  const handleInvestigate = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!query) return;
+  const performInvestigation = async (symbolToSearch: string) => {
+    if (!symbolToSearch) return;
+    setQuery(symbolToSearch);
     setLoading(true);
     setError("");
     setResult(null);
@@ -25,7 +32,7 @@ export default function Home() {
       const res = await fetch(`${API_BASE_URL}/api/investigate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ symbol: query }),
+        body: JSON.stringify({ symbol: symbolToSearch }),
       });
 
       const data = await res.json();
@@ -38,6 +45,11 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleInvestigate = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    performInvestigation(query);
   };
 
   const handleChat = async (e: React.FormEvent) => {
@@ -100,7 +112,7 @@ export default function Home() {
       {/* HEADER */}
       <header className=" bg-transparent p-4 sticky top-0 z-50 backdrop-blur-xl">
         <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 cursor-pointer hover:opacity-80 transition-opacity" onClick={() => { setResult(null); setError(""); setQuery(""); }}>
             <img src="/autopsy_white.png" alt="Crypto Autopsy Logo" className="h-8 md:h-10 w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" />
           </div>
           
@@ -126,6 +138,59 @@ export default function Home() {
 
       <main className="max-w-[1400px] mx-auto p-4 md:p-6 mt-2 relative z-10">
         
+        {/* Empty State: Ranking Board */}
+        {!result && !loading && !error && (
+          <div className="w-full max-w-4xl mx-auto mt-12 mb-24 animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div className="text-center mb-10">
+              <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 to-zinc-500 tracking-tight">
+                AUTOPSY <span className="text-[var(--color-spark-magenta)]">2.0</span>
+              </h1>
+              <p className="text-zinc-400 mt-4 max-w-xl mx-auto text-sm">
+                A deterministic data science pipeline for diagnosing cryptocurrency failures. Search a ticker or slug to generate a forensic report.
+              </p>
+            </div>
+            
+            <div className="glass-panel rounded-2xl p-6 md:p-8 border border-red-900/30 shadow-[0_0_50px_rgba(225,29,72,0.05)]">
+              <div className="flex items-center gap-3 mb-6 border-b border-zinc-800 pb-4">
+                <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></div>
+                <h2 className="text-lg font-bold text-zinc-300 tracking-widest uppercase">Death Row (High Risk)</h2>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {HIGH_RISK_PROJECTS.map((proj, idx) => (
+                  <div 
+                    key={idx}
+                    onClick={() => performInvestigation(proj.symbol)}
+                    className="group relative bg-zinc-950/50 hover:bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl p-4 cursor-pointer transition-all duration-300 flex items-center justify-between overflow-hidden"
+                  >
+                    {/* Hover Glow */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/0 to-rose-500/5 group-hover:to-rose-500/10 transition-colors pointer-events-none"></div>
+                    
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg font-black text-zinc-100">{proj.symbol}</span>
+                        <span className="text-xs text-zinc-500">{proj.name}</span>
+                      </div>
+                      <div className="mt-1 flex items-center gap-2">
+                        <span className="text-[10px] font-bold tracking-wider text-rose-400 uppercase bg-rose-950/50 px-2 py-0.5 rounded border border-rose-900/50">
+                          {proj.reason}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="text-right flex flex-col items-end">
+                      <span className="text-xs text-zinc-500 font-bold tracking-widest uppercase mb-1">Score</span>
+                      <span className="text-2xl font-black text-[var(--color-spark-magenta)] group-hover:scale-110 transition-transform origin-right">
+                        {proj.score}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Loading Overlay */}
         {loading && (
           <div className="absolute inset-0 z-40 bg-transparent backdrop-blur-md flex flex-col items-center justify-center min-h-[600px] border border-teal-900/30 rounded-2xl shadow-[0_0_50px_rgba(6,182,212,0.1)]">
