@@ -1,4 +1,4 @@
-﻿# Autopsy 2.0 (Forensic Intelligence Engine)
+# Autopsy 2.0 (Forensic Intelligence Engine)
 
 **A deterministic data science pipeline for diagnosing cryptocurrency failures.**
 
@@ -10,6 +10,15 @@ Most crypto analytics tools look for the next "100x Moonshot." Autopsy 2.0 acts 
 | **API Backend** | https://autopsy-production-b87d.up.railway.app/api/investigate |
 | **Data Engine** | CoinMarketCap (Info, Quotes, DEX) |
 | **AI Core** | OpenAI gpt-4o-mini |
+
+---
+
+## ?? The Interface (New in 2.0)
+
+Autopsy 2.0 has been completely redesigned into a professional-grade forensic analysis tool:
+
+- **Token Terminal Explorer:** A dense, paginated, report-like ranking board sorting tokens by Risk Score, Velocity, and Survival Ratios.
+- **MetaSleuth-Style Investigation Dashboard:** When a token is investigated, the system renders a highly interactive, animated **Radial Node Graph**. The central Token Root is linked via dynamic SVG paths to 8 vital organ nodes (Market, Liquidity, Economics, Security, etc.). A sleek floating sidebar modal presents real-time event alerts and AI synthesis.
 
 ---
 
@@ -34,7 +43,7 @@ Built natively for the Router Protocol Case Study, the engine classifies failure
 - **Liquidity Half-Life:** Estimated days until total liquidity exhaustion.
 - **Activity Survival Ratio:** Current trading volume divided by historical peak activity.
 - **Economic Sustainability:** Protocol Revenue vs Operating Infrastructure Cost.
-- **Funding Efficiency:** Measurable economic activity generated per $1 of VC funding.
+- **Funding Efficiency:** Measurable economic activity generated per  of VC funding.
 
 ### Layer 3: Failure Type Classification (AI Diagnosis)
 The AI agent acts exclusively as an Investigator/Narrator. The Python data science backend calculates the exact Cause of Death, and the AI outputs a strict verdict:
@@ -48,7 +57,7 @@ The system does not hallucinate. It distinguishes strictly between OBSERVED data
 
 ---
 
-## How it uses CoinMarketCap API ⚡
+## How it uses CoinMarketCap API ?
 **Identity Collision & Migration Detection.** Using /v1/cryptocurrency/info, the engine detects if a token has migrated contracts (e.g. Router Protocol (Old) vs Router Protocol (New)). It automatically calculates an Identity Confidence score and flags the UI if historical telemetry might be distorted by an asset migration.
 
 **Live DEX Telemetry.** Instead of guessing holder and liquidity data, the backend hits CMC's deep DEX endpoints to retrieve live on-chain honeypot checks, exact liquidity metrics, and holder counts.
@@ -59,7 +68,7 @@ The system does not hallucinate. It distinguishes strictly between OBSERVED data
 
 ## Run it Locally
 
-`ash
+\\\ash
 # Backend Setup
 cd backend
 python -m venv venv
@@ -72,7 +81,7 @@ uvicorn main:app --reload --port 8000
 cd ../frontend
 npm install
 npm run dev
-`
+\\\
 
 ---
 
@@ -84,4 +93,4 @@ npm run dev
 
 ## Team
 
-**Joseph-hackathon** 🕵️‍♂️ [github.com/Joseph-hackathon](https://github.com/Joseph-hackathon)
+**Joseph-hackathon** - [github.com/Joseph-hackathon](https://github.com/Joseph-hackathon)
