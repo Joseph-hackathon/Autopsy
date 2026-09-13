@@ -353,7 +353,7 @@ export default function Home() {
                 <div className="flex items-center gap-6 lg:w-1/3">
                   <div className="w-20 h-20 rounded-2xl glass-pill flex items-center justify-center p-2 shadow-xl relative">
                     {result.logo ? (
-                      <img src={result.logo} alt={result.name} className="w-full h-full object-contain drop-shadow-lg" />
+                      <img src={result.logo} alt={result.name} className="w-full h-full object-contain drop-shadow-lg rounded-full" />
                     ) : (
                       <span className="text-2xl font-bold">{result.token.charAt(0)}</span>
                     )}
