@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 
 const HIGH_RISK_PROJECTS = [
-  { symbol: "ROUTE", name: "Router Protocol", score: 63, reason: "ECONOMIC FAILURE" },
-  { symbol: "SAFEMOON", name: "SafeMoon", score: 99, reason: "LIQUIDITY SPIRAL" },
-  { symbol: "FTT", name: "FTX Token", score: 100, reason: "HOLDER EXODUS" },
-  { symbol: "LUNA", name: "Terra", score: 100, reason: "MARKET COLLAPSE" }
+  { symbol: "ROUTE", name: "Router Protocol", score: 63, reason: "ECONOMIC FAILURE", velocity: "Accelerating", halfLife: "15 days", sustainability: "0.20", trend: [-10, -20, -50, -65, -80] },
+  { symbol: "SAFEMOON", name: "SafeMoon", score: 99, reason: "LIQUIDITY SPIRAL", velocity: "Terminal", halfLife: "0 days", sustainability: "0.00", trend: [-50, -70, -90, -99, -99] },
+  { symbol: "FTT", name: "FTX Token", score: 100, reason: "HOLDER EXODUS", velocity: "Terminal", halfLife: "Dead", sustainability: "0.00", trend: [-80, -95, -99, -100, -100] },
+  { symbol: "LUNA", name: "Terra", score: 100, reason: "MARKET COLLAPSE", velocity: "Terminal", halfLife: "Dead", sustainability: "0.00", trend: [-40, -90, -100, -100, -100] },
+  { symbol: "PEPE", name: "Pepe", score: 15, reason: "HEALTHY", velocity: "Decelerating", halfLife: "Healthy", sustainability: "UNKNOWN", trend: [10, 5, -5, -2, 10] },
+  { symbol: "WLD", name: "Worldcoin", score: 45, reason: "UNDER STRESS", velocity: "Accelerating", halfLife: "120 days", sustainability: "0.85", trend: [-5, -15, -25, -20, -35] },
 ];
 
 export default function Home() {
@@ -138,54 +140,104 @@ export default function Home() {
 
       <main className="max-w-[1400px] mx-auto p-4 md:p-6 mt-2 relative z-10">
         
-        {/* Empty State: Ranking Board */}
+        {/* Empty State: Explorer Table */}
         {!result && !loading && !error && (
-          <div className="w-full max-w-4xl mx-auto mt-12 mb-24 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <div className="text-center mb-10">
-              <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 to-zinc-500 tracking-tight">
-                AUTOPSY <span className="text-[var(--color-spark-magenta)]">2.0</span>
-              </h1>
-              <p className="text-zinc-400 mt-4 max-w-xl mx-auto text-sm">
-                A deterministic data science pipeline for diagnosing cryptocurrency failures. Search a ticker or slug to generate a forensic report.
-              </p>
-            </div>
-            
-            <div className="glass-panel rounded-2xl p-6 md:p-8 border border-red-900/30 shadow-[0_0_50px_rgba(225,29,72,0.05)]">
-              <div className="flex items-center gap-3 mb-6 border-b border-zinc-800 pb-4">
-                <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></div>
-                <h2 className="text-lg font-bold text-zinc-300 tracking-widest uppercase">Death Row (High Risk)</h2>
+          <div className="w-full mt-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+              <div>
+                <h1 className="text-2xl font-black text-white flex items-center gap-2">
+                  <svg className="w-6 h-6 text-[var(--color-spark-magenta)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                  AUTOPSY EXPLORER
+                </h1>
+                <p className="text-zinc-500 text-sm mt-1">Live failure metrics and structural decay telemetry for tracked assets.</p>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {HIGH_RISK_PROJECTS.map((proj, idx) => (
-                  <div 
-                    key={idx}
-                    onClick={() => performInvestigation(proj.symbol)}
-                    className="group relative bg-zinc-950/50 hover:bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl p-4 cursor-pointer transition-all duration-300 flex items-center justify-between overflow-hidden"
-                  >
-                    {/* Hover Glow */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/0 to-rose-500/5 group-hover:to-rose-500/10 transition-colors pointer-events-none"></div>
-                    
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg font-black text-zinc-100">{proj.symbol}</span>
-                        <span className="text-xs text-zinc-500">{proj.name}</span>
-                      </div>
-                      <div className="mt-1 flex items-center gap-2">
-                        <span className="text-[10px] font-bold tracking-wider text-rose-400 uppercase bg-rose-950/50 px-2 py-0.5 rounded border border-rose-900/50">
-                          {proj.reason}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <div className="text-right flex flex-col items-end">
-                      <span className="text-xs text-zinc-500 font-bold tracking-widest uppercase mb-1">Score</span>
-                      <span className="text-2xl font-black text-[var(--color-spark-magenta)] group-hover:scale-110 transition-transform origin-right">
-                        {proj.score}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+              <div className="flex gap-2">
+                <button className="px-4 py-2 text-xs font-bold text-zinc-400 bg-zinc-900/50 border border-zinc-800 rounded hover:bg-zinc-800 transition-colors">Filter: High Risk</button>
+                <button className="px-4 py-2 text-xs font-bold text-zinc-400 bg-zinc-900/50 border border-zinc-800 rounded hover:bg-zinc-800 transition-colors">Sector</button>
+              </div>
+            </div>
+
+            <div className="w-full border border-zinc-800/80 rounded-xl overflow-hidden bg-zinc-950/50 shadow-2xl backdrop-blur-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm whitespace-nowrap">
+                  <thead>
+                    <tr className="border-b border-zinc-800 bg-zinc-900/40 text-xs text-zinc-500 font-bold uppercase tracking-wider">
+                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Asset</th>
+                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Risk Score</th>
+                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Failure Verdict</th>
+                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Death Velocity</th>
+                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Liquidity Half-Life</th>
+                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Economic Sust.</th>
+                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Trend (90d)</th>
+                      <th className="px-6 py-4 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-800/50">
+                    {HIGH_RISK_PROJECTS.map((proj, idx) => (
+                      <tr key={idx} className="hover:bg-zinc-900/60 transition-colors group cursor-pointer" onClick={() => performInvestigation(proj.symbol)}>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center font-black text-xs border border-zinc-700/50 text-zinc-300">
+                              {proj.symbol.charAt(0)}
+                            </div>
+                            <div>
+                              <div className="font-bold text-zinc-100">{proj.name}</div>
+                              <div className="text-xs text-zinc-500">{proj.symbol}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <span className={`text-lg font-black ${proj.score > 80 ? 'text-[var(--color-spark-magenta)]' : proj.score > 40 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                              {proj.score}
+                            </span>
+                            <span className="text-zinc-600 text-xs">/100</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded border ${proj.score > 80 ? 'bg-rose-950/30 text-rose-400 border-rose-900/50' : proj.score > 40 ? 'bg-amber-950/30 text-amber-400 border-amber-900/50' : 'bg-emerald-950/30 text-emerald-400 border-emerald-900/50'}`}>
+                            {proj.reason}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`text-xs font-medium ${proj.velocity === 'Accelerating' || proj.velocity === 'Terminal' ? 'text-rose-400' : proj.velocity === 'Decelerating' ? 'text-emerald-400' : 'text-zinc-400'}`}>
+                            {proj.velocity}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`text-xs font-medium ${proj.halfLife === 'Dead' || proj.halfLife === '0 days' ? 'text-zinc-600' : proj.halfLife === 'Healthy' ? 'text-emerald-400' : 'text-amber-400'}`}>
+                            {proj.halfLife}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-xs text-zinc-400 font-mono">{proj.sustainability}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-end gap-0.5 h-6">
+                            {proj.trend.map((val, i) => (
+                              <div 
+                                key={i} 
+                                className={`w-1.5 rounded-t-sm ${val > 0 ? 'bg-emerald-500' : 'bg-rose-500'}`}
+                                style={{ height: `${Math.max(10, Math.min(100, Math.abs(val)))}%`, opacity: 0.5 + (i * 0.1) }}
+                              ></div>
+                            ))}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <button 
+                            className="px-3 py-1.5 bg-transparent border border-zinc-700 text-zinc-300 text-xs font-bold rounded group-hover:bg-zinc-700 transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              performInvestigation(proj.symbol);
+                            }}
+                          >
+                            Scan
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
