@@ -3,37 +3,37 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
-const HIGH_RISK_PROJECTS = [
-  { 
-    symbol: "ROUTE", name: "Router Protocol", score: 63, reason: "ECONOMIC FAILURE", velocity: "Accelerating", halfLife: "15 days", sustainability: "0.20", trend: [-10, -20, -50, -65, -80], 
-    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/8782.png", drawdown: "-87.3%",
-    summary: "Revenue fails to cover infrastructure costs, causing a liquidity spiral and heavy reliance on inflationary emissions."
-  },
-  { 
-    symbol: "SAFEMOON", name: "SafeMoon", score: 99, reason: "LIQUIDITY SPIRAL", velocity: "Terminal", halfLife: "0 days", sustainability: "0.00", trend: [-50, -70, -90, -99, -99],
-    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/8757.png", drawdown: "-99.9%",
-    summary: "Complete depletion of liquidity pool. Toxic tokenomics led to an irreversible death spiral and zero market confidence."
-  },
-  { 
-    symbol: "FTT", name: "FTX Token", score: 100, reason: "HOLDER EXODUS", velocity: "Terminal", halfLife: "Dead", sustainability: "0.00", trend: [-80, -95, -99, -100, -100],
-    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/4195.png", drawdown: "-99.5%",
-    summary: "Catastrophic loss of utility and backing. Collapsed due to centralized fraud and immediate holder capitulation."
-  },
-  { 
-    symbol: "LUNA", name: "Terra", score: 100, reason: "MARKET COLLAPSE", velocity: "Terminal", halfLife: "Dead", sustainability: "0.00", trend: [-40, -90, -100, -100, -100],
-    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/4172.png", drawdown: "-99.9%",
-    summary: "Algorithmic depeg caused hyper-inflationary minting, wiping out $40B in market cap within a matter of days."
-  },
-  { 
-    symbol: "PEPE", name: "Pepe", score: 15, reason: "HEALTHY", velocity: "Decelerating", halfLife: "Healthy", sustainability: "UNKNOWN", trend: [10, 5, -5, -2, 10],
-    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/24478.png", drawdown: "-45.2%",
-    summary: "Pure memetic asset with zero infrastructure cost. Sustained by high trading volume and strong community retention."
-  },
-  { 
-    symbol: "WLD", name: "Worldcoin", score: 45, reason: "UNDER STRESS", velocity: "Accelerating", halfLife: "120 days", sustainability: "0.85", trend: [-5, -15, -25, -20, -35],
-    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/26997.png", drawdown: "-72.1%",
-    summary: "Aggressive VC unlock schedule applying constant sell pressure despite high foundational backing and global rollout."
-  },
+const EXPLORER_PROJECTS = [
+  { symbol: "ROUTE", name: "Router Protocol", score: 63, reason: "ECONOMIC FAILURE", velocity: "Accelerating", halfLife: "15 days", sustainability: "0.20", trend: [-10, -20, -50, -65, -80], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/8782.png", drawdown: "-87.3%", summary: "Revenue fails to cover infrastructure costs, causing a liquidity spiral and heavy reliance on inflationary emissions." },
+  { symbol: "SAFEMOON", name: "SafeMoon", score: 99, reason: "LIQUIDITY SPIRAL", velocity: "Terminal", halfLife: "0 days", sustainability: "0.00", trend: [-50, -70, -90, -99, -99], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/8757.png", drawdown: "-99.9%", summary: "Complete depletion of liquidity pool. Toxic tokenomics led to an irreversible death spiral and zero market confidence." },
+  { symbol: "FTT", name: "FTX Token", score: 100, reason: "HOLDER EXODUS", velocity: "Terminal", halfLife: "Dead", sustainability: "0.00", trend: [-80, -95, -99, -100, -100], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/4195.png", drawdown: "-99.5%", summary: "Catastrophic loss of utility and backing. Collapsed due to centralized fraud and immediate holder capitulation." },
+  { symbol: "LUNA", name: "Terra", score: 100, reason: "MARKET COLLAPSE", velocity: "Terminal", halfLife: "Dead", sustainability: "0.00", trend: [-40, -90, -100, -100, -100], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/4172.png", drawdown: "-99.9%", summary: "Algorithmic depeg caused hyper-inflationary minting, wiping out $40B in market cap within a matter of days." },
+  { symbol: "CEL", name: "Celsius", score: 100, reason: "BANKRUPT", velocity: "Terminal", halfLife: "Dead", sustainability: "0.00", trend: [-90, -95, -99, -100, -100], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/2700.png", drawdown: "-99.8%", summary: "Platform insolvency and massive fraud. Token frozen with zero underlying utility or economic future." },
+  { symbol: "VGX", name: "Voyager", score: 100, reason: "BANKRUPT", velocity: "Terminal", halfLife: "Dead", sustainability: "0.00", trend: [-85, -90, -95, -99, -100], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1817.png", drawdown: "-99.5%", summary: "Centralized lending collapse. Total loss of customer funds eradicated any fundamental value in the platform token." },
+  { symbol: "USTC", name: "TerraClassicUSD", score: 100, reason: "DEPEGGED", velocity: "Terminal", halfLife: "Dead", sustainability: "0.00", trend: [-95, -98, -99, -99, -99], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/7129.png", drawdown: "-97.5%", summary: "Permanent algorithmic depeg. Confidence destroyed with no mathematical path to repegging to $1." },
+  { symbol: "EOS", name: "EOS", score: 85, reason: "ABANDONED", velocity: "Terminal", halfLife: "30 days", sustainability: "0.10", trend: [-30, -50, -60, -70, -80], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1765.png", drawdown: "-96.5%", summary: "Initial $4B ICO capital dissipated. Completely abandoned by core founders and failing to attract any new developer ecosystem." },
+  { symbol: "NEO", name: "NEO", score: 90, reason: "GHOST CHAIN", velocity: "Terminal", halfLife: "45 days", sustainability: "0.15", trend: [-40, -50, -65, -75, -85], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1376.png", drawdown: "-92.5%", summary: "Zero active developer ecosystem or meaningful dApps. Retail volume completely dried up, leaving only historical bagholders." },
+  { symbol: "ALGO", name: "Algorand", score: 75, reason: "ECONOMIC FAILURE", velocity: "Accelerating", halfLife: "120 days", sustainability: "0.25", trend: [-20, -30, -45, -55, -60], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/4030.png", drawdown: "-95.8%", summary: "Severe token inflation outpaced network demand. Excellent technology unable to find product-market fit or user velocity." },
+  { symbol: "LTC", name: "Litecoin", score: 68, reason: "OBSOLESCENCE", velocity: "Accelerating", halfLife: "180 days", sustainability: "0.50", trend: [-20, -25, -30, -35, -40], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png", drawdown: "-78.4%", summary: "Legacy payments network losing mindshare to L2s and stablecoins. Transaction fee revenue too low to sustain future security." },
+  { symbol: "CRV", name: "Curve DAO", score: 65, reason: "LIQUIDATION RISK", velocity: "Accelerating", halfLife: "90 days", sustainability: "0.60", trend: [-15, -30, -45, -50, -55], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/6538.png", drawdown: "-94.2%", summary: "Founder over-leverage created systemic liquidation spirals. Revenue is strong but structural tokenomics are highly dilutive." },
+  { symbol: "DOT", name: "Polkadot", score: 60, reason: "DEVELOPER BLEED", velocity: "Accelerating", halfLife: "200 days", sustainability: "0.35", trend: [-5, -15, -30, -40, -45], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/6636.png", drawdown: "-88.1%", summary: "Complex architecture leading to developer exodus. Treasury spending vastly outpaces network revenue generation." },
+  { symbol: "ADA", name: "Cardano", score: 55, reason: "STAGNANT", velocity: "Accelerating", halfLife: "365 days", sustainability: "0.45", trend: [-10, -15, -20, -25, -30], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png", drawdown: "-85.2%", summary: "Severe lack of on-chain utility and user velocity. High market cap supported entirely by speculative holder conviction." },
+  { symbol: "COMP", name: "Compound", score: 55, reason: "STAGNANT", velocity: "Accelerating", halfLife: "300 days", sustainability: "0.55", trend: [-5, -15, -25, -20, -30], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/5692.png", drawdown: "-93.5%", summary: "Losing lending market share to competitors. Governance token utility remains weak compared to actual protocol TVL." },
+  { symbol: "SNX", name: "Synthetix", score: 50, reason: "UNDER STRESS", velocity: "Decelerating", halfLife: "250 days", sustainability: "0.70", trend: [-10, -15, -20, -15, -10], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/2586.png", drawdown: "-89.4%", summary: "High inflationary rewards required to maintain system debt. Struggling to migrate to a truly sustainable real-yield model." },
+  { symbol: "WLD", name: "Worldcoin", score: 45, reason: "UNDER STRESS", velocity: "Accelerating", halfLife: "120 days", sustainability: "0.85", trend: [-5, -15, -25, -20, -35], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/26997.png", drawdown: "-72.1%", summary: "Aggressive VC unlock schedule applying constant sell pressure despite high foundational backing and global rollout." },
+  { symbol: "XRP", name: "XRP", score: 45, reason: "UNDER STRESS", velocity: "Decelerating", halfLife: "Infinite", sustainability: "0.60", trend: [-5, 5, -10, -5, 2], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/52.png", drawdown: "-82.4%", summary: "Ongoing regulatory overhang suppresses institutional adoption. Massive supply held in escrow continues to dilute retail float." },
+  { symbol: "UNI", name: "Uniswap", score: 35, reason: "HEALTHY", velocity: "Decelerating", halfLife: "Infinite", sustainability: "0.90", trend: [10, -5, -10, 15, 30], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/7083.png", drawdown: "-75.6%", summary: "Massive market share in DEX volume. Regulatory threats are the primary risk, while protocol economics remain highly robust." },
+  { symbol: "SHIB", name: "Shiba Inu", score: 30, reason: "HEALTHY", velocity: "Decelerating", halfLife: "Infinite", sustainability: "UNKNOWN", trend: [2, 5, 10, -5, 8], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png", drawdown: "-79.2%", summary: "Extremely strong retail community. Surprisingly resilient liquidity profile despite lack of fundamental economic infrastructure." },
+  { symbol: "AVAX", name: "Avalanche", score: 25, reason: "HEALTHY", velocity: "Stable", halfLife: "Infinite", sustainability: "0.78", trend: [5, -2, 8, 12, 10], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/5805.png", drawdown: "-78.1%", summary: "Solid sub-net architecture adoption. High token inflation is being slowly offset by strong transactional burn mechanisms." },
+  { symbol: "AAVE", name: "Aave", score: 25, reason: "HEALTHY", velocity: "Stable", halfLife: "Infinite", sustainability: "0.88", trend: [10, 15, 10, 20, 25], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/7278.png", drawdown: "-72.4%", summary: "Dominant lending market protocol. Revenue cleanly covers safety module incentives, creating a highly sustainable flywheel." },
+  { symbol: "MKR", name: "Maker", score: 22, reason: "HEALTHY", velocity: "Stable", halfLife: "Infinite", sustainability: "0.95", trend: [15, 20, 25, 15, 30], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1518.png", drawdown: "-45.3%", summary: "RWA integration generating massive real-world yield. Buyback and burn mechanisms creating mathematically sound deflation." },
+  { symbol: "DOGE", name: "Dogecoin", score: 20, reason: "HEALTHY", velocity: "Stable", halfLife: "Infinite", sustainability: "UNKNOWN", trend: [5, 2, -5, 10, 15], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/74.png", drawdown: "-75.8%", summary: "Original memetic asset with L1 security. Constant inflation is easily absorbed by massive, cult-like global liquidity." },
+  { symbol: "BNB", name: "BNB", score: 18, reason: "HEALTHY", velocity: "Stable", halfLife: "Infinite", sustainability: "0.80", trend: [1, 2, 0, -2, 5], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png", drawdown: "-18.5%", summary: "Sustained by massive exchange revenue and active burn mechanism. High centralization risk but perfect economic sustainability." },
+  { symbol: "PEPE", name: "Pepe", score: 15, reason: "HEALTHY", velocity: "Decelerating", halfLife: "Healthy", sustainability: "UNKNOWN", trend: [10, 5, -5, -2, 10], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/24478.png", drawdown: "-45.2%", summary: "Pure memetic asset with zero infrastructure cost. Sustained by high trading volume and strong community retention." },
+  { symbol: "LINK", name: "Chainlink", score: 15, reason: "HEALTHY", velocity: "Stable", halfLife: "Infinite", sustainability: "0.85", trend: [0, -5, 10, 15, 20], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png", drawdown: "-65.0%", summary: "Monopoly on oracle services with heavy institutional adoption. Tokenomics upgrading to capture real protocol revenue." },
+  { symbol: "SOL", name: "Solana", score: 12, reason: "HEALTHY", velocity: "Stable", halfLife: "Infinite", sustainability: "0.75", trend: [15, 25, 30, 20, 45], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png", drawdown: "-35.0%", summary: "High throughput ecosystem with extreme user activity. Strong liquidity inflows offset relatively high validator inflation." },
+  { symbol: "ETH", name: "Ethereum", score: 8, reason: "HEALTHY", velocity: "Stable", halfLife: "Infinite", sustainability: "0.92", trend: [2, 5, 8, 10, 12], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png", drawdown: "-22.1%", summary: "Dominant smart contract platform. Fee revenue heavily outweighs operational emission costs, sustaining structural growth." },
+  { symbol: "BTC", name: "Bitcoin", score: 5, reason: "HEALTHY", velocity: "Stable", halfLife: "Infinite", sustainability: "0.95", trend: [5, 10, 2, -1, 15], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png", drawdown: "-15.4%", summary: "Global reserve asset with massive decentralized security and deep structural liquidity across all market venues." },
 ];
 
 export default function Home() {
@@ -43,6 +43,10 @@ export default function Home() {
   const [error, setError] = useState("");
   const [chatHistory, setChatHistory] = useState<{role: string, text: string}[]>([]);
   const [activeTab, setActiveTab] = useState("overview");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+  const totalPages = Math.ceil(EXPLORER_PROJECTS.length / itemsPerPage);
+  const currentProjects = EXPLORER_PROJECTS.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const performInvestigation = async (symbolToSearch: string) => {
     if (!symbolToSearch) return;
@@ -194,7 +198,7 @@ export default function Home() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-800/50">
-                    {HIGH_RISK_PROJECTS.map((proj, idx) => (
+                    {currentProjects.map((proj, idx) => (
                       <tr key={idx} className="hover:bg-zinc-900/60 transition-colors group cursor-pointer" onClick={() => performInvestigation(proj.symbol)}>
                         <td className="px-6 py-4 whitespace-normal">
                           <div className="flex items-start gap-4">
@@ -274,6 +278,29 @@ export default function Home() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+              
+              {/* Pagination Controls */}
+              <div className="flex items-center justify-between px-6 py-4 border-t border-zinc-800 bg-zinc-900/40">
+                <div className="text-xs text-zinc-500">
+                  Showing <span className="font-bold text-zinc-300">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-bold text-zinc-300">{Math.min(currentPage * itemsPerPage, EXPLORER_PROJECTS.length)}</span> of <span className="font-bold text-zinc-300">{EXPLORER_PROJECTS.length}</span> assets
+                </div>
+                <div className="flex gap-2">
+                  <button 
+                    className="px-3 py-1.5 text-xs font-bold text-zinc-400 bg-zinc-900 border border-zinc-700 rounded hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </button>
+                  <button 
+                    className="px-3 py-1.5 text-xs font-bold text-zinc-400 bg-zinc-900 border border-zinc-700 rounded hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
             </div>
           </div>
