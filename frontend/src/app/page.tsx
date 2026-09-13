@@ -4,12 +4,36 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 
 const HIGH_RISK_PROJECTS = [
-  { symbol: "ROUTE", name: "Router Protocol", score: 63, reason: "ECONOMIC FAILURE", velocity: "Accelerating", halfLife: "15 days", sustainability: "0.20", trend: [-10, -20, -50, -65, -80] },
-  { symbol: "SAFEMOON", name: "SafeMoon", score: 99, reason: "LIQUIDITY SPIRAL", velocity: "Terminal", halfLife: "0 days", sustainability: "0.00", trend: [-50, -70, -90, -99, -99] },
-  { symbol: "FTT", name: "FTX Token", score: 100, reason: "HOLDER EXODUS", velocity: "Terminal", halfLife: "Dead", sustainability: "0.00", trend: [-80, -95, -99, -100, -100] },
-  { symbol: "LUNA", name: "Terra", score: 100, reason: "MARKET COLLAPSE", velocity: "Terminal", halfLife: "Dead", sustainability: "0.00", trend: [-40, -90, -100, -100, -100] },
-  { symbol: "PEPE", name: "Pepe", score: 15, reason: "HEALTHY", velocity: "Decelerating", halfLife: "Healthy", sustainability: "UNKNOWN", trend: [10, 5, -5, -2, 10] },
-  { symbol: "WLD", name: "Worldcoin", score: 45, reason: "UNDER STRESS", velocity: "Accelerating", halfLife: "120 days", sustainability: "0.85", trend: [-5, -15, -25, -20, -35] },
+  { 
+    symbol: "ROUTE", name: "Router Protocol", score: 63, reason: "ECONOMIC FAILURE", velocity: "Accelerating", halfLife: "15 days", sustainability: "0.20", trend: [-10, -20, -50, -65, -80], 
+    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/8782.png", drawdown: "-87.3%",
+    summary: "Revenue fails to cover infrastructure costs, causing a liquidity spiral and heavy reliance on inflationary emissions."
+  },
+  { 
+    symbol: "SAFEMOON", name: "SafeMoon", score: 99, reason: "LIQUIDITY SPIRAL", velocity: "Terminal", halfLife: "0 days", sustainability: "0.00", trend: [-50, -70, -90, -99, -99],
+    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/8757.png", drawdown: "-99.9%",
+    summary: "Complete depletion of liquidity pool. Toxic tokenomics led to an irreversible death spiral and zero market confidence."
+  },
+  { 
+    symbol: "FTT", name: "FTX Token", score: 100, reason: "HOLDER EXODUS", velocity: "Terminal", halfLife: "Dead", sustainability: "0.00", trend: [-80, -95, -99, -100, -100],
+    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/4195.png", drawdown: "-99.5%",
+    summary: "Catastrophic loss of utility and backing. Collapsed due to centralized fraud and immediate holder capitulation."
+  },
+  { 
+    symbol: "LUNA", name: "Terra", score: 100, reason: "MARKET COLLAPSE", velocity: "Terminal", halfLife: "Dead", sustainability: "0.00", trend: [-40, -90, -100, -100, -100],
+    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/4172.png", drawdown: "-99.9%",
+    summary: "Algorithmic depeg caused hyper-inflationary minting, wiping out $40B in market cap within a matter of days."
+  },
+  { 
+    symbol: "PEPE", name: "Pepe", score: 15, reason: "HEALTHY", velocity: "Decelerating", halfLife: "Healthy", sustainability: "UNKNOWN", trend: [10, 5, -5, -2, 10],
+    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/24478.png", drawdown: "-45.2%",
+    summary: "Pure memetic asset with zero infrastructure cost. Sustained by high trading volume and strong community retention."
+  },
+  { 
+    symbol: "WLD", name: "Worldcoin", score: 45, reason: "UNDER STRESS", velocity: "Accelerating", halfLife: "120 days", sustainability: "0.85", trend: [-5, -15, -25, -20, -35],
+    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/26997.png", drawdown: "-72.1%",
+    summary: "Aggressive VC unlock schedule applying constant sell pressure despite high foundational backing and global rollout."
+  },
 ];
 
 export default function Home() {
@@ -162,76 +186,88 @@ export default function Home() {
                 <table className="w-full text-left text-sm whitespace-nowrap">
                   <thead>
                     <tr className="border-b border-zinc-800 bg-zinc-900/40 text-xs text-zinc-500 font-bold uppercase tracking-wider">
-                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Asset</th>
-                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Risk Score</th>
-                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Failure Verdict</th>
-                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Death Velocity</th>
-                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Liquidity Half-Life</th>
-                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Economic Sust.</th>
-                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Trend (90d)</th>
+                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300 w-1/3">Target Asset & Forensic Summary</th>
+                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Risk Profile</th>
+                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Drawdown & Trend</th>
+                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Structural Decay</th>
                       <th className="px-6 py-4 text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-800/50">
                     {HIGH_RISK_PROJECTS.map((proj, idx) => (
                       <tr key={idx} className="hover:bg-zinc-900/60 transition-colors group cursor-pointer" onClick={() => performInvestigation(proj.symbol)}>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center font-black text-xs border border-zinc-700/50 text-zinc-300">
-                              {proj.symbol.charAt(0)}
+                        <td className="px-6 py-4 whitespace-normal">
+                          <div className="flex items-start gap-4">
+                            <img src={proj.icon} alt={proj.name} className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-700/50 object-cover mt-1 flex-shrink-0 shadow-lg" />
+                            <div className="flex flex-col gap-1.5">
+                              <div className="flex items-center gap-2">
+                                <span className="font-black text-zinc-100 text-base tracking-tight">{proj.name}</span>
+                                <span className="text-xs font-bold text-zinc-500 bg-zinc-800/50 px-1.5 py-0.5 rounded">{proj.symbol}</span>
+                              </div>
+                              <p className="text-xs text-zinc-400 leading-relaxed max-w-sm">
+                                {proj.summary}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 align-top">
+                          <div className="flex flex-col gap-2 mt-1">
+                            <div className="flex items-center gap-2">
+                              <span className={`text-xl font-black ${proj.score > 80 ? 'text-[var(--color-spark-magenta)] drop-shadow-[0_0_5px_rgba(225,29,72,0.5)]' : proj.score > 40 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                                {proj.score}
+                              </span>
+                              <span className="text-zinc-600 text-xs font-bold">/100</span>
                             </div>
                             <div>
-                              <div className="font-bold text-zinc-100">{proj.name}</div>
-                              <div className="text-xs text-zinc-500">{proj.symbol}</div>
+                              <span className={`px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded border ${proj.score > 80 ? 'bg-rose-950/30 text-rose-400 border-rose-900/50' : proj.score > 40 ? 'bg-amber-950/30 text-amber-400 border-amber-900/50' : 'bg-emerald-950/30 text-emerald-400 border-emerald-900/50'}`}>
+                                {proj.reason}
+                              </span>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <span className={`text-lg font-black ${proj.score > 80 ? 'text-[var(--color-spark-magenta)]' : proj.score > 40 ? 'text-amber-400' : 'text-emerald-400'}`}>
-                              {proj.score}
-                            </span>
-                            <span className="text-zinc-600 text-xs">/100</span>
+                        <td className="px-6 py-4 align-top">
+                          <div className="flex flex-col gap-2 mt-1">
+                            <span className="text-sm font-black text-rose-400">{proj.drawdown}</span>
+                            <div className="flex items-end gap-0.5 h-6">
+                              {proj.trend.map((val, i) => (
+                                <div 
+                                  key={i} 
+                                  className={`w-1.5 rounded-t-sm ${val > 0 ? 'bg-emerald-500' : 'bg-rose-500'}`}
+                                  style={{ height: `${Math.max(10, Math.min(100, Math.abs(val)))}%`, opacity: 0.5 + (i * 0.1) }}
+                                ></div>
+                              ))}
+                            </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded border ${proj.score > 80 ? 'bg-rose-950/30 text-rose-400 border-rose-900/50' : proj.score > 40 ? 'bg-amber-950/30 text-amber-400 border-amber-900/50' : 'bg-emerald-950/30 text-emerald-400 border-emerald-900/50'}`}>
-                            {proj.reason}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`text-xs font-medium ${proj.velocity === 'Accelerating' || proj.velocity === 'Terminal' ? 'text-rose-400' : proj.velocity === 'Decelerating' ? 'text-emerald-400' : 'text-zinc-400'}`}>
-                            {proj.velocity}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`text-xs font-medium ${proj.halfLife === 'Dead' || proj.halfLife === '0 days' ? 'text-zinc-600' : proj.halfLife === 'Healthy' ? 'text-emerald-400' : 'text-amber-400'}`}>
-                            {proj.halfLife}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="text-xs text-zinc-400 font-mono">{proj.sustainability}</span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-end gap-0.5 h-6">
-                            {proj.trend.map((val, i) => (
-                              <div 
-                                key={i} 
-                                className={`w-1.5 rounded-t-sm ${val > 0 ? 'bg-emerald-500' : 'bg-rose-500'}`}
-                                style={{ height: `${Math.max(10, Math.min(100, Math.abs(val)))}%`, opacity: 0.5 + (i * 0.1) }}
-                              ></div>
-                            ))}
+                        <td className="px-6 py-4 align-top">
+                          <div className="flex flex-col gap-1.5 mt-1">
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="text-zinc-500">Velocity:</span>
+                              <span className={`font-bold ${proj.velocity === 'Accelerating' || proj.velocity === 'Terminal' ? 'text-rose-400' : proj.velocity === 'Decelerating' ? 'text-emerald-400' : 'text-zinc-400'}`}>
+                                {proj.velocity}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="text-zinc-500">Half-Life:</span>
+                              <span className={`font-bold ${proj.halfLife === 'Dead' || proj.halfLife === '0 days' ? 'text-zinc-600' : proj.halfLife === 'Healthy' ? 'text-emerald-400' : 'text-amber-400'}`}>
+                                {proj.halfLife}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="text-zinc-500">Econ Sust:</span>
+                              <span className="font-mono text-zinc-300 bg-zinc-900 px-1 rounded">{proj.sustainability}</span>
+                            </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-6 py-4 text-right align-top">
                           <button 
-                            className="px-3 py-1.5 bg-transparent border border-zinc-700 text-zinc-300 text-xs font-bold rounded group-hover:bg-zinc-700 transition-colors"
+                            className="mt-2 px-4 py-2 bg-zinc-900 border border-zinc-700 hover:border-[var(--color-spark-teal)] text-zinc-300 hover:text-[var(--color-spark-teal)] text-xs font-bold rounded shadow-lg transition-all group-hover:bg-zinc-800"
                             onClick={(e) => {
                               e.stopPropagation();
                               performInvestigation(proj.symbol);
                             }}
                           >
-                            Scan
+                            Full Report
                           </button>
                         </td>
                       </tr>
