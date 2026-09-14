@@ -64,7 +64,7 @@ export default function CanvasStat({ value, label, width = 127, height = 97 }: C
         if (isHovered) {
           // slight glitch effect on hover
           if (Math.random() > 0.95) {
-             ctx.fillStyle = "#00c49a";
+             ctx.fillStyle = "#00ff66";
              ctx.fillText(displayValue, 5 + Math.random()*2, height / 2 + Math.random()*2);
              ctx.fillStyle = "#ffffff";
           }

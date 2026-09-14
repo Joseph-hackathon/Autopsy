@@ -28,7 +28,7 @@ class Particle {
   draw(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(0, 196, 154, 0.4)";
+    ctx.fillStyle = "rgba(0, 255, 102, 0.4)";
     ctx.fill();
   }
 }
@@ -70,7 +70,7 @@ export default function BackgroundEffects() {
 
           if (distance < 150) {
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(0, 196, 154, ${0.15 - distance / 1000})`;
+            ctx.strokeStyle = `rgba(0, 255, 102, ${0.15 - distance / 1000})`;
             ctx.lineWidth = 0.5;
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
@@ -85,7 +85,7 @@ export default function BackgroundEffects() {
 
         if (mouseDistance < 200) {
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(176, 38, 255, ${0.3 - mouseDistance / 666})`;
+          ctx.strokeStyle = `rgba(157, 141, 241, ${0.3 - mouseDistance / 666})`;
           ctx.lineWidth = 1;
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(mouse.x, mouse.y);
@@ -139,7 +139,7 @@ export default function BackgroundEffects() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-[-1]"
-      style={{ background: "#030303" }}
+      style={{ background: "#1c1d1c" }}
     />
   );
 }

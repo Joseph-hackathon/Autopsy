@@ -2,8 +2,10 @@
 @import "tailwindcss";
 
 @theme {
-  --color-spark-teal: #00c49a;
-  --color-spark-magenta: #b026ff;
+  --color-winter-green: #00ff66;
+  --color-winter-bg: #1c1d1c;
+  --color-winter-card: #252725;
+  --color-winter-purple: #9d8df1;
   --font-sans: 'Inter', system-ui, sans-serif;
 }
 
@@ -12,14 +14,14 @@
 }
 
 body {
-  background-color: #030303;
+  background-color: var(--color-winter-bg);
   color: #e5e7eb;
   font-family: var(--font-sans);
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
   /* Add subtle CRT scanline effect */
-  background-image: linear-gradient(rgba(0, 255, 128, 0.03) 1px, transparent 1px),
+  background-image: linear-gradient(rgba(0, 255, 102, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 255, 128, 0.03) 1px, transparent 1px);
   background-size: 30px 30px;
 }
@@ -29,14 +31,14 @@ body {
   background: rgba(10, 10, 10, 0.7);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(0, 196, 154, 0.2);
+  border: 1px solid rgba(0, 255, 102, 0.2);
   border-radius: 4px; /* Sharper corners */
-  box-shadow: inset 0 0 10px rgba(0, 196, 154, 0.02);
+  box-shadow: inset 0 0 10px rgba(0, 255, 102, 0.02);
   transition: all 0.3s ease;
 }
 .glass-pill:hover {
-  border: 1px solid rgba(0, 196, 154, 0.6);
-  box-shadow: inset 0 0 20px rgba(0, 196, 154, 0.05), 0 0 10px rgba(0, 196, 154, 0.1);
+  border: 1px solid rgba(0, 255, 102, 0.6);
+  box-shadow: inset 0 0 20px rgba(0, 255, 102, 0.05), 0 0 10px rgba(0, 255, 102, 0.1);
 }
 
 .glass-card {
@@ -44,12 +46,12 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-left: 2px solid var(--color-spark-teal);
+  border-left: 2px solid var(--color-winter-green);
   border-radius: 4px;
 }
 
 .glow-text {
-  text-shadow: 0 0 10px rgba(0, 196, 154, 0.5);
+  text-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
 }
 
 /* Custom Scrollbar */
@@ -57,12 +59,12 @@ body {
   width: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: #000;
+  background: var(--color-winter-bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 196, 154, 0.3);
+  background: rgba(0, 255, 102, 0.3);
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 196, 154, 0.6);
+  background: rgba(0, 255, 102, 0.6);
 }

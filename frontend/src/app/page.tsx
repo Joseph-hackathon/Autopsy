@@ -117,15 +117,15 @@ export default function Home() {
   const formatPct = (val: number | null | undefined) => {
     if (val === null || val === undefined) return <span className="text-zinc-500 bg-zinc-800/10 px-2 py-1 rounded font-sans font-medium text-sm border border-transparent flex items-center gap-1 w-fit">0.00%</span>;
     const isPositive = val >= 0;
-    const color = isPositive ? "text-emerald-400" : "text-[var(--color-spark-magenta)]";
-    const bg = isPositive ? "bg-emerald-500/10" : "bg-[var(--color-spark-magenta)]/10";
+    const color = isPositive ? "text-emerald-400" : "text-[var(--color-winter-purple)]";
+    const bg = isPositive ? "bg-emerald-500/10" : "bg-[var(--color-winter-purple)]/10";
     const sign = isPositive ? "▲" : "▼";
     return <span className={`${color} ${bg} px-2 py-1 rounded font-sans font-medium text-sm border border-transparent flex items-center gap-1 w-fit`}>{sign} {Math.abs(val).toFixed(2)}%</span>;
   };
 
   const getScoreColor = (score: number) => {
     if (score > 80) return "text-rose-600 border-rose-600 stroke-rose-600 shadow-rose-600";
-    if (score > 60) return "text-[var(--color-spark-magenta)] border-[var(--color-spark-magenta)] stroke-[var(--color-spark-magenta)] shadow-[var(--color-spark-magenta)]";
+    if (score > 60) return "text-[var(--color-winter-purple)] border-[var(--color-winter-purple)] stroke-[var(--color-winter-purple)] shadow-[var(--color-winter-purple)]";
     if (score > 40) return "text-amber-500 border-amber-500 stroke-amber-500 shadow-amber-500";
     if (score > 20) return "text-yellow-400 border-yellow-400 stroke-yellow-400 shadow-yellow-400";
     return "text-emerald-500 border-emerald-500 stroke-emerald-500 shadow-emerald-500";
@@ -143,7 +143,7 @@ export default function Home() {
       <BackgroundEffects />
 
       {/* HEADER */}
-      <header className="bg-transparent p-4 sticky top-0 z-50 backdrop-blur-md border-b border-white/5">
+      <header className="bg-transparent p-4 sticky top-0 z-50 backdrop-blur-md border-b border-[#333333]">
         <div className="max-w-[1400px] mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-4 cursor-pointer hover:opacity-80 transition-opacity" onClick={() => { setResult(null); setError(""); setQuery(""); }}>
             <img src="/autopsy_white.png" alt="Crypto Autopsy Logo" className="h-8 md:h-10 w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" />
@@ -151,18 +151,18 @@ export default function Home() {
           
           <form onSubmit={handleInvestigate} className="flex w-full max-w-md relative group">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <svg className="w-4 h-4 text-zinc-500 group-focus-within:text-[var(--color-spark-teal)] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              <svg className="w-4 h-4 text-zinc-500 group-focus-within:text-[var(--color-winter-green)] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             </div>
             <input
               type="text"
               placeholder="Target Identifier (Ticker)"
-              className="w-full glass-pill pl-10 pr-24 py-2.5 rounded-lg text-sm text-zinc-100 focus:outline-none focus:border-[var(--color-spark-teal)]/50 focus:ring-1 focus:ring-[var(--color-spark-teal)]/50 transition-all uppercase placeholder-zinc-600 shadow-inner"
+              className="w-full glass-pill pl-10 pr-24 py-2.5 rounded-lg text-sm text-zinc-100 focus:outline-none focus:border-[var(--color-winter-green)]/50 focus:ring-1 focus:ring-[var(--color-winter-green)]/50 transition-all uppercase placeholder-zinc-600 shadow-inner"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
             <button type="submit" className="absolute right-1.5 top-1.5 bottom-1.5 glass-pill hover:bg-white/10 hover:text-white px-4 rounded text-xs font-bold text-zinc-400 transition-colors flex items-center gap-2 border border-zinc-700">
               {loading ? (
-                <><div className="w-2 h-2 bg-[var(--color-spark-teal)] rounded-full animate-pulse"></div> SCANNING</>
+                <><div className="w-2 h-2 bg-[var(--color-winter-green)] rounded-full animate-pulse"></div> SCANNING</>
               ) : "EXECUTE"}
             </button>
           </form>
@@ -172,7 +172,7 @@ export default function Home() {
       <main className="max-w-[1400px] mx-auto p-4 md:p-6 mt-2 relative z-10">
           
         {/* Wintermute-style Stats Row */}
-        <div className="flex flex-col md:flex-row gap-8 mb-8 border-b border-white/5 pb-8">
+        <div className="flex flex-col md:flex-row gap-8 mb-8 border-b border-[#333333] pb-8">
           <CanvasStat value="1,432" label="Monitored Assets" />
           <CanvasStat value="$48.2B" label="Value Destroyed" />
           <CanvasStat value="38" label="Critical Failures" />
@@ -185,22 +185,22 @@ export default function Home() {
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
               <div>
                 <h1 className="text-xl font-blender text-white flex items-center gap-2 uppercase tracking-widest">
-                  <svg className="w-5 h-5 text-[var(--color-spark-teal)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                  <svg className="w-5 h-5 text-[var(--color-winter-green)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                   AUTOPSY EXPLORER
                 </h1>
                 <p className="text-[#888888] text-sm mt-1 font-sans">Live failure metrics and structural decay telemetry for tracked assets.</p>
               </div>
               <div className="flex gap-2">
-                <button className="px-4 py-2 text-xs font-bold text-[#ececec] bg-black border border-white/10 rounded hover:border-[var(--color-spark-teal)] transition-colors uppercase font-blender">Filter: High Risk</button>
-                <button className="px-4 py-2 text-xs font-bold text-[#ececec] bg-black border border-white/10 rounded hover:border-[var(--color-spark-teal)] transition-colors uppercase font-blender">Sector</button>
+                <button className="px-6 py-2.5 text-xs font-bold text-black bg-[var(--color-winter-green)] hover:opacity-80 transition-opacity uppercase font-blender rounded flex items-center gap-2">Filter: High Risk <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></button>
+                <button className="px-6 py-2.5 text-xs font-bold text-[#ececec] bg-transparent border border-[var(--color-winter-green)] hover:bg-[var(--color-winter-green)] hover:text-black transition-colors uppercase font-blender rounded">Sector</button>
               </div>
             </div>
 
-            <div className="w-full border-t border-white/10 overflow-hidden bg-transparent">
+            <div className="w-full border-t border-[#333333] overflow-hidden bg-transparent">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm whitespace-nowrap">
                   <thead>
-                    <tr className="border-b border-white/5 text-xs text-[#888888] font-blender uppercase tracking-widest">
+                    <tr className="border-b border-[#333333] text-xs text-[#888888] font-blender uppercase tracking-widest">
                       <th className="px-6 py-4 font-normal cursor-pointer hover:text-white w-1/3">Target Asset & Forensic Summary</th>
                       <th className="px-6 py-4 font-normal cursor-pointer hover:text-white">Risk Profile</th>
                       <th className="px-6 py-4 font-normal cursor-pointer hover:text-white">Drawdown & Trend</th>
@@ -210,14 +210,14 @@ export default function Home() {
                   </thead>
                   <tbody className="divide-y divide-white/5">
                     {currentProjects.map((proj, idx) => (
-                      <tr key={idx} className="hover:bg-white/5 transition-colors group cursor-pointer" onClick={() => performInvestigation(proj.symbol)}>
+                      <tr key={idx} className="hover:bg-[#333333] transition-colors group cursor-pointer" onClick={() => performInvestigation(proj.symbol)}>
                         <td className="px-6 py-4 whitespace-normal">
                           <div className="flex items-start gap-4">
-                            <img src={proj.icon} alt={proj.name} className="w-10 h-10 rounded-none bg-black border border-white/10 object-cover mt-1 flex-shrink-0 grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                            <img src={proj.icon} alt={proj.name} className="w-10 h-10 rounded-none bg-[var(--color-winter-bg)] border border-[#333333] object-cover mt-1 flex-shrink-0 grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
                             <div className="flex flex-col gap-1.5">
                               <div className="flex items-center gap-2">
                                 <span className="font-blender text-[#ececec] text-lg uppercase tracking-wider">{proj.name}</span>
-                                <span className="text-xs font-mono text-[#888888] bg-white/5 border border-white/10 px-1.5 py-0.5">{proj.symbol}</span>
+                                <span className="text-xs font-mono text-[#888888] bg-white/5 border border-[#333333] px-1.5 py-0.5">{proj.symbol}</span>
                               </div>
                               <p className="text-xs text-[#888888] leading-relaxed max-w-sm font-sans">
                                 {proj.summary}
@@ -228,7 +228,7 @@ export default function Home() {
                         <td className="px-6 py-4 align-top">
                           <div className="flex flex-col gap-2 mt-1">
                             <div className="flex items-center gap-2">
-                              <span className={`text-xl font-black ${proj.score > 80 ? 'text-[var(--color-spark-magenta)] drop-shadow-[0_0_5px_rgba(225,29,72,0.5)]' : proj.score > 40 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                              <span className={`text-xl font-black ${proj.score > 80 ? 'text-[var(--color-winter-purple)] drop-shadow-[0_0_5px_rgba(225,29,72,0.5)]' : proj.score > 40 ? 'text-amber-400' : 'text-emerald-400'}`}>
                                 {proj.score}
                               </span>
                               <span className="text-zinc-600 text-xs font-bold">/100</span>
@@ -270,13 +270,13 @@ export default function Home() {
                             </div>
                             <div className="flex justify-between items-center text-xs">
                               <span className="text-zinc-500">Econ Sust:</span>
-                              <span className="font-mono text-zinc-300 bg-zinc-900 px-1 rounded">{proj.sustainability}</span>
+                              <span className="font-mono text-zinc-300 bg-[var(--color-winter-card)] px-1 rounded">{proj.sustainability}</span>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 text-right align-top">
                           <button 
-                            className="mt-2 px-4 py-2 bg-zinc-900 border border-zinc-700 hover:border-[var(--color-spark-teal)] text-zinc-300 hover:text-[var(--color-spark-teal)] text-xs font-bold rounded shadow-lg transition-all group-hover:bg-zinc-800"
+                            className="mt-2 px-4 py-2 bg-[var(--color-winter-card)] border border-zinc-700 hover:border-[var(--color-winter-green)] text-zinc-300 hover:text-[var(--color-winter-green)] text-xs font-bold rounded shadow-lg transition-all group-hover:bg-zinc-800"
                             onClick={(e) => {
                               e.stopPropagation();
                               performInvestigation(proj.symbol);
@@ -292,20 +292,20 @@ export default function Home() {
               </div>
               
               {/* Pagination Controls */}
-              <div className="flex items-center justify-between px-6 py-4 border-t border-zinc-800 bg-zinc-900/40">
+              <div className="flex items-center justify-between px-6 py-4 border-t border-zinc-800 bg-[var(--color-winter-bg)]">
                 <div className="text-xs text-zinc-500">
                   Showing <span className="font-bold text-zinc-300">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-bold text-zinc-300">{Math.min(currentPage * itemsPerPage, EXPLORER_PROJECTS.length)}</span> of <span className="font-bold text-zinc-300">{EXPLORER_PROJECTS.length}</span> assets
                 </div>
                 <div className="flex gap-2">
                   <button 
-                    className="px-3 py-1.5 text-xs font-bold text-zinc-400 bg-zinc-900 border border-zinc-700 rounded hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-3 py-1.5 text-xs font-bold text-zinc-400 bg-[var(--color-winter-card)] border border-zinc-700 rounded hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
                   >
                     Previous
                   </button>
                   <button 
-                    className="px-3 py-1.5 text-xs font-bold text-zinc-400 bg-zinc-900 border border-zinc-700 rounded hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-3 py-1.5 text-xs font-bold text-zinc-400 bg-[var(--color-winter-card)] border border-zinc-700 rounded hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
                   >
@@ -322,30 +322,30 @@ export default function Home() {
           <div className="absolute inset-0 z-40 bg-transparent backdrop-blur-md flex flex-col items-center justify-center min-h-[600px] border border-teal-900/30 rounded-2xl shadow-[0_0_50px_rgba(6,182,212,0.1)]">
             <div className="relative w-32 h-32 mb-8">
               <div className="absolute inset-0 border-2 border-zinc-800 rounded-full"></div>
-              <div className="absolute inset-0 border-2 border-[var(--color-spark-teal)] rounded-full border-t-transparent animate-spin"></div>
-              <div className="absolute inset-0 flex items-center justify-center text-[var(--color-spark-teal)] font-sans font-medium text-sm animate-pulse">CONNECTING</div>
+              <div className="absolute inset-0 border-2 border-[var(--color-winter-green)] rounded-full border-t-transparent animate-spin"></div>
+              <div className="absolute inset-0 flex items-center justify-center text-[var(--color-winter-green)] font-sans font-medium text-sm animate-pulse">CONNECTING</div>
               {/* Radar sweep */}
               <div className="absolute inset-0 rounded-full overflow-hidden">
-                <div className="w-1/2 h-1/2 bg-gradient-to-tr from-[var(--color-spark-teal)]/20 to-transparent origin-bottom-right hidden"></div>
+                <div className="w-1/2 h-1/2 bg-gradient-to-tr from-[var(--color-winter-green)]/20 to-transparent origin-bottom-right hidden"></div>
               </div>
             </div>
-            <div className="w-96 bg-zinc-950 border border-zinc-800 p-4 rounded font-sans font-medium text-xs text-[var(--color-spark-teal)]/80 space-y-2">
+            <div className="w-96 bg-zinc-950 border border-zinc-800 p-4 rounded font-sans font-medium text-xs text-[var(--color-winter-green)]/80 space-y-2">
               <p className="flex items-center gap-2"><span className="text-emerald-500">&gt;</span> Establishing CMC API Link...</p>
               <p className="flex items-center gap-2"><span className="text-emerald-500">&gt;</span> Fetching Telemetry Data...</p>
-              <p className="flex items-center gap-2 animate-pulse"><span className="w-2 h-2 bg-[var(--color-spark-teal)] rounded-full"></span> Calculating Death Score Engine...</p>
+              <p className="flex items-center gap-2 animate-pulse"><span className="w-2 h-2 bg-[var(--color-winter-green)] rounded-full"></span> Calculating Death Score Engine...</p>
             </div>
           </div>
         )}
 
         {/* Error */}
         {error && (
-          <div className="w-full glass-panel border-fuchsia-900/50 rounded-xl p-6 text-[var(--color-spark-magenta)] font-sans font-medium flex items-start space-x-4 mb-8">
+          <div className="w-full glass-panel border-fuchsia-900/50 rounded-xl p-6 text-[var(--color-winter-purple)] font-sans font-medium flex items-start space-x-4 mb-8">
             <div className="p-3 bg-fuchsia-950/50 rounded-lg">
-              <svg className="w-6 h-6 text-[var(--color-spark-magenta)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+              <svg className="w-6 h-6 text-[var(--color-winter-purple)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
             </div>
             <div>
               <h3 className="font-bold text-rose-300 text-lg">INVESTIGATION FAILED</h3>
-              <p className="text-sm mt-1 text-[var(--color-spark-magenta)]/80">{error}</p>
+              <p className="text-sm mt-1 text-[var(--color-winter-purple)]/80">{error}</p>
             </div>
           </div>
         )}
@@ -355,21 +355,21 @@ export default function Home() {
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
             
             {/* HERO METRICS BANNER */}
-            <div className="border border-white/10 rounded-none p-6 relative overflow-hidden group bg-black">
+            <div className="border border-[#333333] rounded-none p-6 relative overflow-hidden group bg-[var(--color-winter-bg)]">
               {/* Dynamic decorative background glow */}
               <div className={`absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[120px] opacity-20 pointer-events-none transition-colors duration-1000 ${result.score > 60 ? 'bg-rose-600' : 'bg-cyan-600'}`}></div>
               
               <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-start relative z-10">
                 {/* Token Identity */}
                 <div className="flex items-center gap-6 lg:w-1/3">
-                  <div className="w-20 h-20 flex items-center justify-center p-2 border border-white/10 bg-transparent relative grayscale opacity-90">
+                  <div className="w-20 h-20 flex items-center justify-center p-2 border border-[#333333] bg-transparent relative grayscale opacity-90">
                     {result.logo ? (
                       <img src={result.logo} alt={result.name} className="w-full h-full object-contain" />
                     ) : (
                       <span className="text-2xl font-bold">{result.token.charAt(0)}</span>
                     )}
                     <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-zinc-800 border border-zinc-600 rounded-full flex items-center justify-center">
-                      <div className={`w-2 h-2 rounded-full ${result.score > 60 ? 'bg-[var(--color-spark-magenta)] animate-pulse shadow-[0_0_8px_#f43f5e]' : 'bg-emerald-500 shadow-[0_0_8px_#10b981]'}`}></div>
+                      <div className={`w-2 h-2 rounded-full ${result.score > 60 ? 'bg-[var(--color-winter-purple)] animate-pulse shadow-[0_0_8px_#f43f5e]' : 'bg-emerald-500 shadow-[0_0_8px_#10b981]'}`}></div>
                     </div>
                   </div>
                   <div>
@@ -380,18 +380,18 @@ export default function Home() {
                     <div className="flex flex-wrap gap-2 mt-3">
                       <span className="px-2.5 py-1 glass-pill rounded-full text-xs font-sans font-medium text-zinc-400 uppercase tracking-wider">{result.category || "Token"}</span>
                       {result.links?.website && (
-                        <a href={result.links.website} target="_blank" rel="noreferrer" className="px-2.5 py-1 glass-pill hover:border-[var(--color-spark-teal)] hover:text-[var(--color-spark-teal)] rounded text-xs font-sans font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-1 transition-colors">
+                        <a href={result.links.website} target="_blank" rel="noreferrer" className="px-2.5 py-1 glass-pill hover:border-[var(--color-winter-green)] hover:text-[var(--color-winter-green)] rounded text-xs font-sans font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-1 transition-colors">
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
                           Website
                         </a>
                       )}
                       {result.links?.twitter && (
-                        <a href={result.links.twitter} target="_blank" rel="noreferrer" className="px-2.5 py-1 glass-pill hover:border-[var(--color-spark-teal)] hover:text-[var(--color-spark-teal)] rounded text-xs font-sans font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-1 transition-colors">
+                        <a href={result.links.twitter} target="_blank" rel="noreferrer" className="px-2.5 py-1 glass-pill hover:border-[var(--color-winter-green)] hover:text-[var(--color-winter-green)] rounded text-xs font-sans font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-1 transition-colors">
                           Twitter
                         </a>
                       )}
                       {result.links?.explorer && (
-                        <a href={result.links.explorer} target="_blank" rel="noreferrer" className="px-2.5 py-1 glass-pill hover:border-[var(--color-spark-teal)] hover:text-[var(--color-spark-teal)] rounded text-xs font-sans font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-1 transition-colors">
+                        <a href={result.links.explorer} target="_blank" rel="noreferrer" className="px-2.5 py-1 glass-pill hover:border-[var(--color-winter-green)] hover:text-[var(--color-winter-green)] rounded text-xs font-sans font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-1 transition-colors">
                           Explorer
                         </a>
                       )}
@@ -401,22 +401,22 @@ export default function Home() {
 
                 {/* Core Metrics Grid */}
                 <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
-                  <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-4 hover:bg-zinc-800/50 transition-colors">
+                  <div className="bg-[var(--color-winter-card)] border border-zinc-800/50 rounded-xl p-4 hover:bg-[var(--color-winter-card)] transition-colors">
                     <div className="text-xs text-zinc-500 font-sans font-medium mb-1 uppercase tracking-widest">Price</div>
                     <div className="text-2xl font-sans font-medium text-white mb-2">{formatCurrency(result.raw_metrics.price)}</div>
                     {formatPct(result.raw_metrics.percent_change_24h)}
                   </div>
-                  <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-4 hover:bg-zinc-800/50 transition-colors">
+                  <div className="bg-[var(--color-winter-card)] border border-zinc-800/50 rounded-xl p-4 hover:bg-[var(--color-winter-card)] transition-colors">
                     <div className="text-xs text-zinc-500 font-sans font-medium mb-1 uppercase tracking-widest">Market Cap</div>
                     <div className="text-2xl font-sans font-medium text-white mb-2">{formatCurrency(result.raw_metrics.market_cap)}</div>
                     <div className="text-xs text-zinc-500 font-sans font-medium flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> CMC Verified</div>
                   </div>
-                  <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-4 hover:bg-zinc-800/50 transition-colors">
+                  <div className="bg-[var(--color-winter-card)] border border-zinc-800/50 rounded-xl p-4 hover:bg-[var(--color-winter-card)] transition-colors">
                     <div className="text-xs text-zinc-500 font-sans font-medium mb-1 uppercase tracking-widest">24h Volume</div>
                     <div className="text-2xl font-sans font-medium text-white mb-2">{formatCurrency(result.raw_metrics.volume_24h)}</div>
                     <div className="text-xs font-sans font-medium text-zinc-400">Vol/Mcap: {result.raw_metrics.market_cap > 0 ? ((result.raw_metrics.volume_24h / result.raw_metrics.market_cap) * 100).toFixed(2) : 0}%</div>
                   </div>
-                  <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-4 hover:bg-zinc-800/50 transition-colors">
+                  <div className="bg-[var(--color-winter-card)] border border-zinc-800/50 rounded-xl p-4 hover:bg-[var(--color-winter-card)] transition-colors">
                     <div className="text-xs text-zinc-500 font-sans font-medium mb-1 uppercase tracking-widest">Macro Trend</div>
                     <div className="space-y-2 mt-2">
                       <div className="flex justify-between items-center text-sm border-b border-zinc-800 pb-1">
@@ -443,7 +443,7 @@ export default function Home() {
                 >
                   {tab.replace('_', ' ')}
                   {activeTab === tab && (
-                    <div className={`absolute bottom-0 left-0 w-full h-0.5 shadow-[0_-2px_10px_rgba(255,255,255,0.5)] ${result.score > 60 ? 'bg-[var(--color-spark-magenta)] shadow-[var(--color-spark-magenta)]/50' : 'bg-[var(--color-spark-teal)] shadow-[var(--color-spark-teal)]/50'}`}></div>
+                    <div className={`absolute bottom-0 left-0 w-full h-0.5 shadow-[0_-2px_10px_rgba(255,255,255,0.5)] ${result.score > 60 ? 'bg-[var(--color-winter-purple)] shadow-[var(--color-winter-purple)]/50' : 'bg-[var(--color-winter-green)] shadow-[var(--color-winter-green)]/50'}`}></div>
                   )}
                 </button>
               ))}
@@ -467,25 +467,25 @@ export default function Home() {
                 )}
 
                 {/* VERDICT BANNER */}
-                <div className="glass-panel rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between border-l-4 border-l-[var(--color-spark-magenta)] relative overflow-hidden">
-                   <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-spark-magenta)]/10 to-transparent pointer-events-none"></div>
+                <div className="glass-panel rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between border-l-4 border-l-[var(--color-winter-purple)] relative overflow-hidden">
+                   <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-winter-purple)]/10 to-transparent pointer-events-none"></div>
                    <div className="relative z-10">
                      <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase mb-1">Algorithmic Verdict</p>
                      <h2 className="text-2xl font-black text-white">{result.diagnosis?.verdict || result.risk_level}</h2>
                      <p className="text-sm text-zinc-300 mt-1">
-                       <span className="text-[var(--color-spark-magenta)] font-bold">PRIMARY CAUSE: </span>
+                       <span className="text-[var(--color-winter-purple)] font-bold">PRIMARY CAUSE: </span>
                        {result.diagnosis?.primary || "UNKNOWN"} 
                        {result.diagnosis?.secondary && <span className="text-zinc-500 ml-2">| SECONDARY: {result.diagnosis.secondary}</span>}
                      </p>
                      {result.diagnosis?.failure_type && (
-                       <div className="mt-3 inline-flex items-center px-3 py-1 rounded bg-zinc-900 border border-zinc-700 text-xs font-bold text-zinc-300 tracking-wider">
+                       <div className="mt-3 inline-flex items-center px-3 py-1 rounded bg-[var(--color-winter-card)] border border-zinc-700 text-xs font-bold text-zinc-300 tracking-wider">
                          <span className="mr-2 text-fuchsia-500">FAILURE TYPE:</span> {result.diagnosis.failure_type}
                        </div>
                      )}
                    </div>
                    <div className="relative z-10 mt-4 md:mt-0 text-right">
                       <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase mb-1">Death Score</p>
-                      <div className="text-4xl font-black text-[var(--color-spark-magenta)]">{result.score}<span className="text-xl text-zinc-600">/100</span></div>
+                      <div className="text-4xl font-black text-[var(--color-winter-purple)]">{result.score}<span className="text-xl text-zinc-600">/100</span></div>
                    </div>
                 </div>
 
@@ -501,10 +501,10 @@ export default function Home() {
                       {result.vital_scores && Object.entries(result.vital_scores).map(([key, score]: [string, any]) => {
                         let statusColor = "text-emerald-400";
                         let bgPulse = "";
-                        if (score > 80) { statusColor = "text-[var(--color-spark-magenta)]"; bgPulse = "animate-pulse bg-[var(--color-spark-magenta)]/10 border-[var(--color-spark-magenta)]/30"; }
+                        if (score > 80) { statusColor = "text-[var(--color-winter-purple)]"; bgPulse = "animate-pulse bg-[var(--color-winter-purple)]/10 border-[var(--color-winter-purple)]/30"; }
                         else if (score > 60) { statusColor = "text-orange-400"; bgPulse = "bg-orange-400/10 border-orange-400/30"; }
                         else if (score > 40) { statusColor = "text-amber-400"; bgPulse = "bg-amber-400/10 border-amber-400/30"; }
-                        else { bgPulse = "bg-zinc-900/50 border-zinc-800/50"; }
+                        else { bgPulse = "bg-[var(--color-winter-card)] border-zinc-800/50"; }
 
                         return (
                           <div key={key} className={`border rounded-xl p-4 flex flex-col justify-between ${bgPulse}`}>
@@ -570,13 +570,13 @@ export default function Home() {
                       const isCritical = item.status.includes("Collapse") || item.status.includes("Exodus") || item.status.includes("Drawdown");
                       return (
                       <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                        <div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#09090b] ${isCritical ? 'bg-[var(--color-spark-magenta)]' : 'bg-zinc-700'} shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(0,0,0,0.5)] relative z-10`}>
+                        <div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#09090b] ${isCritical ? 'bg-[var(--color-winter-purple)]' : 'bg-zinc-700'} shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(0,0,0,0.5)] relative z-10`}>
                           <span className="text-[10px] font-bold text-white tracking-tighter text-center leading-none">{item.day}</span>
                         </div>
                         
-                        <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-zinc-800 bg-zinc-900/50 backdrop-blur-sm shadow-xl transition-transform hover:-translate-y-1 hover:border-zinc-700">
+                        <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-zinc-800 bg-[var(--color-winter-card)] backdrop-blur-sm shadow-xl transition-transform hover:-translate-y-1 hover:border-zinc-700">
                           <div className="flex items-center justify-between mb-1">
-                            <h4 className={`font-bold text-sm uppercase tracking-wide ${isCritical ? 'text-[var(--color-spark-magenta)]' : 'text-cyan-400'}`}>{item.status}</h4>
+                            <h4 className={`font-bold text-sm uppercase tracking-wide ${isCritical ? 'text-[var(--color-winter-purple)]' : 'text-cyan-400'}`}>{item.status}</h4>
                           </div>
                           <p className="text-sm text-zinc-400 font-sans font-medium">{item.event}</p>
                         </div>
@@ -593,10 +593,10 @@ export default function Home() {
               <div className="glass-panel rounded-2xl p-8 animate-in fade-in slide-in-from-right-8 duration-500">
                 <div className="flex items-center justify-between mb-8 border-b border-zinc-800 pb-4">
                   <h3 className="text-lg font-black text-white tracking-widest flex items-center gap-3">
-                    <svg className="w-5 h-5 text-[var(--color-spark-magenta)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <svg className="w-5 h-5 text-[var(--color-winter-purple)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     FORENSIC FINDINGS (CAUSES)
                   </h3>
-                  <div className="text-sm font-sans font-medium text-zinc-500 bg-zinc-900 px-3 py-1 rounded border border-zinc-800">
+                  <div className="text-sm font-sans font-medium text-zinc-500 bg-[var(--color-winter-card)] px-3 py-1 rounded border border-zinc-800">
                     Matches Found: <span className="text-white">{result.causes.length}</span>
                   </div>
                 </div>
@@ -605,14 +605,14 @@ export default function Home() {
                   {result.causes.map((cause: any, idx: number) => {
                     const isSevere = cause.title.includes("Severe") || cause.title.includes("Collapse") || cause.title.includes("Chronic") || cause.title.includes("Hazard");
                     return (
-                      <div key={idx} className={`glass-card rounded-3xl p-6 relative overflow-hidden group hover:shadow-2xl transition-all duration-300 flex flex-col ${isSevere ? 'border-fuchsia-900/50 hover:border-[var(--color-spark-magenta)]' : 'border-zinc-800 hover:border-zinc-600'}`}>
+                      <div key={idx} className={`glass-card rounded-3xl p-6 relative overflow-hidden group hover:shadow-2xl transition-all duration-300 flex flex-col ${isSevere ? 'border-fuchsia-900/50 hover:border-[var(--color-winter-purple)]' : 'border-zinc-800 hover:border-zinc-600'}`}>
                         {/* decorative background element */}
                         <div className="absolute -right-4 -top-4 text-zinc-800 opacity-20 group-hover:opacity-40 transition-opacity pointer-events-none">
                           <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"></path></svg>
                         </div>
                         
                         <div className="relative z-10 flex-1 flex flex-col">
-                          <div className={`inline-block px-2 py-1 rounded text-[10px] font-black tracking-widest uppercase mb-4 border w-fit ${isSevere ? 'bg-fuchsia-950 text-[var(--color-spark-magenta)] border-fuchsia-900' : 'bg-zinc-800 text-zinc-400 border-zinc-700'}`}>
+                          <div className={`inline-block px-2 py-1 rounded text-[10px] font-black tracking-widest uppercase mb-4 border w-fit ${isSevere ? 'bg-fuchsia-950 text-[var(--color-winter-purple)] border-fuchsia-900' : 'bg-zinc-800 text-zinc-400 border-zinc-700'}`}>
                             {isSevere ? 'CRITICAL FINDING' : 'OBSERVATION'}
                           </div>
                           <h4 className="text-lg font-bold text-white mb-3 leading-tight">{cause.title}</h4>
@@ -620,7 +620,7 @@ export default function Home() {
                           
                           {/* DYNAMIC DATA VISUALIZATION */}
                           {cause.data_viz && cause.data_viz.type !== 'none' && (
-                            <div className="mb-6 bg-white/5 border border-white/10 p-4 rounded-2xl">
+                            <div className="mb-6 bg-white/5 border border-[#333333] p-4 rounded-2xl">
                               
                               {/* Type 1: Volume vs Mcap Ratio */}
                               {cause.data_viz.type === 'volume_mcap_ratio' && (
@@ -630,9 +630,9 @@ export default function Home() {
                                     <span>MCap: {formatCurrency(cause.data_viz.mcap)}</span>
                                   </div>
                                   <div className="w-full bg-zinc-800 rounded-full h-2.5 mb-1 overflow-hidden flex">
-                                    <div className={`h-2.5 rounded-full ${cause.data_viz.ratio < 5 ? 'bg-[var(--color-spark-magenta)]' : 'bg-emerald-500'}`} style={{ width: `${Math.min(cause.data_viz.ratio, 100)}%` }}></div>
+                                    <div className={`h-2.5 rounded-full ${cause.data_viz.ratio < 5 ? 'bg-[var(--color-winter-purple)]' : 'bg-emerald-500'}`} style={{ width: `${Math.min(cause.data_viz.ratio, 100)}%` }}></div>
                                   </div>
-                                  <div className="text-right text-[10px] font-sans font-medium text-[var(--color-spark-teal)]">{cause.data_viz.ratio.toFixed(2)}% Ratio</div>
+                                  <div className="text-right text-[10px] font-sans font-medium text-[var(--color-winter-green)]">{cause.data_viz.ratio.toFixed(2)}% Ratio</div>
                                 </div>
                               )}
 
@@ -643,12 +643,12 @@ export default function Home() {
                                     <div key={i}>
                                       <div className="flex justify-between text-xs font-sans font-medium mb-1">
                                         <span className="text-zinc-500">{t.label}</span>
-                                        <span className={t.val >= 0 ? "text-emerald-500" : "text-[var(--color-spark-magenta)]"}>{t.val.toFixed(2)}%</span>
+                                        <span className={t.val >= 0 ? "text-emerald-500" : "text-[var(--color-winter-purple)]"}>{t.val.toFixed(2)}%</span>
                                       </div>
                                       <div className="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden flex">
                                         {/* Midpoint is 50%, so we offset based on value */}
                                         <div className="w-1/2 flex justify-end">
-                                          {t.val < 0 && <div className="h-full bg-[var(--color-spark-magenta)] rounded-l-full" style={{ width: `${Math.min(Math.abs(t.val), 100)}%` }}></div>}
+                                          {t.val < 0 && <div className="h-full bg-[var(--color-winter-purple)] rounded-l-full" style={{ width: `${Math.min(Math.abs(t.val), 100)}%` }}></div>}
                                         </div>
                                         <div className="w-1/2 flex justify-start">
                                           {t.val > 0 && <div className="h-full bg-emerald-500 rounded-r-full" style={{ width: `${Math.min(t.val, 100)}%` }}></div>}
@@ -668,16 +668,16 @@ export default function Home() {
                                       <span className="text-zinc-300">{formatCurrency(cause.data_viz.mcap)}</span>
                                     </div>
                                     <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
-                                      <div className="bg-[var(--color-spark-teal)] h-full" style={{ width: `${(cause.data_viz.mcap / Math.max(cause.data_viz.fdv, 1)) * 100}%` }}></div>
+                                      <div className="bg-[var(--color-winter-green)] h-full" style={{ width: `${(cause.data_viz.mcap / Math.max(cause.data_viz.fdv, 1)) * 100}%` }}></div>
                                     </div>
                                   </div>
                                   <div>
                                     <div className="flex justify-between text-xs font-sans font-medium mb-1">
                                       <span className="text-zinc-500">FDV (Fully Diluted)</span>
-                                      <span className="text-[var(--color-spark-magenta)]">{formatCurrency(cause.data_viz.fdv)}</span>
+                                      <span className="text-[var(--color-winter-purple)]">{formatCurrency(cause.data_viz.fdv)}</span>
                                     </div>
                                     <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
-                                      <div className="bg-[var(--color-spark-magenta)] h-full w-full"></div>
+                                      <div className="bg-[var(--color-winter-purple)] h-full w-full"></div>
                                     </div>
                                   </div>
                                 </div>
@@ -685,7 +685,7 @@ export default function Home() {
                             </div>
                           )}
                           
-                          <div className="flex items-center space-x-2 bg-zinc-950 border border-zinc-800 px-3 py-2 rounded-lg text-xs text-[var(--color-spark-teal)] font-sans font-medium mt-auto">
+                          <div className="flex items-center space-x-2 bg-zinc-950 border border-zinc-800 px-3 py-2 rounded-lg text-xs text-[var(--color-winter-green)] font-sans font-medium mt-auto">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                             <span>SOURCE: {cause.source}</span>
                           </div>
@@ -708,19 +708,19 @@ export default function Home() {
                 <div className="p-4 border-b border-teal-900/50 flex items-center justify-between bg-transparent backdrop-blur-xl relative z-10">
                   <div className="flex items-center space-x-3">
                     <div className="relative flex items-center justify-center w-8 h-8 rounded bg-teal-950 border border-teal-800">
-                      <svg className="w-5 h-5 text-[var(--color-spark-teal)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"></path></svg>
+                      <svg className="w-5 h-5 text-[var(--color-winter-green)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"></path></svg>
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-cyan-100 tracking-widest uppercase">DOCTOR AGENT OVERRIDE</h3>
-                      <p className="text-[10px] font-sans font-medium text-[var(--color-spark-teal)]/70">SECURE ENCRYPTED COMM CHANNEL</p>
+                      <p className="text-[10px] font-sans font-medium text-[var(--color-winter-green)]/70">SECURE ENCRYPTED COMM CHANNEL</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-spark-teal)] opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-spark-teal)]"></span>
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-winter-green)] opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-winter-green)]"></span>
                     </span>
-                    <span className="text-[10px] font-sans font-medium text-[var(--color-spark-teal)] uppercase">Agent Online</span>
+                    <span className="text-[10px] font-sans font-medium text-[var(--color-winter-green)] uppercase">Agent Online</span>
                   </div>
                 </div>
                 
@@ -731,12 +731,12 @@ export default function Home() {
                       <div className={`max-w-[80%] p-4 rounded-xl shadow-lg leading-relaxed ${
                         msg.role === 'user' 
                           ? 'bg-teal-900/40 border border-teal-800/50 text-cyan-100 rounded-br-none' 
-                          : 'bg-white/5 border border-white/10 text-zinc-300 rounded-bl-none backdrop-blur-md'
+                          : 'bg-white/5 border border-[#333333] text-zinc-300 rounded-bl-none backdrop-blur-md'
                       }`}>
                         {msg.role === 'doctor' && (
                           <div className="flex items-center gap-2 mb-2 border-b border-zinc-800 pb-2">
-                            <svg className="w-3 h-3 text-[var(--color-spark-teal)]" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path></svg>
-                            <span className="text-[10px] text-[var(--color-spark-teal)] font-bold tracking-widest uppercase">Agent Response</span>
+                            <svg className="w-3 h-3 text-[var(--color-winter-green)]" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path></svg>
+                            <span className="text-[10px] text-[var(--color-winter-green)] font-bold tracking-widest uppercase">Agent Response</span>
                           </div>
                         )}
                         {msg.text}
@@ -748,17 +748,17 @@ export default function Home() {
                 {/* Chat Input */}
                 <div className="p-4 border-t border-teal-900/50 bg-zinc-950/80 relative z-10">
                   <form onSubmit={handleChat} className="flex space-x-2 relative group">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-[var(--color-spark-teal)] font-black">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-[var(--color-winter-green)] font-black">
                       &gt;_
                     </div>
                     <input 
                       name="chat" 
                       type="text" 
-                      className="flex-1 bg-zinc-900 border border-zinc-800 pl-12 pr-4 py-3 rounded-lg text-sm text-cyan-100 focus:outline-none focus:border-[var(--color-spark-teal)]/50 focus:ring-1 focus:ring-[var(--color-spark-teal)]/50 font-sans font-medium placeholder-zinc-600 transition-all shadow-inner" 
+                      className="flex-1 bg-[var(--color-winter-card)] border border-zinc-800 pl-12 pr-4 py-3 rounded-lg text-sm text-cyan-100 focus:outline-none focus:border-[var(--color-winter-green)]/50 focus:ring-1 focus:ring-[var(--color-winter-green)]/50 font-sans font-medium placeholder-zinc-600 transition-all shadow-inner" 
                       placeholder="Type query to Doctor Agent..." 
                       autoComplete="off"
                     />
-                    <button type="submit" className="glass-pill hover:bg-white/10 text-[var(--color-spark-teal)] px-6 py-3 rounded-lg transition-colors flex items-center justify-center font-bold tracking-widest uppercase text-xs">
+                    <button type="submit" className="glass-pill hover:bg-white/10 text-[var(--color-winter-green)] px-6 py-3 rounded-lg transition-colors flex items-center justify-center font-bold tracking-widest uppercase text-xs">
                       Send
                     </button>
                   </form>
