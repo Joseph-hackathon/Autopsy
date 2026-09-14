@@ -49,6 +49,18 @@ class CMCClient:
     @staticmethod
     def get_info(query: str):
         url = f"{BASE_URL}/v1/cryptocurrency/info"
+        
+        OVERRIDES = {
+            "FTT": "ftx-token",
+            "LUNA": "terra-luna",
+            "ROUTE": "router-protocol-2"
+        }
+        
+        if query.upper() in OVERRIDES:
+            res = requests.get(url, headers=HEADERS, params={"slug": OVERRIDES[query.upper()]})
+            if res.status_code == 200:
+                return res.json()
+        
         try:
             res = requests.get(url, headers=HEADERS, params={"symbol": query.upper()})
             res.raise_for_status()
@@ -64,22 +76,39 @@ class CMCClient:
     def resolve_token_identity(query: str):
         """Resolves token identity, detecting migrations (e.g. Router Protocol New)."""
         url = f"{BASE_URL}/v1/cryptocurrency/info"
-        try:
-            res = requests.get(url, headers=HEADERS, params={"symbol": query.upper()})
-            res.raise_for_status()
-            data = res.json()
-            key = list(data["data"].keys())[0]
-            token_data = data["data"][key]
-        except:
+        
+        OVERRIDES = {
+            "FTT": "ftx-token",
+            "LUNA": "terra-luna",
+            "ROUTE": "router-protocol-2"
+        }
+        
+        token_data = None
+        
+        if query.upper() in OVERRIDES:
+            res = requests.get(url, headers=HEADERS, params={"slug": OVERRIDES[query.upper()]})
+            if res.status_code == 200:
+                data = res.json()
+                key = list(data["data"].keys())[0]
+                token_data = data["data"][key]
+
+        if not token_data:
             try:
-                slug = query.lower().replace(" ", "-")
-                res = requests.get(url, headers=HEADERS, params={"slug": slug})
+                res = requests.get(url, headers=HEADERS, params={"symbol": query.upper()})
                 res.raise_for_status()
                 data = res.json()
                 key = list(data["data"].keys())[0]
                 token_data = data["data"][key]
-            except Exception as e:
-                return {"error": str(e)}
+            except:
+                try:
+                    slug = query.lower().replace(" ", "-")
+                    res = requests.get(url, headers=HEADERS, params={"slug": slug})
+                    res.raise_for_status()
+                    data = res.json()
+                    key = list(data["data"].keys())[0]
+                    token_data = data["data"][key]
+                except Exception as e:
+                    return {"error": str(e)}
 
         cmc_id = token_data["id"]
         name = token_data["name"]
