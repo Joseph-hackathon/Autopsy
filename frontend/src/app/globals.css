@@ -1,9 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Teko:wght@400;600&display=swap');
 @import "tailwindcss";
 
 @theme {
   --color-spark-teal: #00c49a;
   --color-spark-magenta: #b026ff;
   --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+.font-blender {
+  font-family: 'Share Tech Mono', monospace;
 }
 
 body {

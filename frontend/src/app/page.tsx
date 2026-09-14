@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import BackgroundEffects from "@/components/BackgroundEffects";
+import CanvasStat from "@/components/CanvasStat";
 
 const EXPLORER_PROJECTS = [
   { symbol: "ROUTE", name: "Router Protocol", score: 63, reason: "ECONOMIC FAILURE", velocity: "Accelerating", halfLife: "15 days", sustainability: "0.20", trend: [-10, -20, -50, -65, -80], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/8782.png", drawdown: "-87.3%", summary: "Revenue fails to cover infrastructure costs, causing a liquidity spiral and heavy reliance on inflationary emissions." },
@@ -169,48 +170,56 @@ export default function Home() {
       </header>
 
       <main className="max-w-[1400px] mx-auto p-4 md:p-6 mt-2 relative z-10">
-        
+          
+        {/* Wintermute-style Stats Row */}
+        <div className="flex flex-col md:flex-row gap-8 mb-8 border-b border-white/5 pb-8">
+          <CanvasStat value="1,432" label="Monitored Assets" />
+          <CanvasStat value="$48.2B" label="Value Destroyed" />
+          <CanvasStat value="38" label="Critical Failures" />
+          <CanvasStat value="Active" label="Network Status" />
+        </div>
+
         {/* Empty State: Explorer Table */}
         {!result && !loading && !error && (
           <div className="w-full mt-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
               <div>
-                <h1 className="text-2xl font-black text-white flex items-center gap-2">
-                  <svg className="w-6 h-6 text-[var(--color-spark-magenta)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <h1 className="text-xl font-blender text-white flex items-center gap-2 uppercase tracking-widest">
+                  <svg className="w-5 h-5 text-[var(--color-spark-teal)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                   AUTOPSY EXPLORER
                 </h1>
-                <p className="text-zinc-500 text-sm mt-1">Live failure metrics and structural decay telemetry for tracked assets.</p>
+                <p className="text-[#888888] text-sm mt-1 font-sans">Live failure metrics and structural decay telemetry for tracked assets.</p>
               </div>
               <div className="flex gap-2">
-                <button className="px-4 py-2 text-xs font-bold text-zinc-400 bg-zinc-900/50 border border-zinc-800 rounded hover:bg-zinc-800 transition-colors">Filter: High Risk</button>
-                <button className="px-4 py-2 text-xs font-bold text-zinc-400 bg-zinc-900/50 border border-zinc-800 rounded hover:bg-zinc-800 transition-colors">Sector</button>
+                <button className="px-4 py-2 text-xs font-bold text-[#ececec] bg-black border border-white/10 rounded hover:border-[var(--color-spark-teal)] transition-colors uppercase font-blender">Filter: High Risk</button>
+                <button className="px-4 py-2 text-xs font-bold text-[#ececec] bg-black border border-white/10 rounded hover:border-[var(--color-spark-teal)] transition-colors uppercase font-blender">Sector</button>
               </div>
             </div>
 
-            <div className="w-full border border-zinc-800/80 rounded-xl overflow-hidden bg-zinc-950/50 shadow-2xl backdrop-blur-sm">
+            <div className="w-full border-t border-white/10 overflow-hidden bg-transparent">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm whitespace-nowrap">
                   <thead>
-                    <tr className="border-b border-zinc-800 bg-zinc-900/40 text-xs text-zinc-500 font-bold uppercase tracking-wider">
-                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300 w-1/3">Target Asset & Forensic Summary</th>
-                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Risk Profile</th>
-                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Drawdown & Trend</th>
-                      <th className="px-6 py-4 cursor-pointer hover:text-zinc-300">Structural Decay</th>
-                      <th className="px-6 py-4 text-right">Action</th>
+                    <tr className="border-b border-white/5 text-xs text-[#888888] font-blender uppercase tracking-widest">
+                      <th className="px-6 py-4 font-normal cursor-pointer hover:text-white w-1/3">Target Asset & Forensic Summary</th>
+                      <th className="px-6 py-4 font-normal cursor-pointer hover:text-white">Risk Profile</th>
+                      <th className="px-6 py-4 font-normal cursor-pointer hover:text-white">Drawdown & Trend</th>
+                      <th className="px-6 py-4 font-normal cursor-pointer hover:text-white">Structural Decay</th>
+                      <th className="px-6 py-4 font-normal text-right">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-800/50">
+                  <tbody className="divide-y divide-white/5">
                     {currentProjects.map((proj, idx) => (
-                      <tr key={idx} className="hover:bg-zinc-900/60 transition-colors group cursor-pointer" onClick={() => performInvestigation(proj.symbol)}>
+                      <tr key={idx} className="hover:bg-white/5 transition-colors group cursor-pointer" onClick={() => performInvestigation(proj.symbol)}>
                         <td className="px-6 py-4 whitespace-normal">
                           <div className="flex items-start gap-4">
-                            <img src={proj.icon} alt={proj.name} className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-700/50 object-cover mt-1 flex-shrink-0 shadow-lg" />
+                            <img src={proj.icon} alt={proj.name} className="w-10 h-10 rounded-none bg-black border border-white/10 object-cover mt-1 flex-shrink-0 grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
                             <div className="flex flex-col gap-1.5">
                               <div className="flex items-center gap-2">
-                                <span className="font-black text-zinc-100 text-base tracking-tight">{proj.name}</span>
-                                <span className="text-xs font-bold text-zinc-500 bg-zinc-800/50 px-1.5 py-0.5 rounded">{proj.symbol}</span>
+                                <span className="font-blender text-[#ececec] text-lg uppercase tracking-wider">{proj.name}</span>
+                                <span className="text-xs font-mono text-[#888888] bg-white/5 border border-white/10 px-1.5 py-0.5">{proj.symbol}</span>
                               </div>
-                              <p className="text-xs text-zinc-400 leading-relaxed max-w-sm">
+                              <p className="text-xs text-[#888888] leading-relaxed max-w-sm font-sans">
                                 {proj.summary}
                               </p>
                             </div>
@@ -346,16 +355,16 @@ export default function Home() {
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
             
             {/* HERO METRICS BANNER */}
-            <div className="glass-panel rounded-2xl p-6 relative overflow-hidden group">
+            <div className="border border-white/10 rounded-none p-6 relative overflow-hidden group bg-black">
               {/* Dynamic decorative background glow */}
               <div className={`absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[120px] opacity-20 pointer-events-none transition-colors duration-1000 ${result.score > 60 ? 'bg-rose-600' : 'bg-cyan-600'}`}></div>
               
               <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-start relative z-10">
                 {/* Token Identity */}
                 <div className="flex items-center gap-6 lg:w-1/3">
-                  <div className="w-20 h-20 rounded-2xl glass-pill flex items-center justify-center p-2 shadow-xl relative">
+                  <div className="w-20 h-20 flex items-center justify-center p-2 border border-white/10 bg-transparent relative grayscale opacity-90">
                     {result.logo ? (
-                      <img src={result.logo} alt={result.name} className="w-full h-full object-contain drop-shadow-lg rounded-full" />
+                      <img src={result.logo} alt={result.name} className="w-full h-full object-contain" />
                     ) : (
                       <span className="text-2xl font-bold">{result.token.charAt(0)}</span>
                     )}
