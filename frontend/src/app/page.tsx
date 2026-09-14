@@ -50,6 +50,24 @@ export default function Home() {
   const totalPages = Math.ceil(EXPLORER_PROJECTS.length / itemsPerPage);
   const currentProjects = EXPLORER_PROJECTS.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  const getSourceLink = (source: string, result: any) => {
+    if (!source || !result) return null;
+    const lower = source.toLowerCase();
+    if (lower.includes('cmc') || lower.includes('coinmarketcap')) {
+      return result.identity?.slug ? `https://coinmarketcap.com/currencies/${result.identity.slug}/` : 'https://coinmarketcap.com/';
+    }
+    if (lower.includes('on-chain') || lower.includes('contract') || lower.includes('explorer')) {
+      return result.links?.explorer || null;
+    }
+    if (lower.includes('social') || lower.includes('twitter')) {
+      return result.links?.twitter || null;
+    }
+    if (lower.includes('website') || lower.includes('official')) {
+      return result.links?.website || null;
+    }
+    return null;
+  };
+
   const performInvestigation = async (symbolToSearch: string) => {
     if (!symbolToSearch) return;
     setQuery(symbolToSearch);
@@ -685,10 +703,20 @@ export default function Home() {
                             </div>
                           )}
                           
-                          <div className="flex items-center space-x-2 bg-zinc-950 border border-zinc-800 px-3 py-2 rounded-lg text-xs text-[var(--color-winter-green)] font-sans font-medium mt-auto">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                            <span>SOURCE: {cause.source}</span>
-                          </div>
+                          {(() => {
+                            const sourceLink = getSourceLink(cause.source, result);
+                            return sourceLink ? (
+                              <a href={sourceLink} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 bg-[#1c1d1c] border border-[#333333] px-3 py-2 rounded text-xs text-[var(--color-winter-green)] hover:bg-[var(--color-winter-green)] hover:text-black transition-colors font-sans font-medium mt-auto cursor-pointer">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                <span>SOURCE: {cause.source}</span>
+                              </a>
+                            ) : (
+                              <div className="flex items-center space-x-2 bg-[#1c1d1c] border border-[#333333] px-3 py-2 rounded text-xs text-[var(--color-winter-green)] font-sans font-medium mt-auto">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                <span>SOURCE: {cause.source}</span>
+                              </div>
+                            );
+                          })()}
                         </div>
                       </div>
                     )
