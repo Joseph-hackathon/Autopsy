@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import BackgroundEffects from "@/components/BackgroundEffects";
 
 const EXPLORER_PROJECTS = [
   { symbol: "ROUTE", name: "Router Protocol", score: 63, reason: "ECONOMIC FAILURE", velocity: "Accelerating", halfLife: "15 days", sustainability: "0.20", trend: [-10, -20, -50, -65, -80], icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/8782.png", drawdown: "-87.3%", summary: "Revenue fails to cover infrastructure costs, causing a liquidity spiral and heavy reliance on inflationary emissions." },
@@ -138,9 +139,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-transparent text-zinc-300 font-sans selection:bg-teal-900 selection:text-cyan-100 overflow-x-hidden relative">
+      <BackgroundEffects />
 
       {/* HEADER */}
-      <header className=" bg-transparent p-4 sticky top-0 z-50 backdrop-blur-xl">
+      <header className="bg-transparent p-4 sticky top-0 z-50 backdrop-blur-md border-b border-white/5">
         <div className="max-w-[1400px] mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-4 cursor-pointer hover:opacity-80 transition-opacity" onClick={() => { setResult(null); setError(""); setQuery(""); }}>
             <img src="/autopsy_white.png" alt="Crypto Autopsy Logo" className="h-8 md:h-10 w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" />
