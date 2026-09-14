@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Autopsy | Crypto Death Investigation",
+  title: "Autopsy",
   description: "Advanced Data Science & AI Forensic Agent for dying cryptocurrencies.",
 };
 
