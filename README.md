@@ -1,8 +1,8 @@
-# Autopsy 2.0 (Forensic Intelligence Engine)
+# Autopsy (Forensic Intelligence Engine)
 
 **A deterministic data science pipeline for diagnosing cryptocurrency failures.**
 
-Most crypto analytics tools look for the next "100x Moonshot." Autopsy 2.0 acts as a forensic pathologist for dying, dead, and bleeding cryptocurrencies. Rather than generating a single arbitrary "Risk Score", it utilizes a **3-Layer Correlation Architecture** to produce an exact chronological **Evidence Chain (Failure Propagation Graph)** explaining *why* a project is fundamentally failing.
+Most crypto analytics tools look for the next "100x Moonshot." Autopsy acts as a forensic pathologist for dying, dead, and bleeding cryptocurrencies. Rather than generating a single arbitrary "Risk Score", it utilizes a **3-Layer Correlation Architecture** to produce an exact chronological **Evidence Chain (Failure Propagation Graph)** explaining *why* a project is fundamentally failing.
 
 | | |
 |---|---|
@@ -15,7 +15,7 @@ Most crypto analytics tools look for the next "100x Moonshot." Autopsy 2.0 acts 
 
 ## 🔬 The Interface (New in 2.0)
 
-Autopsy 2.0 has been completely redesigned into a professional-grade forensic analysis tool inspired by stark, minimalist, dark-mode terminal aesthetics (e.g., Wintermute):
+Autopsy has been completely redesigned into a professional-grade forensic analysis tool inspired by stark, minimalist, dark-mode terminal aesthetics (e.g., Wintermute):
 
 - **Token Terminal Explorer:** A dense, paginated, report-like ranking board sorting tokens by Risk Score, Velocity, and Survival Ratios.
 - **Forensic Investigation Dashboard:** When a token is investigated, the system renders a highly technical telemetry view. The dashboard presents raw data sources, correlation logic, an 8-Organ Vital Signs Matrix, and dynamic HTML5 Canvas data-scrambling effects.
@@ -25,7 +25,7 @@ Autopsy 2.0 has been completely redesigned into a professional-grade forensic an
 
 ## ⚙️ The 3-Layer Architecture
 
-Autopsy 2.0 introduces a strict separation between quantitative market telemetry, business economics, and qualitative diagnosis.
+Autopsy introduces a strict separation between quantitative market telemetry, business economics, and qualitative diagnosis.
 
 ### Layer 1: The 8-Organ Vital Signs Matrix
 Every token is independently scored (0-100, where 100 is catastrophic failure) across 8 dimensions:
@@ -60,7 +60,7 @@ The system does not hallucinate. It distinguishes strictly between OBSERVED data
 
 ## 🌐 CoinMarketCap API Integration & Data Telemetry
 
-Autopsy 2.0 is heavily dependent on the sheer scale, depth, and accuracy of the **CoinMarketCap Pro API**. We do not rely on lagging indicators or simple price charts; our Python `score_engine.py` ingests massive amounts of real-time CMC telemetry to quantify structural decay mathematically.
+Autopsy is heavily dependent on the sheer scale, depth, and accuracy of the **CoinMarketCap Pro API**. We do not rely on lagging indicators or simple price charts; our Python `score_engine.py` ingests massive amounts of real-time CMC telemetry to quantify structural decay mathematically.
 
 ### 1. Disambiguation & Identity Resolution (`/v2/cryptocurrency/info`)
 When users search for a token like `LUNA` or `FTT`, there are often multiple dead contracts, V1/V2 migrations, or identically named scam tokens. 

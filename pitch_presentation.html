@@ -1,0 +1,391 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autopsy - Pitch Deck</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1c1d1c;
+            --card-color: #252725;
+            --text-main: #ececec;
+            --text-muted: #888888;
+            --accent-green: #00ff66;
+            --accent-purple: #9d8df1;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        /* Slide Container */
+        .slide {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--bg-color);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding: 80px 120px;
+            display: flex;
+            flex-direction: column;
+            page-break-after: always;
+            border-bottom: 2px solid #000;
+        }
+
+        .slide:last-child {
+            page-break-after: auto;
+            border-bottom: none;
+        }
+
+        /* Top Brand Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 60px;
+        }
+
+        .brand {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 32px;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        .slide-number {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 24px;
+            color: var(--text-muted);
+        }
+
+        /* Typography */
+        h1 {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 84px;
+            margin: 0 0 20px 0;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 42px;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin: 0 0 60px 0;
+        }
+
+        h3 {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 52px;
+            color: var(--accent-green);
+            margin: 0 0 30px 0;
+            text-transform: uppercase;
+        }
+
+        p {
+            font-size: 32px;
+            line-height: 1.6;
+            margin: 0 0 40px 0;
+        }
+
+        /* Layouts */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-color);
+            border: 1px solid #333;
+            padding: 40px;
+            border-left: 6px solid var(--accent-purple);
+        }
+
+        .card.green {
+            border-left: 6px solid var(--accent-green);
+        }
+
+        .card h4 {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 32px;
+            color: #fff;
+            margin: 0 0 20px 0;
+            text-transform: uppercase;
+        }
+
+        .card p {
+            font-size: 24px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        
+        .image-placeholder {
+            width: 100%;
+            height: 280px;
+            background-color: #333;
+            border: 2px dashed #555;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 20px;
+        }
+
+        
+        .screenshot {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            object-position: top center;
+            border-radius: 8px;
+            margin: 0 auto 30px auto;
+            display: block;
+            border: 1px solid #444;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
+
+        /* Lists */
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        ul li {
+            font-size: 32px;
+            margin-bottom: 24px;
+            padding-left: 40px;
+            position: relative;
+        }
+
+        ul li::before {
+            content: "■";
+            position: absolute;
+            left: 0;
+            color: var(--accent-green);
+        }
+
+        /* Decorative Elements */
+        .mesh {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 800px;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 102, 0.05) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(0, 255, 102, 0.05) 2px, transparent 2px);
+            background-size: 60px 60px;
+            opacity: 0.5;
+            z-index: 0;
+            pointer-events: none;
+            mask-image: linear-gradient(to right, transparent, black);
+            -webkit-mask-image: linear-gradient(to right, transparent, black);
+        }
+
+        .z-10 {
+            z-index: 10;
+            position: relative;
+        }
+
+        @media print {
+            @page {
+                size: 1920px 1080px;
+                margin: 0;
+            }
+            body {
+                background-color: var(--bg-color);
+            }
+            .slide {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Slide 1 -->
+    <div class="slide">
+        <div class="mesh"></div>
+        <div class="header z-10">
+            <img src="logo_full.png" alt="Autopsy Full Logo" style="height: 80px; object-fit: contain;">
+            <div class="slide-number">01</div>
+        </div>
+        <div class="content z-10">
+            <h1>Autopsy does not predict death.<br>Autopsy reconstructs failure.</h1>
+            <h2>Advanced Data Science & AI Forensic Agent for Dying Cryptocurrencies.</h2>
+            <p style="max-width: 1200px;">
+                In a market where 90% of projects eventually fail, the industry obsesses over predicting the next moonshot. But true risk management comes from understanding <strong style="color: var(--accent-green);">exactly how and why</strong> digital assets die.
+            </p>
+            <p style="max-width: 1200px; color: var(--text-muted);">
+                Autopsy is a purely deterministic, forensic telemetry platform that analyzes the structural collapse of crypto assets.
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="slide">
+        <div class="header z-10">
+            <div class="brand" style="display: flex; align-items: center; gap: 15px;"><img src="frontend/src/app/icon.png" alt="Logo" style="height: 60px; width: 60px; border-radius: 4px; object-fit: contain;">The Problem</div>
+            <div class="slide-number">02</div>
+        </div>
+        <div class="content z-10 grid-2" style="margin-top: 180px; align-items: start;">
+            <div>
+                <h3>The Post-Mortem<br>Blindspot</h3>
+                <p>When a token collapses, retail investors and institutions are left in the dark.</p>
+                <p style="color: var(--text-muted);">Was it a market-wide correction? A liquidity drain? A centralized honeypot? Or a slow fundamental decay?</p>
+            </div>
+            <div>
+                <div class="card" style="border-left-color: #ff3333; height: 100%;">
+                    <h4 style="color: #ff3333;">Current Analytics Tools Fail Because:</h4>
+                    <ul>
+                        <li>They focus only on price action (charts), missing underlying liquidity structural decay.</li>
+                        <li>They rely heavily on subjective sentiment rather than deterministic mathematics.</li>
+                        <li>They do not provide a concrete "Cause of Death" when a project hits a terminal spiral.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="slide">
+        <div class="header z-10">
+            <div class="brand" style="display: flex; align-items: center; gap: 15px;"><img src="frontend/src/app/icon.png" alt="Logo" style="height: 60px; width: 60px; border-radius: 4px; object-fit: contain;">The Solution</div>
+            <div class="slide-number">03</div>
+        </div>
+        <div class="content z-10">
+            <h3 style="text-align: center; margin-bottom: 60px;">Forensic Telemetry</h3>
+            <p style="text-align: center; max-width: 1400px; margin: 0 auto 80px auto;">
+                Autopsy introduces the <strong style="color: var(--accent-green);">Terminal Death Score (/100)</strong>—a unified metric that quantifies the structural decay of an asset using live, on-chain, and exchange data.
+            </p>
+            
+            <div class="grid-3">
+                <div class="card green">
+                    <img src="methodology_tab.png" class="screenshot" alt="Methodology Tab">
+                    <h4>CMC & DEX Integration</h4>
+                    <p>Pulls direct order-book depth, holder concentration, and 90-day drawdown matrices.</p>
+                </div>
+                <div class="card green">
+                    <img src="overview_tab.png" class="screenshot" alt="Overview Tab">
+                    <h4>Forensic Diagnosis</h4>
+                    <p>Automatically diagnoses the specific collapse vector (e.g., Liquidity Exhaustion, Economic Pressure).</p>
+                </div>
+                <div class="card green">
+                    <img src="terminal_tab.png" class="screenshot" alt="AI Terminal">
+                    <h4>AI Doctor Agent</h4>
+                    <p>An integrated AI terminal that acts as a clinical forensic narrator, explaining the exact timeline of the collapse.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4 -->
+    <div class="slide">
+        <div class="header z-10">
+            <div class="brand" style="display: flex; align-items: center; gap: 15px;"><img src="frontend/src/app/icon.png" alt="Logo" style="height: 60px; width: 60px; border-radius: 4px; object-fit: contain;">Methodology</div>
+            <div class="slide-number">04</div>
+        </div>
+        <div class="content z-10">
+            <h3 style="margin-bottom: 20px;">The 3-Layer Score Engine</h3>
+            <p style="color: var(--text-muted); margin-bottom: 60px;">We do not rely on a single metric; instead, we analyze structural relationships.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 30px;">
+                <div class="card">
+                    <div style="display: flex; gap: 40px; align-items: center;">
+                        <h1 style="color: var(--accent-purple); margin: 0; font-size: 72px;">01</h1>
+                        <div>
+                            <h4>Market Dynamics (Volume vs. FDV)</h4>
+                            <p>We cross-reference 24h trading volume against Fully Diluted Valuation. A chronically low ratio indicates heavy supply overhang and 'ghost chain' properties.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div style="display: flex; gap: 40px; align-items: center;">
+                        <h1 style="color: var(--accent-purple); margin: 0; font-size: 72px;">02</h1>
+                        <div>
+                            <h4>Liquidity Exhaustion</h4>
+                            <p>If less than 1% of the asset's value is backed by actual DEX/CEX liquidity, a death spiral is imminent upon any sell pressure.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="display: flex; gap: 40px; align-items: center;">
+                        <h1 style="color: var(--accent-purple); margin: 0; font-size: 72px;">03</h1>
+                        <div>
+                            <h4>Structural Decay (Drawdown Matrix)</h4>
+                            <p>We evaluate continuous drawdown over 7d, 30d, 60d, and 90d periods. Persistent decay without mean reversion confirms terminal holder capitulation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5 -->
+    <div class="slide">
+        <div class="mesh" style="left: 0; right: auto; transform: scaleX(-1);"></div>
+        <div class="header z-10">
+            <div class="brand" style="display: flex; align-items: center; gap: 15px;"><img src="frontend/src/app/icon.png" alt="Logo" style="height: 60px; width: 60px; border-radius: 4px; object-fit: contain;">Market Application</div>
+            <div class="slide-number">05</div>
+        </div>
+        <div class="content z-10 grid-2">
+            <div>
+                <h3>Target Audience</h3>
+                <p>Autopsy brings Wall Street-level forensic risk analysis to Web3.</p>
+                <ul>
+                    <li><strong style="color: #fff;">Institutional Risk Managers & Hedge Funds:</strong> Identify toxic liquidity structures before they collapse the portfolio.</li>
+                    <li><strong style="color: #fff;">Retail Analysts & Researchers:</strong> Understand the exact post-mortem of failed investments.</li>
+                    <li><strong style="color: #fff;">Protocol Architects:</strong> Study "Economic Unsustainability" to design better tokenomics.</li>
+                </ul>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <div class="card green">
+                    <h4 style="color: var(--accent-green);">The Future</h4>
+                    <p style="color: #fff; margin-bottom: 20px;">Autopsy will expand its on-chain forensics to include:</p>
+                    <ul style="font-size: 24px; line-height: 1.8;">
+                        <li style="font-size: 24px;">Autopsy report format update & data export features</li>
+                        <li style="font-size: 24px;">Application of various data analysis techniques & preprocessing pipelines</li>
+                        <li style="font-size: 24px;">Enterprise API endpoints & developer SDKs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
