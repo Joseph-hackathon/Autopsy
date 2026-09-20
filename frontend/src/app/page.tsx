@@ -200,7 +200,7 @@ export default function Home() {
         {/* Empty State: Explorer Table */}
         {!result && !loading && !error && (
           <div className="w-full mt-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6 gap-4">
               <div>
                 <h1 className="text-xl font-blender text-white flex items-center gap-2 uppercase tracking-widest">
                   <svg className="w-5 h-5 text-[var(--color-winter-green)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
@@ -208,9 +208,21 @@ export default function Home() {
                 </h1>
                 <p className="text-[#888888] text-sm mt-1 font-sans">Live failure metrics and structural decay telemetry for tracked assets.</p>
               </div>
-              <div className="flex gap-2">
-                <button className="px-6 py-2.5 text-xs font-bold text-black bg-[var(--color-winter-green)] hover:opacity-80 transition-opacity uppercase font-blender rounded flex items-center gap-2">Filter: High Risk <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></button>
-                <button className="px-6 py-2.5 text-xs font-bold text-[#ececec] bg-transparent border border-[var(--color-winter-green)] hover:bg-[var(--color-winter-green)] hover:text-black transition-colors uppercase font-blender rounded">Sector</button>
+              <div className="flex flex-wrap items-center gap-4">
+                {/* Powered by CMC Badge */}
+                <div className="flex items-center gap-3 bg-[#1c1d1c] border border-[#333333] px-4 py-2 rounded-none transition-all hover:border-[var(--color-winter-green)] group cursor-default">
+                  <div className="flex flex-col">
+                    <span className="text-[9px] text-[#888888] font-blender uppercase tracking-widest text-right group-hover:text-[var(--color-winter-green)] transition-colors">Data Telemetry Provided By</span>
+                    <span className="text-sm font-bold text-white font-sans tracking-wide">CoinMarketCap <span className="text-[var(--color-winter-green)] font-normal text-xs font-blender">PRO API</span></span>
+                  </div>
+                  <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center p-1 border-2 border-transparent group-hover:border-[var(--color-winter-green)] transition-all">
+                    <img src="https://coinmarketcap.com/favicon.ico" alt="CMC Logo" className="w-full h-full object-contain rounded-full" />
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button className="px-6 py-2.5 text-xs font-bold text-black bg-[var(--color-winter-green)] hover:opacity-80 transition-opacity uppercase font-blender rounded flex items-center gap-2">Filter: High Risk <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></button>
+                  <button className="px-6 py-2.5 text-xs font-bold text-[#ececec] bg-transparent border border-[var(--color-winter-green)] hover:bg-[var(--color-winter-green)] hover:text-black transition-colors uppercase font-blender rounded">Sector</button>
+                </div>
               </div>
             </div>
 
