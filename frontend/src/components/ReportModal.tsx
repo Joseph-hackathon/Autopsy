@@ -16,7 +16,7 @@ export default function ReportModal({ isOpen, onClose, result }: { isOpen: boole
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center bg-black/80 backdrop-blur-sm overflow-y-auto custom-scrollbar p-4 sm:p-8">
-      <div className="bg-[#1c1d1c] w-full max-w-5xl rounded border border-[#333333] shadow-2xl relative my-8 animate-in fade-in zoom-in-95 duration-300">
+      <div className="bg-[#1c1d1c] w-full max-w-5xl rounded border border-[#333333] shadow-2xl relative my-8 animate-in fade-in zoom-in-95 duration-300 h-fit">
         
         {/* Sticky Header with Close Button */}
         <div className="sticky top-0 bg-[#1c1d1c]/90 backdrop-blur border-b border-[#333333] p-4 flex justify-between items-center z-10">
