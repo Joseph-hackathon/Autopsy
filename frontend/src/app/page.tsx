@@ -107,7 +107,7 @@ export default function Home() {
     const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     
     // Generate Evidence HTML
-    const evidenceHtml = result.diagnosis.causes.map((cause: any) => `
+    const evidenceHtml = result.causes.map((cause: any) => `
       <div class="evidence-box">
         <h3>${cause.title}</h3>
         <p>${cause.description}</p>
@@ -116,7 +116,7 @@ export default function Home() {
     `).join('');
 
     // Generate Vital Signs HTML
-    const vitalsHtml = Object.entries(result.vital_signs).map(([key, value]: [string, any]) => `
+    const vitalsHtml = Object.entries(result.vital_scores).map(([key, value]: [string, any]) => `
       <div class="vital-box">
         <div class="vital-title">${key}</div>
         <div class="vital-score" style="color: ${Number(value) < 40 ? '#00ff66' : Number(value) < 70 ? '#f59e0b' : '#9d8df1'}">${value}</div>
