@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import ReportModal from "@/components/ReportModal";
 import Image from "next/image";
 import BackgroundEffects from "@/components/BackgroundEffects";
 import CanvasStat from "@/components/CanvasStat";
@@ -45,6 +46,7 @@ export default function Home() {
   const [error, setError] = useState("");
   const [chatHistory, setChatHistory] = useState<{role: string, text: string}[]>([]);
   const [activeTab, setActiveTab] = useState("overview");
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
   const totalPages = Math.ceil(EXPLORER_PROJECTS.length / itemsPerPage);
@@ -98,286 +100,7 @@ export default function Home() {
   };
 
   const handleDownloadReport = () => {
-    if (!result) return;
-    
-    const reportWindow = window.open('', '_blank');
-    if (!reportWindow) return;
-
-    const origin = window.location.origin;
-    const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    
-    // Generate Evidence HTML
-    const evidenceHtml = result.causes.map((cause: any) => `
-      <div class="evidence-box">
-        <h3>${cause.title}</h3>
-        <p>${cause.description}</p>
-        <span class="source">SOURCE: ${cause.source}</span>
-      </div>
-    `).join('');
-
-    // Generate Vital Signs HTML
-    const vitalsHtml = Object.entries(result.vital_scores).map(([key, value]: [string, any]) => `
-      <div class="vital-box">
-        <div class="vital-title">${key}</div>
-        <div class="vital-score" style="color: ${Number(value) < 40 ? '#00ff66' : Number(value) < 70 ? '#f59e0b' : '#9d8df1'}">${value}</div>
-      </div>
-    `).join('');
-
-    const html = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Autopsy Forensic Report - ${result.symbol}</title>
-        <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-        <style>
-          :root {
-            --bg: #1c1d1c;
-            --surface: #252725;
-            --green: #00ff66;
-            --purple: #9d8df1;
-            --text-main: #ffffff;
-            --text-dim: #888888;
-          }
-          body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 40px;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-          .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #333;
-            padding-bottom: 20px;
-            margin-bottom: 40px;
-          }
-          .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-          }
-          .logo {
-            width: 40px;
-            height: 40px;
-          }
-          .brand {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 24px;
-            font-weight: bold;
-            letter-spacing: 2px;
-          }
-          .report-meta {
-            text-align: right;
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--text-dim);
-            font-size: 14px;
-          }
-          .title-section {
-            margin-bottom: 40px;
-          }
-          .report-title {
-            color: var(--green);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 14px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-          }
-          .asset-name {
-            font-size: 48px;
-            font-weight: 700;
-            margin: 0 0 10px 0;
-          }
-          .asset-metrics {
-            display: flex;
-            gap: 30px;
-            color: var(--text-dim);
-            font-family: 'Share Tech Mono', monospace;
-          }
-          .metric-value {
-            color: var(--text-main);
-            font-size: 20px;
-          }
-          .section {
-            margin-bottom: 40px;
-            background-color: var(--surface);
-            border: 1px solid #333;
-            padding: 30px;
-          }
-          .section-title {
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--text-main);
-            font-size: 18px;
-            margin-top: 0;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #444;
-            padding-bottom: 10px;
-          }
-          .verdict-box {
-            background-color: rgba(157, 141, 241, 0.1);
-            border-left: 4px solid var(--purple);
-            padding: 20px;
-            margin-bottom: 30px;
-          }
-          .verdict-title {
-            color: var(--purple);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 14px;
-            margin-bottom: 5px;
-          }
-          .verdict-value {
-            font-size: 32px;
-            font-weight: 700;
-            margin: 0;
-          }
-          .score-box {
-            float: right;
-            text-align: right;
-            margin-top: -60px;
-          }
-          .score-title {
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--text-dim);
-            font-size: 12px;
-          }
-          .score-value {
-            font-size: 48px;
-            font-weight: 700;
-            color: ${result.score > 60 ? 'var(--purple)' : 'var(--green)'};
-          }
-          .vitals-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-          }
-          .vital-box {
-            background-color: var(--bg);
-            border: 1px solid #333;
-            padding: 15px;
-          }
-          .vital-title {
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--text-dim);
-            font-size: 12px;
-            text-transform: uppercase;
-          }
-          .vital-score {
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 10px;
-          }
-          .evidence-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-          }
-          .evidence-box {
-            background-color: var(--bg);
-            border: 1px solid #333;
-            padding: 20px;
-          }
-          .evidence-box h3 {
-            margin-top: 0;
-            font-size: 18px;
-            color: var(--text-main);
-          }
-          .evidence-box p {
-            color: var(--text-dim);
-            font-size: 14px;
-            line-height: 1.6;
-          }
-          .evidence-box .source {
-            display: inline-block;
-            margin-top: 15px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 10px;
-            color: var(--green);
-            background-color: rgba(0,255,102,0.1);
-            padding: 4px 8px;
-          }
-          .disclaimer {
-            margin-top: 60px;
-            text-align: center;
-            font-size: 10px;
-            color: #555;
-            font-family: 'Share Tech Mono', monospace;
-          }
-          @media print {
-            body { padding: 0; }
-            .section { break-inside: avoid; }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <div class="logo-container">
-            <img src="${origin}/icon.png" class="logo" alt="Autopsy Logo" />
-            <div class="brand">AUTOPSY</div>
-          </div>
-          <div class="report-meta">
-            <div>FORENSIC RESEARCH REPORT</div>
-            <div>DATE: ${date}</div>
-            <div>REF: AUTOPSY-${result.symbol}-${new Date().getTime().toString().slice(-6)}</div>
-          </div>
-        </div>
-
-        <div class="title-section">
-          <div class="report-title">TARGET ASSET INVESTIGATION</div>
-          <h1 class="asset-name">${result.name} (${result.symbol})</h1>
-          <div class="asset-metrics">
-            <div>MARKET CAP<br/><span class="metric-value">$${Number(result.raw_metrics?.market_cap).toLocaleString()}</span></div>
-            <div>24H VOLUME<br/><span class="metric-value">$${Number(result.raw_metrics?.volume_24h).toLocaleString()}</span></div>
-            <div>PRICE<br/><span class="metric-value">$${Number(result.raw_metrics?.price).toFixed(6)}</span></div>
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="section-title">ALGORITHMIC VERDICT</div>
-          <div class="verdict-box">
-            <div class="verdict-title">DIAGNOSIS</div>
-            <h2 class="verdict-value">${result.diagnosis.verdict}</h2>
-            <div class="score-box">
-              <div class="score-title">DEATH SCORE</div>
-              <div class="score-value">${result.score}</div>
-            </div>
-          </div>
-          
-          <div class="section-title" style="margin-top: 40px;">8-ORGAN VITAL SIGNS</div>
-          <div class="vitals-grid">
-            ${vitalsHtml}
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="section-title">FORENSIC FINDINGS (CAUSES OF COLLAPSE)</div>
-          <div class="evidence-grid">
-            ${evidenceHtml}
-          </div>
-        </div>
-
-        <div class="disclaimer">
-          GENERATED BY AUTOPSY DATA SCIENCE PIPELINE.<br/>
-          DATA TELEMETRY PROVIDED BY COINMARKETCAP PRO API.
-        </div>
-
-        <script>
-          // Auto-trigger print dialog after images/fonts load
-          window.onload = () => {
-            setTimeout(() => {
-              window.print();
-            }, 800);
-          };
-        </script>
-      </body>
-      </html>
-    `;
-
-    reportWindow.document.write(html);
-    reportWindow.document.close();
+    setIsReportOpen(true);
   };
 
   const handleInvestigate = async (e?: React.FormEvent) => {
@@ -1181,6 +904,8 @@ export default function Home() {
           background: rgba(113, 113, 122, 1); 
         }
       `}</style>
+
+      <ReportModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} result={result} />
     </div>
   );
 }
