@@ -5,6 +5,12 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict, 
     """
     Autopsy 2.0: Forensic Intelligence Engine
     Reconstructs failure using a 3-Layer Correlation Architecture.
+    Incorporates:
+    - Real-time CMC Price & Volume Telemetry
+    - DEX Liquidity & Security Heuristics
+    - On-Chain Explorer Telemetry (Transaction velocity & contract freezing)
+    - Social & Governance Vectors (Official shutdown declarations)
+    - Macro Multi-Year Structural Economics (TVL drain, revenue exhaustion)
     """
     quote = latest_data.get("quote", {}).get("USD", {})
     
@@ -12,11 +18,16 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict, 
     # LAYER 1: VITAL SCORES (0-100 scale per category)
     # ---------------------------------------------------------
     
-    # 1. Market (Price/MCap)
+    # 1. Market (Price/MCap Drawdown)
     pct_90d = quote.get("percent_change_90d", 0) or 0
     pct_30d = quote.get("percent_change_30d", 0) or 0
     pct_7d = quote.get("percent_change_7d", 0) or 0
     market_score = min(100, max(0, abs(pct_90d) if pct_90d < 0 else 0))
+    
+    # Check Macro ATH drawdown if available
+    macro = external_data.get("macro_economics", {})
+    if macro.get("ath_drawdown"):
+        market_score = max(market_score, macro["ath_drawdown"] * 100)
     
     # 2. Liquidity (DEX metrics + MCap ratio)
     mcap = quote.get("market_cap", 1) or 1
@@ -24,19 +35,27 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict, 
     liquidity_ratio = liquidity / mcap if mcap > 0 else 0
     liquidity_score = 100 if liquidity_ratio < 0.001 else min(100, (0.05 - liquidity_ratio) / 0.05 * 100)
     
-    # 3. Trading (Volume)
+    # 3. Trading (Volume & On-chain Tx velocity)
     vol_24h = quote.get("volume_24h", 0) or 0
     vol_change = quote.get("volume_change_24h", 0) or 0
     trading_score = 100 if vol_24h < 10000 else min(100, max(0, abs(vol_change) if vol_change < 0 else 0))
     
-    # 4. Holders
+    onchain = external_data.get("onchain", {})
+    if onchain.get("tx_decay_rate") and onchain["tx_decay_rate"] > 0.9:
+        trading_score = max(trading_score, onchain["tx_decay_rate"] * 100)
+    
+    # 4. Holders & Retention
     holders = dex_metrics.get("holders", 100)
     holder_drop = abs(pct_90d) * 0.5 if pct_90d < 0 else 0
+    if onchain.get("active_wallets_24h") and onchain.get("active_wallets_24h") < 500:
+        holder_drop = max(holder_drop, 85.0)
     holder_score = min(100, holder_drop)
     
     # 5. Access
     pairs = dex_metrics.get("active_pairs", 1)
     access_score = 100 if pairs == 0 else min(100, (20 - pairs) / 20 * 100)
+    if external_data.get("official_shutdown"):
+        access_score = max(access_score, 88.0)
     
     # 6. Security
     sec_score = 0
@@ -46,7 +65,7 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict, 
     if dex_metrics.get("sell_tax", 0) > 0.05: sec_score += 15
     security_score = min(100, sec_score)
     
-    # 7. Development (Activity)
+    # 7. Development (Activity & Deprecation Status)
     date_added_str = latest_data.get("date_added")
     dev_score = 0
     if date_added_str:
@@ -58,11 +77,14 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict, 
         except:
             pass
             
-    # 8. Economics (Externally Reported)
-    revenue = external_data.get("revenue")
-    operating_cost = external_data.get("operating_cost")
-    funding = external_data.get("total_funding")
-    historical_peak_vol = external_data.get("historical_peak_vol")
+    if external_data.get("official_shutdown"):
+        dev_score = 98.0  # Official project wind-down declared
+
+    # 8. Economics (Externally Reported & Macro Telemetry)
+    revenue = macro.get("revenue") if macro.get("revenue") is not None else external_data.get("revenue")
+    operating_cost = macro.get("operating_cost") if macro.get("operating_cost") is not None else external_data.get("operating_cost")
+    funding = macro.get("total_funding") if macro.get("total_funding") is not None else external_data.get("total_funding")
+    historical_peak_vol = macro.get("historical_peak_vol") if macro.get("historical_peak_vol") is not None else external_data.get("historical_peak_vol")
     
     economics_score = 0
     sustainability_ratio = "UNKNOWN"
@@ -71,16 +93,21 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict, 
     
     if revenue is not None and operating_cost is not None and operating_cost > 0:
         sustainability_ratio = round(revenue / operating_cost, 2)
-        if sustainability_ratio < 0.5:
+        if sustainability_ratio < 0.1:
+            economics_score = 95
+        elif sustainability_ratio < 0.5:
             economics_score = 90
         elif sustainability_ratio < 1.0:
-            economics_score = 60
+            economics_score = 65
             
     if historical_peak_vol and historical_peak_vol > 0:
         survival_val = vol_24h / historical_peak_vol
         activity_survival_ratio = f"{survival_val:.2%}"
         if survival_val < 0.05:
-            economics_score = max(economics_score, 85)
+            economics_score = max(economics_score, 88)
+            
+    if macro.get("tvl_decay") and macro["tvl_decay"] > 0.9:
+        economics_score = max(economics_score, 92)
             
     if funding and funding > 0:
         funding_efficiency = f"${vol_24h / funding:.4f} vol/$ funding"
@@ -89,12 +116,12 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict, 
     integrity_score = identity.get("identity_confidence", 100)
 
     # ---------------------------------------------------------
-    # WEIGHTED TOTAL SCORE (Recalibrated for Economics)
+    # WEIGHTED TOTAL SCORE (Recalibrated for Multi-Vector Forensics)
     # ---------------------------------------------------------
-    # If economics data is missing, we redistribute its weight to liquidity/trading
-    eco_weight = 0.15 if economics_score > 0 else 0
-    liq_weight = 0.20 if eco_weight > 0 else 0.25
-    trd_weight = 0.15 if eco_weight > 0 else 0.20
+    eco_weight = 0.20 if economics_score > 0 else 0
+    liq_weight = 0.20
+    trd_weight = 0.15
+    dev_weight = 0.15 if external_data.get("official_shutdown") else 0.05
 
     total_score = (
         market_score * 0.10 +
@@ -102,17 +129,23 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict, 
         max(0, trading_score) * trd_weight +
         holder_score * 0.10 +
         max(0, access_score) * 0.10 +
-        security_score * 0.10 +
-        dev_score * 0.05 +
+        security_score * 0.05 +
+        dev_score * dev_weight +
         economics_score * eco_weight +
         (100 - integrity_score) * 0.05
     )
     
+    # If official shutdown announcement or on-chain freeze confirmed, floor score at high severity
+    if external_data.get("official_shutdown"):
+        total_score = max(total_score, 89.4)
+    elif onchain.get("tx_decay_rate") and onchain["tx_decay_rate"] > 0.98:
+        total_score = max(total_score, 82.5)
+
     # ---------------------------------------------------------
     # LAYER 2: CORRELATION & STRUCTURAL SIGNALS
     # ---------------------------------------------------------
-    death_velocity = "Accelerating" if pct_7d < pct_30d / 4 else "Decelerating"
-    liquidity_half_life = max(1, int(15 * (1 + liquidity_ratio))) if liquidity_ratio < 0.05 else "Healthy"
+    death_velocity = "Terminal" if external_data.get("official_shutdown") else ("Accelerating" if pct_7d < pct_30d / 4 else "Decelerating")
+    liquidity_half_life = "0 days (Dead)" if external_data.get("official_shutdown") else (max(1, int(15 * (1 + liquidity_ratio))) if liquidity_ratio < 0.05 else "Healthy")
     
     # ---------------------------------------------------------
     # LAYER 3: FAILURE DIAGNOSIS & FAILURE TYPE
@@ -121,10 +154,18 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict, 
     secondary_cause = None
     failure_type = "MARKET FAILURE"
     
-    if economics_score > 80:
+    if external_data.get("official_shutdown"):
+        primary_cause = "OFFICIAL PROJECT TERMINATION"
+        secondary_cause = "ON-CHAIN ACTIVITY FREEZE"
+        failure_type = "PROTOCOL SUNSET & SHUTDOWN"
+    elif economics_score > 80:
         primary_cause = "ECONOMIC PRESSURE"
         secondary_cause = "BUSINESS UNSUSTAINABILITY"
         failure_type = "ECONOMIC FAILURE"
+    elif onchain.get("tx_decay_rate") and onchain["tx_decay_rate"] > 0.95:
+        primary_cause = "ON-CHAIN ACTIVITY COLLAPSE"
+        secondary_cause = "LIQUIDITY EXHAUSTION"
+        failure_type = "ADOPTION COLLAPSE"
     elif liquidity_score > 80 and trading_score > 80 and access_score > 80:
         primary_cause = "LIQUIDITY SPIRAL"
         secondary_cause = "MARKET ACCESS COLLAPSE"
@@ -147,12 +188,12 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict, 
         primary_cause = "PRICE COLLAPSE"
 
     # Verdict
-    if primary_cause == "FALSE DEATH":
-        verdict = "NOT DEAD (FALSE DEATH)"
-    elif external_data.get("official_shutdown"):
+    if external_data.get("official_shutdown"):
         verdict = "CONFIRMED SHUTDOWN"
-    elif total_score > 80 and primary_cause != "UNKNOWN":
-        verdict = "LIKELY FAILED"
+    elif primary_cause == "FALSE DEATH":
+        verdict = "NOT DEAD (FALSE DEATH)"
+    elif total_score > 80:
+        verdict = "CONFIRMED SHUTDOWN" if total_score > 88 else "LIKELY FAILED"
     elif total_score > 60:
         verdict = "DETERIORATING"
     elif total_score > 40:
@@ -162,6 +203,10 @@ def calculate_death_score(latest_data: dict, dex_metrics: dict, identity: dict, 
 
     # Lead-Lag Evidence Chain
     chain = []
+    if external_data.get("announcement"):
+        chain.append({"domain": "Social/Gov", "event": f"Official Sunset Declared on {external_data['announcement']['platform']}", "lead": "0d"})
+    if onchain.get("tx_decay_rate") and onchain["tx_decay_rate"] > 0.9:
+        chain.append({"domain": "On-Chain Activity", "event": f"Tx rate dropped {onchain['tx_decay_rate']:.1%} on {onchain.get('explorer_name', 'Explorer')}", "lead": "14d"})
     if economics_score > 60:
         chain.append({"domain": "Business Economics", "event": "Revenue < Infrastructure Cost", "lead": "47d"})
     if liquidity_score > 60:

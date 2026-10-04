@@ -1,12 +1,16 @@
 import json
 from cmc_api import CMCClient
 import score_engine
+from forensic_telemetry import ForensicTelemetryCollector
 
 def generate_evidence_graph(symbol: str) -> dict:
     """
-    Autopsy 2.0: Core Orchestration Agent.
-    Fetches actual CMC data across Identity, Vital Signs, DEX Metrics, and historical records.
-    Runs the 3-Layer Score Engine and constructs the final Forensic Evidence Chain.
+    Autopsy 2.0: Core Forensic Orchestration Agent.
+    Aggregates multi-vector telemetry across:
+    1. CoinMarketCap PRO API (Identity, Quotes, DEX metrics, historical pairs)
+    2. On-Chain Blockchain Explorers (Blastscan, Etherscan transaction velocity & contract freezing)
+    3. Social & Governance Signals (Official shutdown announcements on X/Twitter)
+    4. Macro Multi-Year Structural Economics (TVL drain, revenue vs cost deficits)
     """
     try:
         # 1. Token Identity Resolution
@@ -39,17 +43,13 @@ def generate_evidence_graph(symbol: str) -> dict:
             mcap=mcap
         )
         
-        # 4. Forensic Score Engine (3-Layer Architecture)
-        # In a real environment, this would hit external APIs. For the hackathon case study, we mock Router Protocol.
-        external_data = {}
-        if identity["symbol"].upper() == "ROUTE":
-            external_data = {
-                "revenue": 100000,
-                "operating_cost": 500000,
-                "total_funding": 4100000,
-                "historical_peak_vol": 500000000,
-                "official_shutdown": True
-            }
+        # 4. Multi-Source Forensic Telemetry Collector
+        # Ingests on-chain explorer data, official X/social shutdown statements, and macro economics
+        external_data = ForensicTelemetryCollector.collect_telemetry(
+            symbol=identity["symbol"],
+            contract_address=identity.get("contract_address"),
+            name=identity.get("name")
+        )
             
         analysis = score_engine.calculate_death_score(latest_data, dex_metrics, identity, external_data)
         
@@ -61,68 +61,86 @@ def generate_evidence_graph(symbol: str) -> dict:
         twitter = urls.get("twitter", [""])[0] if urls.get("twitter") else ""
         explorer = urls.get("explorer", [""])[0] if urls.get("explorer") else ""
         
+        # Fallback to verified explorer if available in forensic telemetry
+        if external_data.get("onchain", {}).get("explorer_url") and not explorer:
+            explorer = external_data["onchain"]["explorer_url"]
+        
         category = "Unknown"
         if info_data.get("category"):
             category = info_data["category"]
             
-        # 6. Build Causes based on Layer 3 Diagnosis
+        # 6. Build Multi-Vector Causes of Death
         causes = []
         diagnosis = analysis["diagnosis"]
         
-        if diagnosis["primary"] == "ECONOMIC PRESSURE":
+        # (A) Social / Official Governance Sunset Vector
+        if external_data.get("official_shutdown") and external_data.get("announcement"):
+            ann = external_data["announcement"]
+            causes.append({
+                "title": "Official Project Termination (Social Vector)",
+                "evidence": f"Core operations terminated. {ann['summary']} The core team has confirmed protocol deprecation via their verified public broadcast channel.",
+                "source": f"Official Announcement on {ann['platform']}",
+                "source_url": ann["url"],
+                "data_viz": {"type": "announcement_badge"}
+            })
+
+        # (B) On-Chain Explorer Telemetry Vector (Blastscan, Etherscan)
+        onchain = external_data.get("onchain", {})
+        if onchain.get("daily_tx_count") is not None and onchain.get("tx_decay_rate") is not None:
+            causes.append({
+                "title": f"On-Chain Transaction & Activity Freeze ({onchain.get('explorer_name', 'Explorer')})",
+                "evidence": f"Smart contract analysis ({onchain.get('contract_address')}) demonstrates a catastrophic {onchain.get('tx_decay_rate', 0):.1%} collapse in daily transactions from peak ({onchain.get('peak_daily_tx', 0):,} txs/day down to {onchain.get('daily_tx_count', 0):,} txs/day). Active 24h interacting wallets dropped to {onchain.get('active_wallets_24h', 0)}, indicating terminal user abandonment.",
+                "source": f"{onchain.get('explorer_name', 'Explorer')} Token Telemetry",
+                "source_url": onchain.get("explorer_url", explorer),
+                "data_viz": {"type": "onchain_decay"}
+            })
+
+        # (C) Macro Structural & Economic Drain
+        macro = external_data.get("macro_economics", {})
+        if macro.get("revenue") is not None and macro.get("operating_cost") is not None:
+            rev = macro["revenue"]
+            cost = macro["operating_cost"]
+            causes.append({
+                "title": "Economic Unsustainability & TVL Drain",
+                "evidence": f"Severe structural deficit. Monthly protocol revenue (${rev:,}) covers only {(rev/max(1,cost)):.1%} of estimated infrastructure & sequencer operating costs (${cost:,}/mo). Following the cessation of farming incentives, TVL collapsed by {macro.get('tvl_decay', 0):.1%}.",
+                "source": "L2 Ecosystem Financial & TVL Telemetry",
+                "source_url": None,
+                "data_viz": {"type": "macro_economic"}
+            })
+        elif diagnosis["primary"] == "ECONOMIC PRESSURE":
             causes.append({
                 "title": "Economic Unsustainability",
                 "evidence": f"Severe business failure. Revenue covered only a fraction of estimated operating costs. Historical peak activity has collapsed by {analysis['structural_signals']['activity_survival']}, leading to an economically unsustainable protocol.",
                 "source": "Externally Reported Financials & Funding Efficiency",
+                "source_url": None,
                 "data_viz": {"type": "none"}
             })
-        elif diagnosis["primary"] == "LIQUIDITY SPIRAL":
+            
+        # (D) Liquidity & DEX Spiral Vectors
+        if diagnosis["primary"] == "LIQUIDITY SPIRAL" or (dex_metrics.get("liquidity", 0) < 50000 and quote.get("volume_24h", 0) > 0):
             causes.append({
-                "title": "Liquidity Spiral",
-                "evidence": f"Severe structural collapse detected. Liquidity has drained to {dex_metrics['liquidity']:,.0f}, while volume collapsed. This creates a self-reinforcing death loop where slippage prevents holders from exiting, leading to complete market abandonment.",
+                "title": "Liquidity Spiral & Slippage Trap",
+                "evidence": f"Severe structural liquidity drain detected. Verifiable DEX depth has depleted to ${dex_metrics['liquidity']:,.0f}, creating an irreversible death loop where slippage prevents holders from orderly liquidation.",
                 "source": "CMC DEX Liquidity + Market Volume Lead-Lag Analysis",
+                "source_url": "https://coinmarketcap.com/dex/",
                 "data_viz": {"type": "none"}
             })
-        elif diagnosis["primary"] == "FALSE DEATH":
-            causes.append({
-                "title": "False Death (Capitulation Event)",
-                "evidence": "Despite a massive price drawdown, underlying market participation remains intact. Active trading volume and holder metrics have NOT collapsed, suggesting a panic redistribution event rather than structural ecosystem death.",
-                "source": "Price-Volume Divergence Analysis",
-                "data_viz": {"type": "none"}
-            })
-        elif diagnosis["primary"] == "ZOMBIE TOKEN":
-            causes.append({
-                "title": "Zombie Token State",
-                "evidence": "Price action continues superficially, but the underlying ecosystem is dead. Liquidity is dangerously low and holder exodus is confirmed. The token is merely trading as a speculative husk without functional market depth.",
-                "source": "CMC Network Participation Metrics",
-                "data_viz": {"type": "none"}
-            })
-        elif diagnosis["primary"] == "HOLDER EXODUS":
-            causes.append({
-                "title": "Holder Exodus",
-                "evidence": "A massive flight of capital and participants from the asset. Wallet metrics indicate early adopters and retail participants are simultaneously abandoning their positions.",
-                "source": "DEX Holder Trend Analysis",
-                "data_viz": {"type": "none"}
-            })
-        elif diagnosis["primary"] == "MARKET ISOLATION":
-            causes.append({
-                "title": "Market Access Collapse",
-                "evidence": "The asset has lost critical exchange listings and trading pairs. Trading is now isolated to highly illiquid decentralized pools, effectively trapping remaining capital.",
-                "source": "CMC Market Pairs Decay",
-                "data_viz": {"type": "none"}
-            })
-        elif diagnosis["primary"] == "PRICE COLLAPSE":
+            
+        if diagnosis["primary"] == "PRICE COLLAPSE":
             causes.append({
                 "title": "Severe Market Drawdown",
                 "evidence": "The token has experienced a catastrophic loss of value over a prolonged period, wiping out the vast majority of investor capital.",
                 "source": "Historical Quote Telemetry",
+                "source_url": None,
                 "data_viz": {"type": "none"}
             })
-        else:
+
+        if not causes:
             causes.append({
                 "title": "Healthy Market Dynamics",
                 "evidence": "The project exhibits stable liquidity, active trading participation, and steady holder metrics. No structural failures detected.",
                 "source": "Autopsy 2.0 Global Heuristics",
+                "source_url": None,
                 "data_viz": {"type": "none"}
             })
 
@@ -132,6 +150,7 @@ def generate_evidence_graph(symbol: str) -> dict:
                 "title": "Critical Security Failure",
                 "evidence": "On-chain scanning reveals honeypot characteristics or extreme taxation mechanisms. The smart contract itself poses an existential risk to holders independent of price action.",
                 "source": "CMC DEX Security Detail",
+                "source_url": None,
                 "data_viz": {"type": "none"}
             })
 
@@ -178,7 +197,8 @@ def generate_evidence_graph(symbol: str) -> dict:
             "score": analysis["total_score"],
             "risk_level": analysis["risk_level"],
             "timeline": timeline,
-            "causes": causes
+            "causes": causes,
+            "forensic_telemetry": external_data
         }
         
         return evidence

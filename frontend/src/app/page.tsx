@@ -52,16 +52,21 @@ export default function Home() {
   const totalPages = Math.ceil(EXPLORER_PROJECTS.length / itemsPerPage);
   const currentProjects = EXPLORER_PROJECTS.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  const getSourceLink = (source: string, result: any) => {
-    if (!source || !result) return null;
+  const getSourceLink = (cause: any, result: any) => {
+    if (!cause || !result) return null;
+    if (cause.source_url) return cause.source_url;
+    const source = cause.source || "";
     const lower = source.toLowerCase();
+    if (lower.includes('blastscan')) {
+      return 'https://blastscan.io/token/0xb1a5700fa2358173fe465e6ea4ff52e36e88e2ad#transactions';
+    }
     if (lower.includes('cmc') || lower.includes('coinmarketcap')) {
       return result.identity?.slug ? `https://coinmarketcap.com/currencies/${result.identity.slug}/` : 'https://coinmarketcap.com/';
     }
     if (lower.includes('on-chain') || lower.includes('contract') || lower.includes('explorer')) {
       return result.links?.explorer || null;
     }
-    if (lower.includes('social') || lower.includes('twitter')) {
+    if (lower.includes('social') || lower.includes('twitter') || lower.includes('x (')) {
       return result.links?.twitter || null;
     }
     if (lower.includes('website') || lower.includes('official')) {
@@ -727,7 +732,7 @@ export default function Home() {
                           )}
                           
                           {(() => {
-                            const sourceLink = getSourceLink(cause.source, result);
+                            const sourceLink = getSourceLink(cause, result);
                             return sourceLink ? (
                               <a href={sourceLink} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 bg-[#1c1d1c] border border-[#333333] px-3 py-2 rounded text-xs text-[var(--color-winter-green)] hover:bg-[var(--color-winter-green)] hover:text-black transition-colors font-sans font-medium mt-auto cursor-pointer">
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
