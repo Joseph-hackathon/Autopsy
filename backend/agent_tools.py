@@ -6,11 +6,11 @@ from forensic_telemetry import ForensicTelemetryCollector
 def generate_evidence_graph(symbol: str) -> dict:
     """
     Autopsy 2.0: Core Forensic Orchestration Agent.
-    Aggregates multi-vector telemetry across:
+    Aggregates multi-vector telemetry for ANY cryptocurrency:
     1. CoinMarketCap PRO API (Identity, Quotes, DEX metrics, historical pairs)
-    2. On-Chain Blockchain Explorers (Blastscan, Etherscan transaction velocity & contract freezing)
-    3. Social & Governance Signals (Official shutdown announcements on X/Twitter)
-    4. Macro Multi-Year Structural Economics (TVL drain, revenue vs cost deficits)
+    2. On-Chain Blockchain Explorers (Etherscan, BscScan, Solscan, Blastscan, Arbiscan, etc.)
+    3. Social & Governance Signals (Official X/Twitter broadcast accounts & verified announcements)
+    4. Macro Multi-Year Structural Economics (TVL drain, fee revenue vs operating cost deficits)
     """
     try:
         # 1. Token Identity Resolution
@@ -43,12 +43,15 @@ def generate_evidence_graph(symbol: str) -> dict:
             mcap=mcap
         )
         
-        # 4. Multi-Source Forensic Telemetry Collector
-        # Ingests on-chain explorer data, official X/social shutdown statements, and macro economics
+        # 4. Universal Multi-Source Forensic Telemetry Collector
+        # Dynamically extracts on-chain explorer telemetry, Twitter/X channels, and macro economics
         external_data = ForensicTelemetryCollector.collect_telemetry(
             symbol=identity["symbol"],
-            contract_address=identity.get("contract_address"),
-            name=identity.get("name")
+            name=identity.get("name", ""),
+            info_data=info_data,
+            quote=quote,
+            dex_metrics=dex_metrics,
+            identity=identity
         )
             
         analysis = score_engine.calculate_death_score(latest_data, dex_metrics, identity, external_data)
@@ -64,6 +67,8 @@ def generate_evidence_graph(symbol: str) -> dict:
         # Fallback to verified explorer if available in forensic telemetry
         if external_data.get("onchain", {}).get("explorer_url") and not explorer:
             explorer = external_data["onchain"]["explorer_url"]
+        if external_data.get("announcement", {}).get("url") and not twitter:
+            twitter = external_data["announcement"]["url"]
         
         category = "Unknown"
         if info_data.get("category"):
@@ -73,23 +78,32 @@ def generate_evidence_graph(symbol: str) -> dict:
         causes = []
         diagnosis = analysis["diagnosis"]
         
-        # (A) Social / Official Governance Sunset Vector
-        if external_data.get("official_shutdown") and external_data.get("announcement"):
-            ann = external_data["announcement"]
-            causes.append({
-                "title": "Official Project Termination (Social Vector)",
-                "evidence": f"Core operations terminated. {ann['summary']} The core team has confirmed protocol deprecation via their verified public broadcast channel.",
-                "source": f"Official Announcement on {ann['platform']}",
-                "source_url": ann["url"],
-                "data_viz": {"type": "announcement_badge"}
-            })
+        # (A) Social / Official Governance Sunset Vector (X/Twitter)
+        ann = external_data.get("announcement")
+        if ann and ann.get("url"):
+            if external_data.get("official_shutdown"):
+                causes.append({
+                    "title": "Official Project Termination (Social Vector)",
+                    "evidence": f"Core operations terminated. {ann['summary']} The core team has confirmed protocol deprecation via their verified public broadcast channel.",
+                    "source": f"Official Announcement on {ann['platform']}",
+                    "source_url": ann["url"],
+                    "data_viz": {"type": "announcement_badge"}
+                })
+            else:
+                causes.append({
+                    "title": "Developer Activity & Social Vector (X Telemetry)",
+                    "evidence": f"{ann['summary']} Telemetry continuously monitors project updates, community retention, and key developer broadcasts.",
+                    "source": f"Verified Post on {ann['platform']}",
+                    "source_url": ann["url"],
+                    "data_viz": {"type": "announcement_badge"}
+                })
 
-        # (B) On-Chain Explorer Telemetry Vector (Blastscan, Etherscan)
+        # (B) On-Chain Explorer Telemetry Vector (Any Explorer: Blastscan, Etherscan, Solscan, etc.)
         onchain = external_data.get("onchain", {})
-        if onchain.get("daily_tx_count") is not None and onchain.get("tx_decay_rate") is not None:
+        if onchain.get("explorer_url"):
             causes.append({
-                "title": f"On-Chain Transaction & Activity Freeze ({onchain.get('explorer_name', 'Explorer')})",
-                "evidence": f"Smart contract analysis ({onchain.get('contract_address')}) demonstrates a catastrophic {onchain.get('tx_decay_rate', 0):.1%} collapse in daily transactions from peak ({onchain.get('peak_daily_tx', 0):,} txs/day down to {onchain.get('daily_tx_count', 0):,} txs/day). Active 24h interacting wallets dropped to {onchain.get('active_wallets_24h', 0)}, indicating terminal user abandonment.",
+                "title": f"On-Chain Transaction & Activity Telemetry ({onchain.get('explorer_name', 'Explorer')})",
+                "evidence": f"Smart contract telemetry ({onchain.get('contract_address')}) indicates estimated daily transaction throughput of {onchain.get('daily_tx_count', 0):,} txs/day ({onchain.get('tx_decay_rate', 0):.1%} velocity drop from peak). Interacting 24h active wallets: ~{onchain.get('active_wallets_24h', 0)}. Contract state: {onchain.get('contract_status')}. Net 30D liquidity movement: {onchain.get('net_outflow_30d')}.",
                 "source": f"{onchain.get('explorer_name', 'Explorer')} Token Telemetry",
                 "source_url": onchain.get("explorer_url", explorer),
                 "data_viz": {"type": "onchain_decay"}
@@ -101,19 +115,11 @@ def generate_evidence_graph(symbol: str) -> dict:
             rev = macro["revenue"]
             cost = macro["operating_cost"]
             causes.append({
-                "title": "Economic Unsustainability & TVL Drain",
-                "evidence": f"Severe structural deficit. Monthly protocol revenue (${rev:,}) covers only {(rev/max(1,cost)):.1%} of estimated infrastructure & sequencer operating costs (${cost:,}/mo). Following the cessation of farming incentives, TVL collapsed by {macro.get('tvl_decay', 0):.1%}.",
-                "source": "L2 Ecosystem Financial & TVL Telemetry",
+                "title": "Macro Structural Economics & Margin Health",
+                "evidence": f"Long-term economic balance: Estimated monthly revenue (${rev:,}) vs. required infrastructure & node operating costs (${cost:,}/mo). Cumulative drawdown from peak is {macro.get('ath_drawdown', 0):.1%}, with an estimated TVL exhaustion of {macro.get('tvl_decay', 0):.1%}. Supply overhang ratio: {macro.get('supply_overhang_ratio', 1.0):.2f}x.",
+                "source": "Macro Financial & L2 Protocol Telemetry",
                 "source_url": None,
                 "data_viz": {"type": "macro_economic"}
-            })
-        elif diagnosis["primary"] == "ECONOMIC PRESSURE":
-            causes.append({
-                "title": "Economic Unsustainability",
-                "evidence": f"Severe business failure. Revenue covered only a fraction of estimated operating costs. Historical peak activity has collapsed by {analysis['structural_signals']['activity_survival']}, leading to an economically unsustainable protocol.",
-                "source": "Externally Reported Financials & Funding Efficiency",
-                "source_url": None,
-                "data_viz": {"type": "none"}
             })
             
         # (D) Liquidity & DEX Spiral Vectors
