@@ -47,9 +47,16 @@ class CMCClient:
         }
 
     @staticmethod
-    def get_info(query: str):
+    def get_info(query):
         url = f"{BASE_URL}/v1/cryptocurrency/info"
         
+        # If an integer is passed, treat it as cmc_id
+        if isinstance(query, int) or str(query).isdigit():
+            res = requests.get(url, headers=HEADERS, params={"id": query})
+            if res.status_code == 200:
+                return res.json()
+            return {"error": res.text, "status_code": res.status_code}
+            
         OVERRIDES = {
             "FTT": "ftx-token",
             "LUNA": "terra-luna",

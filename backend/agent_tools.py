@@ -19,7 +19,7 @@ def generate_evidence_graph(symbol: str) -> dict:
         if "error" in latest_res:
             return {"error": f"Failed to fetch market data: {latest_res['error']}"}
         
-        info_res = CMCClient.get_info(identity["slug"])
+        info_res = CMCClient.get_info(identity["id"])
         
         # Parse basic info
         latest_list = list(latest_res["data"].values())[0] if isinstance(latest_res["data"], dict) else latest_res["data"][0]
