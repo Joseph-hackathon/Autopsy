@@ -75,7 +75,8 @@ class CMCClient:
     @staticmethod
     def resolve_token_identity(query: str):
         """Resolves token identity, detecting migrations (e.g. Router Protocol New)."""
-        url = f"{BASE_URL}/v1/cryptocurrency/info"
+        info_url = f"{BASE_URL}/v1/cryptocurrency/info"
+        map_url = f"{BASE_URL}/v1/cryptocurrency/map"
         
         OVERRIDES = {
             "FTT": "ftx-token",
@@ -85,30 +86,54 @@ class CMCClient:
         
         token_data = None
         
+        # 1. Override check (by slug)
         if query.upper() in OVERRIDES:
-            res = requests.get(url, headers=HEADERS, params={"slug": OVERRIDES[query.upper()]})
-            if res.status_code == 200:
-                data = res.json()
-                key = list(data["data"].keys())[0]
-                token_data = data["data"][key]
+            try:
+                res = requests.get(info_url, headers=HEADERS, params={"slug": OVERRIDES[query.upper()]})
+                if res.status_code == 200:
+                    data = res.json()
+                    if data.get("data"):
+                        key = list(data["data"].keys())[0]
+                        token_data = data["data"][key]
+            except:
+                pass
 
+        # 2. Smart resolution via Map endpoint
         if not token_data:
             try:
-                res = requests.get(url, headers=HEADERS, params={"symbol": query.upper()})
+                res = requests.get(map_url, headers=HEADERS, params={"symbol": query.upper()})
+                if res.status_code == 200:
+                    data_list = res.json().get("data", [])
+                    if data_list:
+                        # Prioritize tokens with a valid CMC rank
+                        ranked = [t for t in data_list if t.get("rank") is not None]
+                        best_token = min(ranked, key=lambda x: x["rank"]) if ranked else data_list[0]
+                        
+                        # Now fetch full info using the correct ID
+                        info_res = requests.get(info_url, headers=HEADERS, params={"id": best_token["id"]})
+                        if info_res.status_code == 200:
+                            info_data = info_res.json()
+                            token_data = info_data["data"][str(best_token["id"])]
+            except:
+                pass
+
+        # 3. Fallback by slug
+        if not token_data:
+            try:
+                slug = query.lower().replace(" ", "-")
+                res = requests.get(info_url, headers=HEADERS, params={"slug": slug})
                 res.raise_for_status()
                 data = res.json()
-                key = list(data["data"].keys())[0]
-                token_data = data["data"][key]
-            except:
-                try:
-                    slug = query.lower().replace(" ", "-")
-                    res = requests.get(url, headers=HEADERS, params={"slug": slug})
-                    res.raise_for_status()
-                    data = res.json()
+                if data.get("data"):
                     key = list(data["data"].keys())[0]
                     token_data = data["data"][key]
-                except Exception as e:
-                    return {"error": str(e)}
+                else:
+                    return {"error": "Token not found"}
+            except Exception as e:
+                return {"error": f"Token not found: {str(e)}"}
+
+        if not token_data:
+            return {"error": "Token not found"}
 
         cmc_id = token_data["id"]
         name = token_data["name"]
