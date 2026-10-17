@@ -112,6 +112,10 @@ class CMCClient:
                 website = "https://algorand.foundation"
                 twitter = "https://twitter.com/AlgoFoundation"
                 explorer = "https://allo.info"
+            elif clean_sym in ["scroll", "scr"]:
+                website = "https://scroll.org/"
+                twitter = "https://twitter.com/Scroll_ZKP"
+                explorer = "https://scrollscan.com/token/0xd29687c813d741e2f938f4ac377128810e217b1b#transactions"
             else:
                 website = f"https://{clean_slug}.org"
                 twitter = f"https://twitter.com/{clean_slug}"

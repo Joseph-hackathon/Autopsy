@@ -100,6 +100,11 @@ def generate_evidence_graph(symbol: str) -> dict:
             explorer = external_data["onchain"]["explorer_url"]
         if external_data.get("announcement", {}).get("url"):
             twitter = external_data["announcement"]["url"]
+
+        if identity.get("symbol") in ["SCR", "SCROLL"] or identity.get("slug") == "scroll":
+            website = "https://scroll.org/"
+            twitter = "https://twitter.com/Scroll_ZKP"
+            explorer = "https://scrollscan.com/token/0xd29687c813d741e2f938f4ac377128810e217b1b#transactions"
         
         category = "Unknown"
         if info_data.get("category"):
