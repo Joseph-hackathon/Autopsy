@@ -124,6 +124,10 @@ class CMCClient:
                 else:
                     explorer = f"https://blockchain.com/explorer/search?q={hint_sym}"
 
+            logo = f"https://s2.coinmarketcap.com/static/img/coins/64x64/{query}.png"
+            if clean_sym in ["scroll", "scr"]:
+                logo = "https://s2.coinmarketcap.com/static/img/coins/64x64/26998.png"
+
             return {
                 "data": {
                     str(query): {
@@ -131,6 +135,7 @@ class CMCClient:
                         "name": hint_name,
                         "symbol": hint_sym,
                         "slug": clean_slug,
+                        "logo": logo,
                         "description": f"{hint_name} cryptocurrency analyzed by Autopsy Forensic Intelligence.",
                         "category": "coin" if clean_sym in ["neo", "luna", "algo", "eos", "doge", "xrp", "bnb"] else "token",
                         "urls": {
@@ -294,6 +299,13 @@ class CMCClient:
             p_90d = -88.0
             p_30d = -45.0
             p_24h = -12.4
+        elif cmc_id == 26998: # SCROLL / SCR
+            price = 0.584
+            mcap = 110960000.0
+            vol = 28400000.0
+            p_90d = -58.2
+            p_30d = -24.6
+            p_24h = -3.1
         else:
             price = rng.uniform(0.01, 5.0)
             mcap = rng.uniform(5000000, 50000000)

@@ -105,6 +105,7 @@ def generate_evidence_graph(symbol: str) -> dict:
             website = "https://scroll.org/"
             twitter = "https://twitter.com/Scroll_ZKP"
             explorer = "https://scrollscan.com/token/0xd29687c813d741e2f938f4ac377128810e217b1b#transactions"
+            logo = "https://s2.coinmarketcap.com/static/img/coins/64x64/26998.png"
         
         category = "Unknown"
         if info_data.get("category"):
