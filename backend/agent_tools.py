@@ -2,15 +2,23 @@ import json
 from cmc_api import CMCClient
 import score_engine
 from forensic_telemetry import ForensicTelemetryCollector
+from aif_framework import (
+    AIFStatisticalEngine,
+    AIFNetworkDependencyEngine,
+    AIFStateTransitionEngine,
+    AIFCounterfactualEngine,
+    AIFSurvivalKnowledgeEngine
+)
 
 def generate_evidence_graph(symbol: str) -> dict:
     """
-    Autopsy 2.0: Core Forensic Orchestration Agent.
-    Aggregates multi-vector telemetry for ANY cryptocurrency:
+    Autopsy 2.0: Core Forensic Orchestration Agent with AIF (Autopsy Intelligence Framework).
+    Synthesizes:
     1. CoinMarketCap PRO API (Identity, Quotes, DEX metrics, historical pairs)
-    2. On-Chain Blockchain Explorers (Etherscan, BscScan, Solscan, Blastscan, Arbiscan, etc.)
+    2. Universal On-Chain Block Explorers (Etherscan, BscScan, Solscan, Blastscan, Arbiscan, etc.)
     3. Social & Governance Signals (Official X/Twitter broadcast accounts & verified announcements)
     4. Macro Multi-Year Structural Economics (TVL drain, fee revenue vs operating cost deficits)
+    5. AIF 5-Engine Scientific Analytics (Statistical change points, network dependency, state transitions, counterfactuals, survival intelligence)
     """
     try:
         # 1. Token Identity Resolution
@@ -34,6 +42,10 @@ def generate_evidence_graph(symbol: str) -> dict:
         
         quote = latest_data.get("quote", {}).get("USD", {})
         mcap = quote.get("market_cap", 1) or 1
+        vol_24h = quote.get("volume_24h", 0) or 0
+        pct_90d = quote.get("percent_change_90d", 0) or 0
+        pct_30d = quote.get("percent_change_30d", 0) or 0
+        turnover_ratio = (vol_24h / mcap * 100.0) if mcap > 0 else 0.0
         
         # 3. Fetch DEX/Real Metrics
         dex_metrics = CMCClient.get_dex_metrics(
@@ -64,7 +76,6 @@ def generate_evidence_graph(symbol: str) -> dict:
         twitter = urls.get("twitter", [""])[0] if urls.get("twitter") else ""
         explorer = urls.get("explorer", [""])[0] if urls.get("explorer") else ""
         
-        # Fallback to verified explorer if available in forensic telemetry
         if external_data.get("onchain", {}).get("explorer_url") and not explorer:
             explorer = external_data["onchain"]["explorer_url"]
         if external_data.get("announcement", {}).get("url") and not twitter:
@@ -74,19 +85,65 @@ def generate_evidence_graph(symbol: str) -> dict:
         if info_data.get("category"):
             category = info_data["category"]
             
-        # 6. Build Multi-Vector Causes of Death
+        # -------------------------------------------------------------
+        # 6. AIF MULTI-ENGINE EXECUTION (SCIENTIFIC FORENSICS)
+        # -------------------------------------------------------------
+        onchain_info = external_data.get("onchain", {})
+        daily_txs = onchain_info.get("daily_tx_count", 500) or 500
+        tx_decay = onchain_info.get("tx_decay_rate", 0.0) or 0.0
+        is_shutdown = external_data.get("official_shutdown", False)
+        
+        # AIF-01: Temporal Change-Point Detection
+        change_points = AIFStatisticalEngine.detect_change_points(pct_90d, pct_30d, turnover_ratio)
+        
+        # AIF-02: Cross-Domain Network Dependency & Fragility
+        network_fragility = AIFNetworkDependencyEngine.evaluate_dependencies(info_data, dex_metrics, onchain_info)
+        
+        # AIF-03: Multidimensional State Transition & Cross-Domain Divergence
+        state_transition = AIFStateTransitionEngine.compute_state_and_divergence(
+            vitals=analysis["vital_scores"],
+            mcap=mcap,
+            vol_24h=vol_24h,
+            onchain_txs=daily_txs,
+            turnover_ratio=turnover_ratio
+        )
+        
+        # AIF-04: Counterfactual Failure & Macro vs Endogenous Decomposition
+        counterfactual = AIFCounterfactualEngine.decompose_failure_origin(pct_90d, pct_30d, is_shutdown)
+        
+        # AIF-05: Survival Knowledge & Historical Case Matching
+        survival_intel = AIFSurvivalKnowledgeEngine.match_historical_case_and_extract_lessons(
+            symbol=identity["symbol"],
+            pct_90d=pct_90d,
+            tx_decay=tx_decay,
+            dev_score=analysis["vital_scores"].get("development", 50),
+            failure_type=analysis["diagnosis"].get("failure_type", "MARKET FAILURE")
+        )
+
+        aif_report = {
+            "change_points": change_points,
+            "network_fragility": network_fragility,
+            "state_transition": state_transition,
+            "counterfactual": counterfactual,
+            "survival_intelligence": survival_intel
+        }
+
+        # -------------------------------------------------------------
+        # 7. Build Multi-Vector Causes of Death (With Confidence Levels)
+        # -------------------------------------------------------------
         causes = []
         diagnosis = analysis["diagnosis"]
         
         # (A) Social / Official Governance Sunset Vector (X/Twitter)
         ann = external_data.get("announcement")
         if ann and ann.get("url"):
-            if external_data.get("official_shutdown"):
+            if is_shutdown:
                 causes.append({
                     "title": "Official Project Termination (Social Vector)",
                     "evidence": f"Core operations terminated. {ann['summary']} The core team has confirmed protocol deprecation via their verified public broadcast channel.",
                     "source": f"Official Announcement on {ann['platform']}",
                     "source_url": ann["url"],
+                    "confidence": "Confirmed",
                     "data_viz": {"type": "announcement_badge"}
                 })
             else:
@@ -95,21 +152,33 @@ def generate_evidence_graph(symbol: str) -> dict:
                     "evidence": f"{ann['summary']} Telemetry continuously monitors project updates, community retention, and key developer broadcasts.",
                     "source": f"Verified Post on {ann['platform']}",
                     "source_url": ann["url"],
+                    "confidence": "Strongly Supported",
                     "data_viz": {"type": "announcement_badge"}
                 })
 
-        # (B) On-Chain Explorer Telemetry Vector (Any Explorer: Blastscan, Etherscan, Solscan, etc.)
-        onchain = external_data.get("onchain", {})
-        if onchain.get("explorer_url"):
+        # (B) On-Chain Explorer Telemetry Vector
+        if onchain_info.get("explorer_url"):
             causes.append({
-                "title": f"On-Chain Transaction & Activity Telemetry ({onchain.get('explorer_name', 'Explorer')})",
-                "evidence": f"Smart contract telemetry ({onchain.get('contract_address')}) indicates estimated daily transaction throughput of {onchain.get('daily_tx_count', 0):,} txs/day ({onchain.get('tx_decay_rate', 0):.1%} velocity drop from peak). Interacting 24h active wallets: ~{onchain.get('active_wallets_24h', 0)}. Contract state: {onchain.get('contract_status')}. Net 30D liquidity movement: {onchain.get('net_outflow_30d')}.",
-                "source": f"{onchain.get('explorer_name', 'Explorer')} Token Telemetry",
-                "source_url": onchain.get("explorer_url", explorer),
+                "title": f"On-Chain Transaction & Activity Telemetry ({onchain_info.get('explorer_name', 'Explorer')})",
+                "evidence": f"Smart contract telemetry ({onchain_info.get('contract_address')}) indicates estimated daily transaction throughput of {onchain_info.get('daily_tx_count', 0):,} txs/day ({onchain_info.get('tx_decay_rate', 0):.1%} velocity drop from peak). Interacting 24h active wallets: ~{onchain_info.get('active_wallets_24h', 0)}. Contract state: {onchain_info.get('contract_status')}. Net 30D liquidity movement: {onchain_info.get('net_outflow_30d')}.",
+                "source": f"{onchain_info.get('explorer_name', 'Explorer')} Token Telemetry",
+                "source_url": onchain_info.get("explorer_url", explorer),
+                "confidence": "Confirmed" if onchain_info.get("tx_decay_rate", 0) > 0.9 else "Strongly Supported",
                 "data_viz": {"type": "onchain_decay"}
             })
 
-        # (C) Macro Structural & Economic Drain
+        # (C) Cross-Domain Divergence & Synthetic Volume (New AIF Cause)
+        if state_transition["cross_domain_divergence_score"] > 55.0:
+            causes.append({
+                "title": "Cross-Domain Divergence (Synthetic Volume)",
+                "evidence": state_transition["divergence_narrative"],
+                "source": "AIF Cross-Domain Divergence Engine",
+                "source_url": None,
+                "confidence": "Strongly Supported",
+                "data_viz": {"type": "none"}
+            })
+
+        # (D) Macro Structural & Economic Drain
         macro = external_data.get("macro_economics", {})
         if macro.get("revenue") is not None and macro.get("operating_cost") is not None:
             rev = macro["revenue"]
@@ -117,46 +186,30 @@ def generate_evidence_graph(symbol: str) -> dict:
             causes.append({
                 "title": "Macro Structural Economics & Margin Health",
                 "evidence": f"Long-term economic balance: Estimated monthly revenue (${rev:,}) vs. required infrastructure & node operating costs (${cost:,}/mo). Cumulative drawdown from peak is {macro.get('ath_drawdown', 0):.1%}, with an estimated TVL exhaustion of {macro.get('tvl_decay', 0):.1%}. Supply overhang ratio: {macro.get('supply_overhang_ratio', 1.0):.2f}x.",
-                "source": "Macro Financial & L2 Protocol Telemetry",
+                "source": "Macro Financial & Protocol Telemetry",
                 "source_url": None,
+                "confidence": "Probable",
                 "data_viz": {"type": "macro_economic"}
             })
             
-        # (D) Liquidity & DEX Spiral Vectors
+        # (E) Liquidity & DEX Spiral Vectors
         if diagnosis["primary"] == "LIQUIDITY SPIRAL" or (dex_metrics.get("liquidity", 0) < 50000 and quote.get("volume_24h", 0) > 0):
             causes.append({
                 "title": "Liquidity Spiral & Slippage Trap",
                 "evidence": f"Severe structural liquidity drain detected. Verifiable DEX depth has depleted to ${dex_metrics['liquidity']:,.0f}, creating an irreversible death loop where slippage prevents holders from orderly liquidation.",
                 "source": "CMC DEX Liquidity + Market Volume Lead-Lag Analysis",
                 "source_url": "https://coinmarketcap.com/dex/",
+                "confidence": "Confirmed",
                 "data_viz": {"type": "none"}
             })
             
-        if diagnosis["primary"] == "PRICE COLLAPSE":
-            causes.append({
-                "title": "Severe Market Drawdown",
-                "evidence": "The token has experienced a catastrophic loss of value over a prolonged period, wiping out the vast majority of investor capital.",
-                "source": "Historical Quote Telemetry",
-                "source_url": None,
-                "data_viz": {"type": "none"}
-            })
-
         if not causes:
             causes.append({
                 "title": "Healthy Market Dynamics",
                 "evidence": "The project exhibits stable liquidity, active trading participation, and steady holder metrics. No structural failures detected.",
                 "source": "Autopsy 2.0 Global Heuristics",
                 "source_url": None,
-                "data_viz": {"type": "none"}
-            })
-
-        # Add Security Risk if present
-        if analysis["vital_scores"]["security"] > 50:
-            causes.append({
-                "title": "Critical Security Failure",
-                "evidence": "On-chain scanning reveals honeypot characteristics or extreme taxation mechanisms. The smart contract itself poses an existential risk to holders independent of price action.",
-                "source": "CMC DEX Security Detail",
-                "source_url": None,
+                "confidence": "Confirmed",
                 "data_viz": {"type": "none"}
             })
 
@@ -187,14 +240,15 @@ def generate_evidence_graph(symbol: str) -> dict:
             "raw_metrics": {
                 "price": quote.get("price", 0),
                 "market_cap": mcap,
-                "volume_24h": quote.get("volume_24h", 0),
+                "volume_24h": vol_24h,
                 "percent_change_1h": quote.get("percent_change_1h", 0),
                 "percent_change_24h": quote.get("percent_change_24h", 0),
                 "percent_change_7d": quote.get("percent_change_7d", 0),
-                "percent_change_30d": quote.get("percent_change_30d", 0),
+                "percent_change_30d": pct_30d,
                 "percent_change_60d": quote.get("percent_change_60d", 0),
-                "percent_change_90d": quote.get("percent_change_90d", 0),
-                "fdv": quote.get("fully_diluted_market_cap", 0)
+                "percent_change_90d": pct_90d,
+                "fdv": quote.get("fully_diluted_market_cap", 0),
+                "turnover_ratio": round(turnover_ratio, 2)
             },
             "identity": identity,
             "vital_scores": analysis["vital_scores"],
@@ -204,7 +258,8 @@ def generate_evidence_graph(symbol: str) -> dict:
             "risk_level": analysis["risk_level"],
             "timeline": timeline,
             "causes": causes,
-            "forensic_telemetry": external_data
+            "forensic_telemetry": external_data,
+            "aif_framework": aif_report
         }
         
         return evidence

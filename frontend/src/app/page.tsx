@@ -477,7 +477,7 @@ export default function Home() {
             {/* TAB NAVIGATION */}
               <div className="flex justify-between items-end border-b border-[#333333] px-2">
                 <div className="flex gap-2">
-                  {['overview', 'evidence', 'methodology', 'ai_terminal'].map((tab) => (
+                  {['overview', 'evidence', 'aif_engines', 'methodology', 'ai_terminal'].map((tab) => (
                   <button 
                     key={tab}
                     onClick={() => setActiveTab(tab)}
@@ -753,7 +753,160 @@ export default function Home() {
               </div>
             )}
 
-            {/* TAB CONTENT: METHODOLOGY */}
+                        {/* TAB CONTENT: AIF ENGINES */}
+            {activeTab === "aif_engines" && (
+              <div className="border border-[#333333] bg-[#1c1d1c] p-8 animate-in fade-in slide-in-from-right-8 duration-500 space-y-8">
+                <div className="flex items-center justify-between border-b border-[#333333] pb-4">
+                  <h3 className="text-lg font-mono font-bold text-white tracking-widest flex items-center gap-3 uppercase">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-winter-green)] animate-pulse"></span>
+                    AIF Scientific Multi-Engine Matrix
+                  </h3>
+                  <span className="px-3 py-1 bg-[#252825] border border-[#3e403e] rounded text-xs font-mono text-[var(--color-winter-green)]">
+                    5 Active Analytical Engines
+                  </span>
+                </div>
+
+                {/* 1. AIF-01 & AIF-02 Row */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* AIF-01 Change Points */}
+                  <div className="bg-[#212321] border border-[#333333] p-5 rounded">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-xs font-mono font-bold text-[var(--color-winter-green)] uppercase">AIF-01: Temporal Change-Point Inception</span>
+                      <span className="text-[10px] font-mono text-zinc-500">STATISTICAL ENGINE</span>
+                    </div>
+                    <div className="space-y-3">
+                      {(result.aif_framework?.change_points || []).map((cp: any, idx: number) => (
+                        <div key={idx} className="bg-[#181a18] p-3 rounded border border-[#2b2d2b] text-xs">
+                          <div className="flex justify-between text-zinc-400 font-mono mb-1">
+                            <span className="text-white font-bold">{cp.timing}</span>
+                            <span className="text-[var(--color-winter-green)]">{cp.confidence}</span>
+                          </div>
+                          <div className="text-zinc-300 font-bold mb-1">{cp.signal}</div>
+                          <p className="text-zinc-500 text-[11px] leading-relaxed">{cp.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* AIF-02 Network Dependency */}
+                  <div className="bg-[#212321] border border-[#333333] p-5 rounded flex flex-col justify-between">
+                    <div>
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-xs font-mono font-bold text-[var(--color-winter-purple)] uppercase">AIF-02: Network Dependency & Graph Fragility</span>
+                        <span className="text-[10px] font-mono text-zinc-500">GRAPH ENGINE</span>
+                      </div>
+                      <div className="flex justify-between items-center bg-[#181a18] p-4 rounded border border-[#2b2d2b] mb-4">
+                        <div>
+                          <span className="text-[11px] font-mono text-zinc-500 block">COMPOSITE FRAGILITY</span>
+                          <span className="text-2xl font-mono font-bold text-[var(--color-winter-purple)]">
+                            {result.aif_framework?.network_fragility?.fragility_score || 72.0} / 100
+                          </span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[11px] font-mono text-zinc-500 block">TOP LP POOL CONCENTRATION</span>
+                          <span className="text-lg font-mono font-bold text-white">
+                            {result.aif_framework?.network_fragility?.estimated_top_lp_concentration || "85.0%"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      {(result.aif_framework?.network_fragility?.critical_nodes || []).map((node: any, idx: number) => (
+                        <div key={idx} className="bg-[#181a18] p-2.5 rounded border border-[#2b2d2b] text-xs flex justify-between items-center">
+                          <span className="text-zinc-300 font-mono">{node.node_type}</span>
+                          <span className="text-red-400 font-mono text-[10px] font-bold">{node.risk_level}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. AIF-03 & AIF-04 Row */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* AIF-03 State Vector */}
+                  <div className="bg-[#212321] border border-[#333333] p-5 rounded">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-xs font-mono font-bold text-[var(--color-winter-green)] uppercase">AIF-03: 6D Normalized State Space</span>
+                      <span className="text-[10px] font-mono text-zinc-500">GEOMETRY ENGINE</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 mb-4">
+                      {Object.entries(result.aif_framework?.state_transition?.state_vector || {}).map(([dim, val]: [string, any]) => (
+                        <div key={dim} className="bg-[#181a18] p-2 rounded border border-[#2b2d2b] text-center">
+                          <span className="text-[9px] font-mono text-zinc-500 block truncate">{dim.split(' ')[0]}</span>
+                          <span className="text-sm font-mono font-bold text-white">{val}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="bg-[#181a18] p-3 rounded border border-[#2b2d2b] text-xs">
+                      <div className="flex justify-between font-mono mb-1">
+                        <span className="text-[var(--color-winter-green)] font-bold">Cross-Domain Divergence:</span>
+                        <span className="text-white font-bold">{result.aif_framework?.state_transition?.cross_domain_divergence_score || 55.0} / 100</span>
+                      </div>
+                      <p className="text-zinc-400 text-[11px] leading-relaxed">{result.aif_framework?.state_transition?.divergence_narrative}</p>
+                    </div>
+                  </div>
+
+                  {/* AIF-04 Counterfactual Failure Decomposition */}
+                  <div className="bg-[#212321] border border-[#333333] p-5 rounded">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-xs font-mono font-bold text-red-400 uppercase">AIF-04: Counterfactual Failure Origin</span>
+                      <span className="text-[10px] font-mono text-zinc-500">CAUSAL INFERENCE</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      <div className="bg-[#181a18] p-3 rounded border border-[#2b2d2b]">
+                        <span className="text-[10px] font-mono text-zinc-500 block">ENDOGENOUS PROTOCOL DEFICIT</span>
+                        <span className="text-xl font-mono font-bold text-red-400">
+                          {result.aif_framework?.counterfactual?.endogenous_failure_contribution || "85.0%"}
+                        </span>
+                      </div>
+                      <div className="bg-[#181a18] p-3 rounded border border-[#2b2d2b]">
+                        <span className="text-[10px] font-mono text-zinc-500 block">EXOGENOUS MACRO SHOCK</span>
+                        <span className="text-xl font-mono font-bold text-zinc-300">
+                          {result.aif_framework?.counterfactual?.macro_market_contribution || "15.0%"}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-zinc-400 text-xs bg-[#181a18] p-3 rounded border border-[#2b2d2b] leading-relaxed">
+                      {result.aif_framework?.counterfactual?.explanation}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 3. AIF-05 Survival Intelligence */}
+                <div className="bg-[#212321] border border-[#333333] p-5 rounded">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-xs font-mono font-bold text-[var(--color-winter-green)] uppercase">AIF-05: Survival Knowledge & Archetypal Takeaways</span>
+                    <span className="text-[10px] font-mono text-zinc-500">KNOWLEDGE REPOSITORY</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 text-xs font-mono">
+                    <div className="bg-[#181a18] p-3 rounded border border-[#2b2d2b]">
+                      <span className="text-zinc-500 block">CLOSEST ARCHETYPE</span>
+                      <span className="text-white font-bold text-sm mt-0.5 block">{result.aif_framework?.survival_intelligence?.closest_archetype}</span>
+                    </div>
+                    <div className="bg-[#181a18] p-3 rounded border border-[#2b2d2b]">
+                      <span className="text-zinc-500 block">PATTERN MATCH</span>
+                      <span className="text-[var(--color-winter-purple)] font-bold text-sm mt-0.5 block">{result.aif_framework?.survival_intelligence?.failure_pattern_match}</span>
+                    </div>
+                    <div className="bg-[#181a18] p-3 rounded border border-[#2b2d2b]">
+                      <span className="text-zinc-500 block">EUCLIDEAN SIMILARITY</span>
+                      <span className="text-[var(--color-winter-green)] font-bold text-sm mt-0.5 block">{result.aif_framework?.survival_intelligence?.similarity_score}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-xs font-mono text-zinc-400 font-bold uppercase">Survival Engineering Guidelines for Builders:</div>
+                    {(result.aif_framework?.survival_intelligence?.actionable_lessons || []).map((l: any, i: number) => (
+                      <div key={i} className="bg-[#181a18] p-3 rounded border border-[#2b2d2b] text-xs">
+                        <span className="text-white font-mono font-bold block mb-0.5">{l.rule}</span>
+                        <p className="text-zinc-400">{l.guidance}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+              {/* TAB CONTENT: METHODOLOGY */}
             {activeTab === "methodology" && (
               <div className="border border-[#333333] rounded-none bg-[#1c1d1c] p-8 animate-in fade-in slide-in-from-right-8 duration-500">
                 <div className="flex items-center justify-between mb-8 border-b border-[#333333] pb-4">

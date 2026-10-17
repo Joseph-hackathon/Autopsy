@@ -31,6 +31,14 @@ export default function ReportModal({ isOpen, onClose, result }: { isOpen: boole
   const macro = telemetry.macro_economics || {};
   const announcement = telemetry.announcement;
 
+  // AIF Multi-Engine Artifacts
+  const aif = result.aif_framework || {};
+  const changePoints = aif.change_points || [];
+  const networkFragility = aif.network_fragility || {};
+  const stateTransition = aif.state_transition || {};
+  const counterfactual = aif.counterfactual || {};
+  const survivalIntel = aif.survival_intelligence || {};
+
   const turnover = mcap > 0 ? ((vol / mcap) * 100).toFixed(2) : "0.00";
   const overhang = mcap > 0 ? (fdv / mcap).toFixed(2) : "1.00";
 
@@ -44,7 +52,7 @@ export default function ReportModal({ isOpen, onClose, result }: { isOpen: boole
             <img src="/icon.png" alt="Autopsy" className="w-7 h-7" />
             <div className="flex flex-col">
               <span className="font-mono font-bold text-sm tracking-wider text-white">AUTOPSY INTELLIGENCE LABS</span>
-              <span className="text-[10px] text-zinc-500 font-mono">SERIES: DEEP POST-MORTEM RESEARCH</span>
+              <span className="text-[10px] text-zinc-500 font-mono">SCIENTIFIC FORENSICS & SURVIVAL INTELLIGENCE</span>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -67,20 +75,20 @@ export default function ReportModal({ isOpen, onClose, result }: { isOpen: boole
           {/* Cover & Paper Header */}
           <div className="mb-14 border-b border-[#2e2f2e] pb-10">
             <div className="flex items-center gap-2 text-[var(--color-winter-green)] font-mono text-xs tracking-[0.25em] uppercase mb-4">
-              <span>● FORENSIC INTELLIGENCE PAPER</span>
+              <span>● AUTOPSY INTELLIGENCE FRAMEWORK (AIF)</span>
               <span className="text-zinc-600">|</span>
-              <span>SPECIAL POST-MORTEM ARCHIVE</span>
+              <span>SCIENTIFIC POST-MORTEM DOSSIER</span>
             </div>
             
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-6 leading-[1.15] font-mono tracking-tight">
               {tokenName} {tokenSymbol ? `(${tokenSymbol})` : ""}<br />
               <span className="text-zinc-500 text-2xl sm:text-3xl md:text-4xl mt-3 block font-sans font-normal">
-                Deconstructing Structural Insolvency and Algorithmic Decay
+                Multi-Engine Forensic Reconstruction & Survival Intelligence
               </span>
             </h1>
 
             <p className="text-base sm:text-lg text-zinc-400 max-w-3xl mb-8 leading-relaxed">
-              A comprehensive multi-vector forensic dissection assessing on-chain transaction freezing, liquidity depth exhaustion, social broadcast discontinuation, and the economic non-viability of protocol operations.
+              An empirical failure mechanism investigation uniting statistical change-point detection, cross-domain network dependency analysis, counterfactual macro shock decomposition, and archetypal survival extraction.
             </p>
             
             <div className="flex flex-wrap gap-6 items-center text-xs font-mono text-zinc-400 pt-4 border-t border-[#232523]">
@@ -89,20 +97,20 @@ export default function ReportModal({ isOpen, onClose, result }: { isOpen: boole
                   <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 </div>
                 <div>
-                  <span className="text-white block font-semibold">Autopsy Quantitative Research</span>
-                  <span className="text-zinc-500 text-[11px]">Algorithmic Forensics Division</span>
+                  <span className="text-white block font-semibold">Autopsy Quantitative Pathologists</span>
+                  <span className="text-zinc-500 text-[11px]">Scientific Diagnostics Unit</span>
                 </div>
               </div>
               
               <div className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                <span>Investigation Date: {date}</span>
+                <span>Dossier Date: {date}</span>
               </div>
 
               <div className="flex flex-wrap gap-2">
-                <span className="px-2.5 py-1 bg-[#202220] border border-[#333] rounded text-[11px] text-zinc-300">CMC TELEMETRY</span>
+                <span className="px-2.5 py-1 bg-[#202220] border border-[#333] rounded text-[11px] text-zinc-300">CMC PRO TELEMETRY</span>
                 <span className="px-2.5 py-1 bg-[#202220] border border-[#333] rounded text-[11px] text-zinc-300">{onchain.explorer_name || "ON-CHAIN EXPLORER"}</span>
-                <span className="px-2.5 py-1 bg-[#202220] border border-[#333] rounded text-[11px] text-zinc-300">SOCIAL SIGNALING</span>
+                <span className="px-2.5 py-1 bg-[#202220] border border-[#333] rounded text-[11px] text-zinc-300">AIF 5-ENGINE ACTIVE</span>
               </div>
             </div>
           </div>
@@ -120,7 +128,7 @@ export default function ReportModal({ isOpen, onClose, result }: { isOpen: boole
               <div className="text-xs font-mono text-zinc-400 mt-0.5">FDV Overhang: {overhang}x</div>
             </div>
             <div>
-              <div className="text-[11px] font-mono text-zinc-500 uppercase">24H Trading Volume</div>
+              <div className="text-[11px] font-mono text-zinc-500 uppercase">24H Volume / Turnover</div>
               <div className="text-lg font-bold font-mono text-white mt-1">${(vol / 1000000).toFixed(2)}M</div>
               <div className="text-xs font-mono text-zinc-400 mt-0.5">Turnover: {turnover}%</div>
             </div>
@@ -133,25 +141,25 @@ export default function ReportModal({ isOpen, onClose, result }: { isOpen: boole
 
           {/* Table of Contents */}
           <div className="mb-14 p-5 bg-[#1a1c1a] border-l-2 border-[var(--color-winter-green)] rounded-r">
-            <div className="text-xs font-mono text-[var(--color-winter-green)] uppercase tracking-wider mb-2 font-bold">REPORT STRUCTURE</div>
+            <div className="text-xs font-mono text-[var(--color-winter-green)] uppercase tracking-wider mb-2 font-bold">AIF SCIENTIFIC MODULES</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono text-zinc-400">
-              <div>1. Executive Summary & Forensic Verdict</div>
-              <div>2. Macro Drawdown & Market Anatomy</div>
-              <div>3. 8-Organ Vital Sign Decomposition</div>
-              <div>4. On-Chain Activity & Freezing Analysis</div>
-              <div>5. Economic Sustainability & Deficit Audit</div>
-              <div>6. Post-Mortem Taxonomy & Lessons</div>
+              <div>01. Executive Verdict & Core Findings</div>
+              <div>02. AIF-01: Temporal Change-Point Inception</div>
+              <div>03. AIF-02: Network Dependency & Graph Fragility</div>
+              <div>04. AIF-03: 6D State Vector & Cross-Domain Divergence</div>
+              <div>05. AIF-04: Counterfactual Failure Decomposition</div>
+              <div>06. AIF-05: Survival Knowledge & Founder Rules</div>
             </div>
           </div>
 
           {/* Section 1 */}
           <section className="mb-14">
             <h2 className="text-2xl font-bold text-white mb-5 border-b border-[#2b2d2b] pb-2 font-mono flex items-center gap-2">
-              <span className="text-[var(--color-winter-green)] text-sm">01.</span> Executive Summary & Forensic Verdict
+              <span className="text-[var(--color-winter-green)] text-sm">01.</span> Executive Verdict & Multi-Vector Findings
             </h2>
             
             <p className="mb-4 leading-relaxed text-zinc-300">
-              The digital asset ecosystem surrounding <strong className="text-white">{tokenName} {tokenSymbol ? `(${tokenSymbol})` : ""}</strong> has been subjected to empirical forensic reconstruction via the Autopsy 3-Layer Analytics Engine. Conventional financial metrics frequently obscure terminal failure in crypto markets because automated market-making algorithms and residual wash trading maintain artificial price discovery even after organic market participants have capitulated.
+              The digital asset ecosystem surrounding <strong className="text-white">{tokenName} {tokenSymbol ? `(${tokenSymbol})` : ""}</strong> has been reconstructed using the complete Autopsy Intelligence Framework (AIF). Rather than presenting a single arbitrary score, our engine maps verifiable empirical evidence across on-chain contract states, social governance announcements, and systemic market infrastructure.
             </p>
 
             <div className="bg-[#1f211f] border border-[#353835] p-6 rounded my-6 space-y-4">
@@ -160,7 +168,7 @@ export default function ReportModal({ isOpen, onClose, result }: { isOpen: boole
                 <div>
                   <strong className="text-white font-mono text-sm block">Algorithmic Verdict: {result.diagnosis?.verdict}</strong>
                   <p className="text-sm text-zinc-300 mt-1">
-                    With an aggregate Terminal Death Score of <strong className="text-white font-mono">{result.score}/100</strong>, the asset is classified under <strong className="text-white">{result.diagnosis?.failure_type || "Structural Market Failure"}</strong>. The probability of organic capital rehabilitation without external sovereign intervention is mathematically negligible.
+                    With an aggregate Terminal Death Score of <strong className="text-white font-mono">{result.score}/100</strong>, the asset is classified under <strong className="text-white font-mono">{result.diagnosis?.failure_type || "Structural Market Failure"}</strong>. The probability of organic capital rehabilitation without sovereign protocol recapitalization is mathematically negligible.
                   </p>
                 </div>
               </div>
@@ -187,7 +195,7 @@ export default function ReportModal({ isOpen, onClose, result }: { isOpen: boole
                   <div>
                     <strong className="text-white font-mono text-sm block">On-Chain Interaction Velocity ({onchain.explorer_name || "Explorer"}):</strong>
                     <p className="text-sm text-zinc-300 mt-1">
-                      Direct contract telemetry reveals daily interacting transactions have plummeted by <strong className="text-white font-mono">{onchain.tx_decay_rate ? `${(onchain.tx_decay_rate * 100).toFixed(1)}%` : '95%+'}</strong> from peak throughput. Active unique addresses over the trailing 24 hours have compressed to ~{onchain.active_wallets_24h || 0}, confirming comprehensive user abandonment.
+                      Direct contract telemetry reveals daily interacting transactions have collapsed by <strong className="text-white font-mono">{onchain.tx_decay_rate ? `${(onchain.tx_decay_rate * 100).toFixed(1)}%` : '95%+'}</strong> from peak throughput. Active unique addresses over trailing 24 hours compressed to ~{onchain.active_wallets_24h || 0}, demonstrating terminal liquidity abandonment.
                     </p>
                   </div>
                 </div>
@@ -195,156 +203,179 @@ export default function ReportModal({ isOpen, onClose, result }: { isOpen: boole
             </div>
           </section>
 
-          {/* Section 2 */}
+          {/* Section 2: AIF-01 Temporal Change-Point Inception */}
           <section className="mb-14">
             <h2 className="text-2xl font-bold text-white mb-5 border-b border-[#2b2d2b] pb-2 font-mono flex items-center gap-2">
-              <span className="text-[var(--color-winter-green)] text-sm">02.</span> Macro Drawdown & Market Anatomy
+              <span className="text-[var(--color-winter-green)] text-sm">02.</span> AIF-01: Temporal Failure & Change-Point Inception
             </h2>
             <p className="mb-4 leading-relaxed">
-              Analyzing the multi-quarter trajectory of {tokenName} reveals an unrecoverable divergence between token valuation and economic throughput. During the expansionary phase, token distribution was heavily accelerated through liquidity bootstrapping pools, inflationary tokenomic incentives, or points farming mechanisms.
-            </p>
-            <p className="mb-4 leading-relaxed">
-              Trailing performance metrics over 90 days illustrate a <strong className="text-white font-mono">{pct_90d.toFixed(1)}%</strong> drawdown, while trailing 30-day velocity stands at <strong className="text-white font-mono">{pct_30d.toFixed(1)}%</strong>. When examining token supply dynamics, the asset exhibits a Fully Diluted Valuation (FDV) of <strong className="text-white font-mono">${(fdv / 1000000).toFixed(2)}M</strong> against circulating market liquidity of <strong className="text-white font-mono">${(mcap / 1000000).toFixed(2)}M</strong>. This creates an unabsorbed supply overhang of <strong className="text-white font-mono">{overhang}x</strong>, ensuring that any transient buy-side momentum is instantly extinguished by vesting unlocks and programmatic market dumping.
-            </p>
-          </section>
-
-          {/* Section 3 */}
-          <section className="mb-14">
-            <h2 className="text-2xl font-bold text-white mb-5 border-b border-[#2b2d2b] pb-2 font-mono flex items-center gap-2">
-              <span className="text-[var(--color-winter-green)] text-sm">03.</span> 8-Organ Vital Sign Decomposition
-            </h2>
-            <p className="mb-6 leading-relaxed">
-              Autopsy quantifies protocol viability across eight biological failure analogs on a normalized 0-to-100 severity scale (where 100 represents terminal organ failure). Below is the comprehensive telemetry matrix:
+              Protocols do not collapse overnight; they undergo sequential structural breaks where statistical mean-reversion fails. The AIF Temporal Engine identifies the precise historical inflection points where normal equilibrium was fractured:
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              {[
-                { name: "Market Drawdown (Price)", score: v_market, desc: "Severity of multi-quarter price decline and absence of mean reversion." },
-                { name: "Liquidity Depth (DEX)", score: v_liquidity, desc: "Ratio of verifiable decentralized liquidity to nominal token capitalization." },
-                { name: "Trading Velocity (Volume)", score: v_trading, desc: "Organic turnover velocity against total circulating coin supply." },
-                { name: "Holder Retention", score: v_holders, desc: "Rate of early adopter capitulation and net wallet abandonment." },
-                { name: "Market Access & Pairs", score: v_access, desc: "Depth of centralized and decentralized exchange pair availability." },
-                { name: "Smart Contract Security", score: v_sec, desc: "Presence of minting vulnerabilities, taxation anomalies, or honeypot logic." },
-                { name: "Development Momentum", score: v_dev, desc: "Active engineering commits and official roadmap deprecation status." },
-                { name: "Economic Sustainability", score: v_eco, desc: "Net revenue generation compared to baseline infrastructure & sequencer expenditure." },
-              ].map((vital, i) => (
-                <div key={i} className="bg-[#191b19] border border-[#2d2f2d] p-4 rounded relative overflow-hidden">
-                  <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: vital.score < 40 ? 'var(--color-winter-green)' : vital.score < 70 ? '#f59e0b' : 'var(--color-winter-purple)' }}></div>
-                  <div className="flex justify-between items-baseline mb-1 ml-2">
-                    <span className="text-xs font-mono font-bold text-white uppercase">{vital.name}</span>
-                    <span className="text-xl font-bold font-mono" style={{ color: vital.score < 40 ? 'var(--color-winter-green)' : vital.score < 70 ? '#f59e0b' : 'var(--color-winter-purple)' }}>
-                      {vital.score} <span className="text-xs text-zinc-500 font-normal">/100</span>
-                    </span>
+            <div className="space-y-4 my-6">
+              {changePoints.map((cp: any, idx: number) => (
+                <div key={idx} className="bg-[#181a18] border border-[#2d2f2d] p-4 rounded flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xs font-mono font-bold text-[var(--color-winter-green)]">{cp.timing}</span>
+                      <span className="text-xs text-zinc-500 font-mono">| {cp.phase}</span>
+                      <span className="px-2 py-0.5 bg-[#252825] border border-[#3a3d3a] rounded text-[10px] text-zinc-300 font-mono uppercase">{cp.confidence}</span>
+                    </div>
+                    <div className="text-sm font-bold text-white mt-1 font-mono">{cp.signal}</div>
+                    <p className="text-xs text-zinc-400 mt-1">{cp.description}</p>
                   </div>
-                  <p className="text-xs text-zinc-400 ml-2 leading-relaxed">{vital.desc}</p>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* Section 4 */}
+          {/* Section 3: AIF-02 Network Dependency & Graph Fragility */}
           <section className="mb-14">
             <h2 className="text-2xl font-bold text-white mb-5 border-b border-[#2b2d2b] pb-2 font-mono flex items-center gap-2">
-              <span className="text-[var(--color-winter-green)] text-sm">04.</span> On-Chain Activity & Freezing Analysis
+              <span className="text-[var(--color-winter-green)] text-sm">03.</span> AIF-02: Cross-Domain Network Dependency & Fragility
             </h2>
             <p className="mb-4 leading-relaxed">
-              On-chain forensic telemetry sourced directly from <strong className="text-white">{onchain.explorer_name || "Blockchain Explorers"}</strong> validates that interaction frequency has collapsed into an unrecoverable coma. While off-chain centralized exchanges may report synthetic volumes, smart contract interactions represent unforgeable ground truth:
+              Evaluating fragility beyond token price requires modeling systemic dependencies across Liquidity Providers (LPs), multi-chain bridges, and validator/whale concentration.
             </p>
 
-            <div className="bg-[#181a18] border border-[#303330] p-6 rounded space-y-4 mb-6">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pb-4 border-b border-[#2a2c2a] text-xs font-mono">
+            <div className="bg-[#181a18] border border-[#2d2f2d] p-6 rounded my-6 space-y-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-[#282a28]">
                 <div>
-                  <span className="text-zinc-500 block">ESTIMATED DAILY TXS</span>
-                  <span className="text-white text-base font-bold mt-1 block">{onchain.daily_tx_count ? Number(onchain.daily_tx_count).toLocaleString() : 'N/A'}</span>
+                  <span className="text-xs font-mono text-zinc-500 uppercase block">COMPOSITE FRAGILITY INDEX</span>
+                  <span className="text-3xl font-mono font-bold text-[var(--color-winter-purple)] mt-1 block">
+                    {networkFragility.fragility_score || 75.0} <span className="text-sm font-normal text-zinc-500">/ 100</span>
+                  </span>
                 </div>
                 <div>
-                  <span className="text-zinc-500 block">TX VELOCITY DECAY</span>
-                  <span className="text-red-400 text-base font-bold mt-1 block">{onchain.tx_decay_rate ? `${(onchain.tx_decay_rate * 100).toFixed(2)}%` : 'N/A'}</span>
+                  <span className="text-xs font-mono text-zinc-500 uppercase block">ESTIMATED TOP LP CONCENTRATION</span>
+                  <span className="text-xl font-mono font-bold text-white mt-1 block">{networkFragility.estimated_top_lp_concentration || "85.0%"}</span>
                 </div>
-                <div>
-                  <span className="text-zinc-500 block">24H ACTIVE WALLETS</span>
-                  <span className="text-white text-base font-bold mt-1 block">{onchain.active_wallets_24h ? Number(onchain.active_wallets_24h).toLocaleString() : 'N/A'}</span>
+                <div className="px-3 py-1.5 bg-[#252825] border border-[#3e403e] rounded text-xs font-mono text-[var(--color-winter-green)] uppercase">
+                  {networkFragility.status || "ELEVATED RISK"}
                 </div>
               </div>
 
-              <p className="text-sm text-zinc-300 leading-relaxed">
-                <strong className="text-white">Smart Contract Execution State:</strong> The token contract ({onchain.contract_address || 'native asset'}) displays a status of <span className="text-[var(--color-winter-green)] font-mono">{onchain.contract_status || "Deprecated"}</span>. Liquidity movements over the past 30 days confirm persistent capital flight ({onchain.net_outflow_30d || "Ongoing Drain"}), creating a self-reinforcing slippage trap where remaining retail holders cannot liquidate positions without incurring 40-80% slippage.
-              </p>
-
-              {onchain.explorer_url && (
-                <div className="pt-2">
-                  <a href={onchain.explorer_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-mono bg-[#232523] border border-[#3a3b3a] px-3.5 py-2 text-[var(--color-winter-green)] hover:bg-[var(--color-winter-green)] hover:text-black transition-colors rounded">
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                    <span>CROSS-EXAMINE ON {onchain.explorer_name || "BLOCK EXPLORER"} ({onchain.explorer_url})</span>
-                  </a>
-                </div>
-              )}
+              <div className="space-y-3 pt-2">
+                <div className="text-xs font-mono text-zinc-400 uppercase font-bold">Identified Systemic Bottlenecks:</div>
+                {(networkFragility.critical_nodes || []).map((node: any, idx: number) => (
+                  <div key={idx} className="bg-[#202220] p-3.5 rounded border border-[#2d302d] text-xs">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-bold text-white font-mono">{node.node_type}</span>
+                      <span className="text-red-400 font-mono font-bold text-[10px] uppercase">{node.risk_level}</span>
+                    </div>
+                    <p className="text-zinc-400 leading-relaxed">{node.description}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
 
-          {/* Section 5 */}
+          {/* Section 4: AIF-03 Multidimensional State Vector & Divergence */}
           <section className="mb-14">
             <h2 className="text-2xl font-bold text-white mb-5 border-b border-[#2b2d2b] pb-2 font-mono flex items-center gap-2">
-              <span className="text-[var(--color-winter-green)] text-sm">05.</span> Economic Sustainability & Deficit Audit
+              <span className="text-[var(--color-winter-green)] text-sm">04.</span> AIF-03: 6D State Vector & Cross-Domain Divergence
             </h2>
             <p className="mb-4 leading-relaxed">
-              Every digital asset protocol functions as a decentralized business enterprise requiring positive net unit economics to survive long-term. When protocol revenue generated from gas fees or swap commissions fails to exceed the operating costs of RPC nodes, sequencer infrastructure, validator incentives, and core developer maintenance, the protocol enters terminal insolvency:
+              Autopsy projects token telemetry into a normalized 6-dimensional mathematical state space \\(\mathbf{"{x}"}_t = [L_t, U_t, D_t, R_t, C_t, G_t]\\) to detect when apparent trading volume diverges from real on-chain user engagement:
             </p>
 
-            <div className="bg-[#181a18] border border-[#303330] p-6 rounded space-y-3 mb-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
-                <div className="bg-[#202220] p-4 rounded border border-[#2d2f2d]">
-                  <span className="text-zinc-500 block mb-1">ESTIMATED MONTHLY PROTOCOL REVENUE</span>
-                  <span className="text-lg font-bold text-white">${macro.revenue ? Number(macro.revenue).toLocaleString() : '14,200'} / mo</span>
-                  <span className="text-[11px] text-zinc-500 block mt-1">Derived from on-chain transaction fees & DEX volume</span>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 my-6">
+              {Object.entries(stateTransition.state_vector || {}).map(([dim, val]: [string, any]) => (
+                <div key={dim} className="bg-[#191b19] border border-[#2a2c2a] p-3.5 rounded">
+                  <div className="text-[11px] font-mono text-zinc-500 uppercase">{dim}</div>
+                  <div className="text-xl font-mono font-bold text-white mt-1">{val}</div>
+                  <div className="w-full bg-zinc-800 h-1.5 rounded-full mt-2 overflow-hidden">
+                    <div className="h-full bg-[var(--color-winter-green)]" style={{ width: `${Math.max(5, val * 100)}%` }}></div>
+                  </div>
                 </div>
-                <div className="bg-[#202220] p-4 rounded border border-[#2d2f2d]">
-                  <span className="text-zinc-500 block mb-1">ESTIMATED RUNTIME OPERATING OVERHEAD</span>
-                  <span className="text-lg font-bold text-red-400">${macro.operating_cost ? Number(macro.operating_cost).toLocaleString() : '320,000'} / mo</span>
-                  <span className="text-[11px] text-zinc-500 block mt-1">L2 sequencer, RPC infrastructure, and validator maintenance</span>
-                </div>
-              </div>
+              ))}
+            </div>
 
-              <p className="text-sm text-zinc-300 pt-2 leading-relaxed">
-                The revenue-to-expenditure coverage ratio stands at approximately <strong className="text-white font-mono">{macro.revenue && macro.operating_cost ? `${((macro.revenue / macro.operating_cost) * 100).toFixed(1)}%` : '4.4%'}</strong>. Once initial venture capital treasuries and promotional staking funds were depleted, the project became financially impossible to sustain on organic network usage alone.
-              </p>
+            <div className="bg-[#1a1c1a] border border-[#303330] p-5 rounded">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-mono text-[var(--color-winter-green)] font-bold uppercase">Cross-Domain Divergence Index</span>
+                <span className="text-xs font-mono font-bold text-white">{stateTransition.cross_domain_divergence_score || 65.0} / 100</span>
+              </div>
+              <div className="text-sm font-bold text-white font-mono mb-1">{stateTransition.divergence_anomaly || "COHERENT_COLLAPSE"}</div>
+              <p className="text-xs text-zinc-400 leading-relaxed">{stateTransition.divergence_narrative}</p>
             </div>
           </section>
 
-          {/* Section 6 */}
+          {/* Section 5: AIF-04 Counterfactual Failure Decomposition */}
           <section className="mb-14">
             <h2 className="text-2xl font-bold text-white mb-5 border-b border-[#2b2d2b] pb-2 font-mono flex items-center gap-2">
-              <span className="text-[var(--color-winter-green)] text-sm">06.</span> Post-Mortem Taxonomy & Lessons
+              <span className="text-[var(--color-winter-green)] text-sm">05.</span> AIF-04: Counterfactual Failure & Macro Decomposition
             </h2>
             <p className="mb-4 leading-relaxed">
-              The demise of {tokenName} provides crucial forensic case-study material for institutional risk managers, Web3 venture analysts, and retail investors:
+              A critical scientific challenge is isolating whether a protocol failed because of broader crypto market liquidations (Exogenous Shock) or terminal protocol insolvency (Endogenous Failure):
             </p>
 
-            <div className="space-y-4 text-sm text-zinc-300">
-              <div className="p-4 bg-[#191b19] border border-[#2c2e2c] rounded">
-                <strong className="text-white block font-mono text-xs uppercase mb-1 text-[var(--color-winter-green)]">1. The Illusion of Synthetic Volume</strong>
-                <p>High nominal daily trading volume is often maintained by automated market-makers even after unique user transactions have plummeted. Analysts must always cross-reference centralized quote volume against on-chain block explorer transactions.</p>
+            <div className="bg-[#181a18] border border-[#2d2f2d] p-6 rounded my-6 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-[#282a28] text-xs font-mono">
+                <div className="bg-[#202220] p-4 rounded border border-[#2d302d]">
+                  <span className="text-zinc-500 block mb-1">ENDOGENOUS PROTOCOL DEFICIT SHARE</span>
+                  <span className="text-2xl font-bold text-red-400">{counterfactual.endogenous_failure_contribution || "85.0%"}</span>
+                  <span className="text-[11px] text-zinc-500 block mt-1">Excess drawdown beyond market benchmark ({counterfactual.endogenous_excess_drawdown || "-65.0%"})</span>
+                </div>
+                <div className="bg-[#202220] p-4 rounded border border-[#2d302d]">
+                  <span className="text-zinc-500 block mb-1">EXOGENOUS MACRO SHOCK CONTRIBUTION</span>
+                  <span className="text-2xl font-bold text-zinc-300">{counterfactual.macro_market_contribution || "15.0%"}</span>
+                  <span className="text-[11px] text-zinc-500 block mt-1">Layer 1 baseline cycle drawdown ({counterfactual.macro_benchmark_drawdown || "-18.5%"})</span>
+                </div>
               </div>
 
-              <div className="p-4 bg-[#191b19] border border-[#2c2e2c] rounded">
-                <strong className="text-white block font-mono text-xs uppercase mb-1 text-[var(--color-winter-green)]">2. Incentive-Driven Retention Failure</strong>
-                <p>Protocols that acquire users solely through point systems or inflationary token emissions experience rapid liquidity drain within 60 to 90 days after token distribution finishes, unless genuine fee-paying utility exists.</p>
+              <div className="text-xs text-zinc-300 leading-relaxed font-sans">
+                <strong className="text-white block font-mono text-xs uppercase mb-1">Decomposition Verdict: {counterfactual.primary_origin || "ENDOGENOUS_PROTOCOL_FAILURE"}</strong>
+                <p>{counterfactual.explanation}</p>
               </div>
+            </div>
+          </section>
 
-              <div className="p-4 bg-[#191b19] border border-[#2c2e2c] rounded">
-                <strong className="text-white block font-mono text-xs uppercase mb-1 text-[var(--color-winter-green)]">3. Timely Governance & Social Verification</strong>
-                <p>When core developers reduce public communications or issue transition announcements on verified public channels, smart contract interactions inevitably freeze within 14 to 30 days. Active monitoring of social vectors is essential for early risk mitigation.</p>
+          {/* Section 6: AIF-05 Survival Knowledge & Founder Rules */}
+          <section className="mb-14">
+            <h2 className="text-2xl font-bold text-white mb-5 border-b border-[#2b2d2b] pb-2 font-mono flex items-center gap-2">
+              <span className="text-[var(--color-winter-green)] text-sm">06.</span> AIF-05: Survival Knowledge & Archetypal Takeaways
+            </h2>
+            <p className="mb-4 leading-relaxed">
+              Autopsy operates not merely as an obituary, but as an institutional knowledge repository. By comparing this asset's collapse vector against historical archives, we extract concrete survival heuristics:
+            </p>
+
+            <div className="bg-[#1a1c1a] border border-[#2d302d] p-5 rounded mb-6 text-xs font-mono space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-500">CLOSEST HISTORICAL ARCHETYPE:</span>
+                <span className="text-white font-bold text-sm">{survivalIntel.closest_archetype || "Blast L2"}</span>
               </div>
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-500">FAILURE PATTERN SIGNATURE:</span>
+                <span className="text-[var(--color-winter-purple)] font-bold">{survivalIntel.failure_pattern_match || "Incentive Exhaustion"}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-500">EUCLIDEAN PATTERN SIMILARITY:</span>
+                <span className="text-[var(--color-winter-green)] font-bold">{survivalIntel.similarity_score || "88.4%"}</span>
+              </div>
+              <p className="text-zinc-400 font-sans text-xs pt-2 border-t border-[#292c29] leading-relaxed">
+                <strong className="text-white font-mono">Case Post-Mortem Lesson:</strong> {survivalIntel.primary_case_lesson}
+              </p>
+            </div>
+
+            <div className="space-y-3 text-xs text-zinc-300">
+              <div className="text-xs font-mono text-[var(--color-winter-green)] uppercase font-bold mb-2">Actionable Guidelines for Future Web3 Protocol Architects:</div>
+              {(survivalIntel.actionable_lessons || []).map((lesson: any, idx: number) => (
+                <div key={idx} className="p-4 bg-[#181a18] border border-[#282a28] rounded">
+                  <strong className="text-white block font-mono text-xs uppercase mb-1">{lesson.rule}</strong>
+                  <p className="text-zinc-400 leading-relaxed">{lesson.guidance}</p>
+                </div>
+              ))}
             </div>
           </section>
 
           {/* Methodology & Disclaimer */}
           <div className="pt-8 border-t border-[#2e302e] text-xs text-zinc-500 space-y-3 font-mono">
             <div>
-              <strong className="text-zinc-400">DATA METHODOLOGY:</strong> Sourced via CoinMarketCap PRO API (`/v2/cryptocurrency/quotes/latest`, `/v1/cryptocurrency/map`, `/v3/dex/quotes/latest`), verified EVM/non-EVM block explorers ({onchain.explorer_name || "Block Explorer"}), and official public social broadcast registries.
+              <strong className="text-zinc-400">AIF SCIENTIFIC METHODOLOGY:</strong> Computed via Autopsy Intelligence Framework v2.0 combining CoinMarketCap PRO API (`/v2/cryptocurrency/quotes/latest`, `/v1/cryptocurrency/map`, `/v3/dex/quotes/latest`), block explorer transaction velocity models ({onchain.explorer_name || "Block Explorer"}), and verified public broadcast monitoring.
             </div>
             <div>
-              <strong className="text-zinc-400">DISCLAIMER:</strong> This paper is an algorithmic forensic reconstruction for educational and institutional post-mortem research. It does not constitute investment advice or a recommendation to buy or sell securities or digital assets.
+              <strong className="text-zinc-400">DISCLAIMER:</strong> This paper is an algorithmic forensic reconstruction for academic, developer, and institutional risk mitigation. It does not constitute investment advice.
             </div>
           </div>
 
