@@ -29,7 +29,7 @@ def generate_evidence_graph(symbol: str) -> dict:
             return {"error": f"Failed to identify token {symbol}: {identity['error']}"}
 
         # 2. Fetch Latest Quotes & Info
-        latest_res = CMCClient.get_latest_quotes(identity["id"])
+        latest_res = CMCClient.get_latest_quotes(identity["id"], slug=identity.get("slug"))
         if "error" in latest_res:
             return {"error": f"Failed to fetch market data: {latest_res['error']}"}
         
@@ -101,11 +101,8 @@ def generate_evidence_graph(symbol: str) -> dict:
         if external_data.get("announcement", {}).get("url"):
             twitter = external_data["announcement"]["url"]
 
-        if identity.get("symbol") in ["SCR", "SCROLL"] or identity.get("slug") == "scroll":
+        if "scroll.io" in website:
             website = "https://scroll.org/"
-            twitter = "https://twitter.com/Scroll_ZKP"
-            explorer = "https://scrollscan.com/token/0xd29687c813d741e2f938f4ac377128810e217b1b#transactions"
-            logo = "https://s2.coinmarketcap.com/static/img/coins/64x64/26998.png"
         
         category = "Unknown"
         if info_data.get("category"):
