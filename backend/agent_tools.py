@@ -101,8 +101,6 @@ def generate_evidence_graph(symbol: str) -> dict:
         if external_data.get("announcement", {}).get("url"):
             twitter = external_data["announcement"]["url"]
 
-        if "scroll.io" in website:
-            website = "https://scroll.org/"
         
         category = "Unknown"
         if info_data.get("category"):

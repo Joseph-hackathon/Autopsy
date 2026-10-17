@@ -57,15 +57,9 @@ class CMCClient:
                             
                             # Clean and canonicalize URLs
                             raw_websites = urls.get("website", [])
-                            clean_websites = []
-                            for w in raw_websites:
-                                if "scroll.io" in w:
-                                    clean_websites.append("https://scroll.org/")
-                                else:
-                                    clean_websites.append(w)
-                            if not clean_websites and "scroll" in s:
-                                clean_websites = ["https://scroll.org/"]
-                            urls["website"] = clean_websites or raw_websites
+                            if not raw_websites and "scroll" in s:
+                                raw_websites = ["https://scroll.io/"]
+                            urls["website"] = raw_websites
 
                             result = {
                                 "id": cid,
