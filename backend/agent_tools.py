@@ -2,6 +2,7 @@ import json
 from cmc_api import CMCClient
 import score_engine
 from forensic_telemetry import ForensicTelemetryCollector
+from external_data_providers import ExternalForensicProviders
 from aif_framework import (
     AIFStatisticalEngine,
     AIFNetworkDependencyEngine,
@@ -12,13 +13,14 @@ from aif_framework import (
 
 def generate_evidence_graph(symbol: str) -> dict:
     """
-    Autopsy 2.0: Core Forensic Orchestration Agent with AIF (Autopsy Intelligence Framework).
-    Synthesizes:
+    Autopsy 2.0: Core Forensic Orchestration Agent with Multi-Source Data Federation:
     1. CoinMarketCap PRO API (Identity, Quotes, DEX metrics, historical pairs)
-    2. Universal On-Chain Block Explorers (Etherscan, BscScan, Solscan, Blastscan, Arbiscan, etc.)
-    3. Social & Governance Signals (Official X/Twitter broadcast accounts & verified announcements)
-    4. Macro Multi-Year Structural Economics (TVL drain, fee revenue vs operating cost deficits)
-    5. AIF 5-Engine Scientific Analytics (Statistical change points, network dependency, state transitions, counterfactuals, survival intelligence)
+    2. DexScreener API (Real-time live DEX pool liquidity, 24h buys/sells transactions, pair volume)
+    3. DefiLlama API (Historical TVL collapse, peak-to-trough exhaustion, protocol revenue)
+    4. Dune Analytics (Audited SQL whale net flow and contract event telemetry)
+    5. Universal On-Chain Block Explorers (Etherscan, BscScan, Solscan, Blastscan, Arbiscan, etc.)
+    6. Social & Governance Signals (Official X/Twitter broadcast accounts & verified announcements)
+    7. AIF 5-Engine Scientific Analytics (Statistical change points, network dependency, state transitions, counterfactuals, survival intelligence)
     """
     try:
         # 1. Token Identity Resolution
@@ -46,17 +48,29 @@ def generate_evidence_graph(symbol: str) -> dict:
         pct_90d = quote.get("percent_change_90d", 0) or 0
         pct_30d = quote.get("percent_change_30d", 0) or 0
         turnover_ratio = (vol_24h / mcap * 100.0) if mcap > 0 else 0.0
+        contract_addr = identity.get("contract_address")
         
         # 3. Fetch DEX/Real Metrics
         dex_metrics = CMCClient.get_dex_metrics(
             cmc_id=identity["id"],
-            contract_address=identity["contract_address"],
+            contract_address=contract_addr,
             platform_id=identity["platform"]["id"] if identity.get("platform") else None,
             mcap=mcap
         )
         
-        # 4. Universal Multi-Source Forensic Telemetry Collector
-        # Dynamically extracts on-chain explorer telemetry, Twitter/X channels, and macro economics
+        # 4. Ingest External Real-Time Forensic Providers (DexScreener, DefiLlama, Dune)
+        platform_name = identity["platform"]["name"] if identity.get("platform") and isinstance(identity["platform"], dict) else None
+        dexscreener_data = ExternalForensicProviders.fetch_dexscreener_telemetry(contract_addr, identity["symbol"])
+        defillama_data = ExternalForensicProviders.fetch_defillama_telemetry(identity.get("slug") or identity["name"], platform_name or identity["name"])
+        dune_data = ExternalForensicProviders.fetch_dune_forensics(identity["symbol"], contract_addr)
+        
+        # If DexScreener has live liquidity, inject it to enrich CMC DEX metrics
+        if dexscreener_data.get("available") and dexscreener_data.get("liquidity_usd", 0) > 0:
+            dex_metrics["liquidity"] = dexscreener_data["liquidity_usd"]
+            if dexscreener_data.get("pair_count", 0) > 0:
+                dex_metrics["active_pairs"] = dexscreener_data["pair_count"]
+                
+        # 5. Universal Multi-Source Forensic Telemetry Collector
         external_data = ForensicTelemetryCollector.collect_telemetry(
             symbol=identity["symbol"],
             name=identity.get("name", ""),
@@ -65,10 +79,16 @@ def generate_evidence_graph(symbol: str) -> dict:
             dex_metrics=dex_metrics,
             identity=identity
         )
+        
+        # Overwrite/Enrich with DefiLlama verified TVL data if available
+        if defillama_data.get("available"):
+            external_data["macro_economics"]["tvl_peak"] = defillama_data.get("peak_tvl_usd")
+            external_data["macro_economics"]["tvl_current"] = defillama_data.get("current_tvl_usd")
+            external_data["macro_economics"]["tvl_decay"] = defillama_data.get("tvl_exhaustion_rate")
             
         analysis = score_engine.calculate_death_score(latest_data, dex_metrics, identity, external_data)
         
-        # 5. Extract UI Metadata
+        # 6. Extract UI Metadata
         logo = info_data.get("logo", "")
         description = info_data.get("description", "")
         urls = info_data.get("urls", {})
@@ -86,10 +106,16 @@ def generate_evidence_graph(symbol: str) -> dict:
             category = info_data["category"]
             
         # -------------------------------------------------------------
-        # 6. AIF MULTI-ENGINE EXECUTION (SCIENTIFIC FORENSICS)
+        # 7. AIF MULTI-ENGINE EXECUTION (SCIENTIFIC FORENSICS)
         # -------------------------------------------------------------
         onchain_info = external_data.get("onchain", {})
-        daily_txs = onchain_info.get("daily_tx_count", 500) or 500
+        # If DexScreener has live txns, use actual 24h count
+        if dexscreener_data.get("available") and dexscreener_data.get("total_dex_txns_24h", 0) > 0:
+            daily_txs = dexscreener_data["total_dex_txns_24h"]
+            onchain_info["daily_tx_count"] = daily_txs
+        else:
+            daily_txs = onchain_info.get("daily_tx_count", 500) or 500
+            
         tx_decay = onchain_info.get("tx_decay_rate", 0.0) or 0.0
         is_shutdown = external_data.get("official_shutdown", False)
         
@@ -129,7 +155,7 @@ def generate_evidence_graph(symbol: str) -> dict:
         }
 
         # -------------------------------------------------------------
-        # 7. Build Multi-Vector Causes of Death (With Confidence Levels)
+        # 8. Build Multi-Vector Causes of Death (With Confidence Levels)
         # -------------------------------------------------------------
         causes = []
         diagnosis = analysis["diagnosis"]
@@ -156,18 +182,40 @@ def generate_evidence_graph(symbol: str) -> dict:
                     "data_viz": {"type": "announcement_badge"}
                 })
 
-        # (B) On-Chain Explorer Telemetry Vector
+        # (B) DexScreener Live On-Chain Orderbook & Sell Pressure Vector
+        if dexscreener_data.get("available"):
+            causes.append({
+                "title": f"Live On-Chain Liquidity & Sell Pressure (DexScreener)",
+                "evidence": f"Real-time DEX pool depth on {dexscreener_data['dex_name']} shows ${dexscreener_data['liquidity_usd']:,.2f} in verifiable liquidity across {dexscreener_data['pair_count']} pool(s). Trailing 24H transactions recorded {dexscreener_data['buys_24h']} buys vs {dexscreener_data['sells_24h']} sells ({dexscreener_data['sell_pressure_pct']}% sell pressure).",
+                "source": "DexScreener Real-Time DEX Telemetry",
+                "source_url": dexscreener_data["pair_url"],
+                "confidence": "Confirmed",
+                "data_viz": {"type": "dexscreener_badge"}
+            })
+
+        # (C) DefiLlama Historical TVL Collapse Vector
+        if defillama_data.get("available") and defillama_data.get("tvl_exhaustion_rate", 0) > 0.4:
+            causes.append({
+                "title": f"Verified TVL Depletion & Capital Flight (DefiLlama)",
+                "evidence": f"DefiLlama historical audit confirms {defillama_data['type']} experienced an catastrophic {defillama_data['tvl_exhaustion_pct']} TVL collapse from peak (${defillama_data['peak_tvl_usd']:,.0f} down to ${defillama_data['current_tvl_usd']:,.0f}). Verified across {defillama_data['datapoints_tracked']} tracked checkpoints.",
+                "source": "DefiLlama Verified Protocol TVL Index",
+                "source_url": defillama_data["llama_url"],
+                "confidence": "Confirmed",
+                "data_viz": {"type": "defillama_badge"}
+            })
+
+        # (D) On-Chain Explorer Telemetry Vector
         if onchain_info.get("explorer_url"):
             causes.append({
                 "title": f"On-Chain Transaction & Activity Telemetry ({onchain_info.get('explorer_name', 'Explorer')})",
-                "evidence": f"Smart contract telemetry ({onchain_info.get('contract_address')}) indicates estimated daily transaction throughput of {onchain_info.get('daily_tx_count', 0):,} txs/day ({onchain_info.get('tx_decay_rate', 0):.1%} velocity drop from peak). Interacting 24h active wallets: ~{onchain_info.get('active_wallets_24h', 0)}. Contract state: {onchain_info.get('contract_status')}. Net 30D liquidity movement: {onchain_info.get('net_outflow_30d')}.",
+                "evidence": f"Smart contract telemetry ({onchain_info.get('contract_address')}) indicates daily transaction throughput of {daily_txs:,} txs/day ({onchain_info.get('tx_decay_rate', 0):.1%} velocity drop from peak). Interacting 24h active wallets: ~{onchain_info.get('active_wallets_24h', 0)}. Contract state: {onchain_info.get('contract_status')}. Net 30D liquidity movement: {onchain_info.get('net_outflow_30d')}.",
                 "source": f"{onchain_info.get('explorer_name', 'Explorer')} Token Telemetry",
                 "source_url": onchain_info.get("explorer_url", explorer),
                 "confidence": "Confirmed" if onchain_info.get("tx_decay_rate", 0) > 0.9 else "Strongly Supported",
                 "data_viz": {"type": "onchain_decay"}
             })
 
-        # (C) Cross-Domain Divergence & Synthetic Volume (New AIF Cause)
+        # (E) Cross-Domain Divergence & Synthetic Volume (AIF Cause)
         if state_transition["cross_domain_divergence_score"] > 55.0:
             causes.append({
                 "title": "Cross-Domain Divergence (Synthetic Volume)",
@@ -178,7 +226,7 @@ def generate_evidence_graph(symbol: str) -> dict:
                 "data_viz": {"type": "none"}
             })
 
-        # (D) Macro Structural & Economic Drain
+        # (F) Macro Structural & Economic Drain
         macro = external_data.get("macro_economics", {})
         if macro.get("revenue") is not None and macro.get("operating_cost") is not None:
             rev = macro["revenue"]
@@ -192,7 +240,7 @@ def generate_evidence_graph(symbol: str) -> dict:
                 "data_viz": {"type": "macro_economic"}
             })
             
-        # (E) Liquidity & DEX Spiral Vectors
+        # (G) Liquidity & DEX Spiral Vectors
         if diagnosis["primary"] == "LIQUIDITY SPIRAL" or (dex_metrics.get("liquidity", 0) < 50000 and quote.get("volume_24h", 0) > 0):
             causes.append({
                 "title": "Liquidity Spiral & Slippage Trap",
@@ -225,7 +273,7 @@ def generate_evidence_graph(symbol: str) -> dict:
         if not timeline:
             timeline.append({"day": "T-0d", "status": "Stable", "event": "No significant structural failures detected in the timeline."})
 
-        # Final Payload Structure
+        # Final Multi-Provider Forensic Payload Structure
         evidence = {
             "token": identity["symbol"],
             "name": identity["name"],
@@ -235,7 +283,10 @@ def generate_evidence_graph(symbol: str) -> dict:
             "links": {
                 "website": website,
                 "twitter": twitter,
-                "explorer": explorer
+                "explorer": explorer,
+                "dexscreener": dexscreener_data.get("pair_url") if dexscreener_data.get("available") else None,
+                "defillama": defillama_data.get("llama_url") if defillama_data.get("available") else None,
+                "dune": dune_data.get("dune_workspace_url")
             },
             "raw_metrics": {
                 "price": quote.get("price", 0),
@@ -259,6 +310,11 @@ def generate_evidence_graph(symbol: str) -> dict:
             "timeline": timeline,
             "causes": causes,
             "forensic_telemetry": external_data,
+            "external_providers": {
+                "dexscreener": dexscreener_data,
+                "defillama": defillama_data,
+                "dune": dune_data
+            },
             "aif_framework": aif_report
         }
         

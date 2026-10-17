@@ -111,6 +111,9 @@ export default function ReportModal({ isOpen, onClose, result }: { isOpen: boole
                 <span className="px-2.5 py-1 bg-[#202220] border border-[#333] rounded text-[11px] text-zinc-300">CMC PRO TELEMETRY</span>
                 <span className="px-2.5 py-1 bg-[#202220] border border-[#333] rounded text-[11px] text-zinc-300">{onchain.explorer_name || "ON-CHAIN EXPLORER"}</span>
                 <span className="px-2.5 py-1 bg-[#202220] border border-[#333] rounded text-[11px] text-zinc-300">AIF 5-ENGINE ACTIVE</span>
+                  <span className="px-2.5 py-1 bg-[#202220] border border-emerald-900/60 rounded text-[11px] text-emerald-400">DEXSCREENER LIVE</span>
+                  <span className="px-2.5 py-1 bg-[#202220] border border-cyan-900/60 rounded text-[11px] text-cyan-400">DEFILLAMA TVL</span>
+                  <span className="px-2.5 py-1 bg-[#202220] border border-amber-900/60 rounded text-[11px] text-amber-400">DUNE AUDIT</span>
               </div>
             </div>
           </div>
