@@ -181,7 +181,9 @@ class CMCClient:
             "ROUTE": {"id": 32544, "name": "Router Protocol", "symbol": "ROUTE", "slug": "router-protocol-2"},
             "BLAST": {"id": 28480, "name": "Blast", "symbol": "BLAST", "slug": "blast"},
             "SAFEMOON": {"id": 8757, "name": "SafeMoon", "symbol": "SAFEMOON", "slug": "safemoon"},
-            "CEL": {"id": 2700, "name": "Celsius", "symbol": "CEL", "slug": "celsius"}
+            "CEL": {"id": 2700, "name": "Celsius", "symbol": "CEL", "slug": "celsius"},
+            "SCROLL": {"id": 26998, "name": "Scroll", "symbol": "SCR", "slug": "scroll"},
+            "SCR": {"id": 26998, "name": "Scroll", "symbol": "SCR", "slug": "scroll"}
         }
         
         query_upper = query.upper()
@@ -192,8 +194,8 @@ class CMCClient:
                 "name": ov["name"],
                 "symbol": ov["symbol"],
                 "slug": ov["slug"],
-                "contract_address": "0xb1a5700fa2358173fe465e6ea4ff52e36e88e2ad" if query_upper == "BLAST" else None,
-                "platform": {"name": "Blast", "id": "blast"} if query_upper == "BLAST" else None,
+                "contract_address": "0xd29687c813d741e2f938f4ac377128810e217b1b" if query_upper in ["SCROLL", "SCR"] else ("0xb1a5700fa2358173fe465e6ea4ff52e36e88e2ad" if query_upper == "BLAST" else None),
+                "platform": {"name": "Scroll", "id": "scroll"} if query_upper in ["SCROLL", "SCR"] else ({"name": "Blast", "id": "blast"} if query_upper == "BLAST" else None),
                 "migration_detected": query_upper == "ROUTE",
                 "identity_confidence": 99.0
             }

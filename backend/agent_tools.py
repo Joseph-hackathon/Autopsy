@@ -96,9 +96,9 @@ def generate_evidence_graph(symbol: str) -> dict:
         twitter = urls.get("twitter", [""])[0] if urls.get("twitter") else ""
         explorer = urls.get("explorer", [""])[0] if urls.get("explorer") else ""
         
-        if external_data.get("onchain", {}).get("explorer_url") and not explorer:
+        if external_data.get("onchain", {}).get("explorer_url"):
             explorer = external_data["onchain"]["explorer_url"]
-        if external_data.get("announcement", {}).get("url") and not twitter:
+        if external_data.get("announcement", {}).get("url"):
             twitter = external_data["announcement"]["url"]
         
         category = "Unknown"

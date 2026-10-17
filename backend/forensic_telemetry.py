@@ -93,18 +93,26 @@ class ForensicTelemetryCollector:
         platform_info = identity.get("platform") or {}
         platform_name = platform_info.get("name", "") if isinstance(platform_info, dict) else ""
         
-        if explorer_list and len(explorer_list) > 0:
+        if sym_key in ["SCROLL", "SCR"]:
+            explorer_name = "Scrollscan"
+            explorer_url = f"https://scrollscan.com/token/{contract_addr}#transactions" if contract_addr else "https://scrollscan.com"
+        elif explorer_list and len(explorer_list) > 0:
             explorer_url = explorer_list[0]
             # Format to transaction page if applicable
             if not ("#" in explorer_url or "/tx" in explorer_url):
-                if "blastscan.io" in explorer_url:
+                if "scrollscan.com" in explorer_url:
+                    explorer_url = explorer_url.rstrip("/") + "#transactions"
+                elif "blastscan.io" in explorer_url:
                     explorer_url = explorer_url.rstrip("/") + "#transactions"
                 elif "etherscan.io" in explorer_url or "bscscan.com" in explorer_url or "arbiscan.io" in explorer_url or "polygonscan.com" in explorer_url or "optimistic.etherscan.io" in explorer_url:
                     explorer_url = explorer_url.rstrip("/") + "#transactions"
                 elif "solscan.io" in explorer_url:
                     explorer_url = explorer_url.rstrip("/") + "/txs"
         elif contract_addr:
-            if "blast" in platform_name.lower():
+            if "scroll" in platform_name.lower() or sym_key in ["SCROLL", "SCR"]:
+                explorer_name = "Scrollscan"
+                explorer_url = f"https://scrollscan.com/token/{contract_addr}#transactions"
+            elif "blast" in platform_name.lower():
                 explorer_name = "Blastscan"
                 explorer_url = f"https://blastscan.io/token/{contract_addr}#transactions"
             elif "bsc" in platform_name.lower() or "binance" in platform_name.lower():
@@ -121,7 +129,9 @@ class ForensicTelemetryCollector:
                 explorer_url = f"https://etherscan.io/token/{contract_addr}#transactions"
 
         # Determine readable explorer name
-        if "blastscan" in explorer_url.lower():
+        if "scrollscan" in explorer_url.lower():
+            explorer_name = "Scrollscan"
+        elif "blastscan" in explorer_url.lower():
             explorer_name = "Blastscan"
         elif "etherscan" in explorer_url.lower():
             explorer_name = "Etherscan"
@@ -139,10 +149,13 @@ class ForensicTelemetryCollector:
             explorer_name = f"{platform_name} Explorer"
 
         # 2. Resolve Twitter / X Channel Dynamically
-        twitter_list = urls.get("twitter", []) or []
-        twitter_url = twitter_list[0] if twitter_list else ""
-        if not twitter_url:
-            twitter_url = f"https://x.com/search?q=%24{sym_key}"
+        if sym_key in ["SCROLL", "SCR"]:
+            twitter_url = "https://twitter.com/Scroll_ZKP"
+        else:
+            twitter_list = urls.get("twitter", []) or []
+            twitter_url = twitter_list[0] if twitter_list else ""
+            if not twitter_url:
+                twitter_url = f"https://x.com/search?q=%24{sym_key}"
 
         # 3. Dynamic Calculation of On-Chain Metrics for ANY Token
         mcap = quote.get("market_cap", 0) or 1
